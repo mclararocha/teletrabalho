@@ -7,80 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/promove.css">
 <style>
-:root{
-  --ink:oklch(30% 0.02 255);
-  --muted:oklch(48% 0.02 255);
-  --faint:oklch(60% 0.01 255);
-  --line:oklch(91% 0.006 255);
-  --page:oklch(98% 0.003 255);
-  --card:#fff;
-  --soft:oklch(96.5% 0.004 255);
-  --blue:oklch(48% 0.13 255);
-  --blue-bg:oklch(96% 0.025 255);
-  --green:oklch(45% 0.13 150);
-  --green-bg:oklch(95% 0.035 150);
-  --amber:oklch(52% 0.12 75);
-  --amber-bg:oklch(96% 0.045 80);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--page);color:var(--ink);
-  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-}
-.wrap{max-width:900px;margin:0 auto;padding:32px 24px 64px}
-
-.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
-h1{font-size:24px;font-weight:700;margin:4px 0 2px}
-.sub{font-size:14px;color:var(--muted);margin:0}
-.head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
-
-.chip{display:inline-block;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;white-space:nowrap}
-.chip-green{background:var(--green-bg);color:var(--green)}
-.chip-amber{background:var(--amber-bg);color:var(--amber)}
-.chip-gray{background:var(--soft);color:var(--muted)}
-
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
-.section{margin-bottom:32px}
-.section-title{font-size:16px;font-weight:700;margin:0 0 4px}
-.section-meta{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.6}
-
-.ident{padding:20px 22px;margin-bottom:32px}
-.ident-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 28px}
-.ident-item .lbl{font-size:12.5px;color:var(--blue);margin-bottom:1px}
-.ident-item .val{font-size:14px;color:var(--ink)}
-
-.pad{padding:18px 22px}
-.kv{display:flex;gap:12px;padding:5px 0;flex-wrap:wrap;align-items:center}
-.kv .k{font-size:13.5px;color:var(--blue);min-width:214px;flex-shrink:0}
-.kv .v{font-size:13.5px;color:var(--ink)}
-.kv .calc{font-size:13.5px;color:var(--muted)}
-
 .row{display:flex;align-items:flex-start;gap:14px;padding:14px 18px}
 .row + .row{border-top:1px solid var(--line)}
 .row .t{font-size:13.5px}
 .row .d{font-size:12.5px;color:var(--muted);margin-top:2px}
 .tick{color:var(--green);font-size:15px;flex-shrink:0;line-height:1.5}
 
-input[type=text],select{
-  font-family:inherit;font-size:13px;color:var(--ink);background:#fff;
-  border:1px solid var(--line);border-radius:8px;padding:6px 9px
-}
-input[type=text]:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
-button{
-  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
-  background:var(--card);border:1px solid var(--line);border-radius:9px;
-  padding:8px 14px;cursor:pointer
-}
-button:hover{background:var(--soft)}
-button.sm{font-size:12.5px;padding:5px 11px}
-.foot{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-
-@media(max-width:640px){
-  .wrap{padding:20px 14px 48px}
-  .kv .k{min-width:100%}
-}
+.kv input[type=text],.kv select,.row input[type=text]{width:auto}
 </style>
 </head>
 <body>
@@ -112,7 +47,7 @@ button.sm{font-size:12.5px;padding:5px 11px}
   <div class="section">
     <div class="section-title">Condições requeridas</div>
     <p class="section-meta">Elementos exigidos no requerimento, nos termos do art. 7º da minuta.</p>
-    <div class="card pad">
+    <div class="card card-pad">
       <div class="kv"><span class="k">Modalidade:</span><select><option>Teletrabalho parcial</option></select></div>
       <div class="kv"><span class="k">Comparecimento presencial:</span><select><option>2 dias por semana</option><option>1 dia por semana</option><option>Quinzenal</option></select></div>
       <div class="kv"><span class="k">Controle de jornada:</span><span class="calc">Cumprimento do plano de trabalho, aferido por relatório semanal de entregas</span></div>
@@ -217,7 +152,7 @@ button.sm{font-size:12.5px;padding:5px 11px}
     </div>
   </div>
 
-  <div class="foot">
+  <div class="btn-row right">
     <button>Salvar rascunho</button>
     <button>Assinar e encaminhar</button>
   </div>
