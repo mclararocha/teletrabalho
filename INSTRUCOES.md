@@ -78,6 +78,16 @@ Sem o texto da minuta, não há como identificar os dispositivos corretos para a
 faixas de InCp, PrAp e QtAp (calculadora), nem para as demais seções sem remissão,
 sem inventar regra. Retomar colando os trechos pertinentes da minuta.
 
+**Atualização (03/09/2026):** a usuária enviou a minuta da evolução funcional em
+versão não simplificada (10/10/2024). Os arts. 21, 22 e 33, §§ 3º a 11, dessa versão
+batem exatamente com a lógica de InCp, PrAp, QtAp e QlAp implementada na calculadora
+e na tela da chefia — confirma que o cálculo está correto. Porém essa passagem não
+existe mais no `Decreto_Nº_10_802_2025.pdf` publicado (os arts. 21, 22 e 33 em vigor
+tratam de outros assuntos); e por instrução expressa da usuária, **essa minuta não
+deve ser citada no rodapé das telas** — serve apenas para conferência e execução dos
+cálculos, não como fonte de remissão normativa. As demais seções sem remissão
+continuam bloqueadas, pendentes do texto da minuta do teletrabalho.
+
 ---
 
 ## Tarefa 5 — Alinhar as telas à minuta vigente
