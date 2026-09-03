@@ -21,7 +21,7 @@ Usar `git mv` em vez de apagar e recriar, para o histórico não se perder.
 
 ## Tarefa 2 — Migrar as telas para o CSS compartilhado
 
-**Estado:** [ ] pendente
+**Estado:** [x] concluída
 
 Hoje cada tela carrega sua própria cópia do CSS, no `<style>` do cabeçalho. Funciona, mas
 qualquer ajuste visual precisa ser repetido dez vezes.
