@@ -50,11 +50,33 @@ nome do perfil correspondente. Sem menu completo: o protótipo se navega pelo hu
 
 ## Tarefa 4 — Padronizar o rodapé de norma
 
-**Estado:** [ ] pendente
+**Estado:** [ ] bloqueada — depende do texto da minuta
 
 Algumas telas citam os artigos no rodapé, outras não. Padronizar: toda seção que exibe
 prazo, percentual, faixa ou consequência recebe a remissão ao dispositivo, no mesmo
 estilo já usado na tela de mapeamento.
+
+**Investigação (03/09/2026):** lidas as três normas de `normas/` na íntegra. Nenhuma
+delas responde pelas regras exibidas nas telas de teletrabalho:
+
+- `Decreto_Nº_10_802_2025.pdf` — os Anexos II e III (Tabelas 1 a 12) são inteiramente
+  do Sistema de Pontos da **evolução funcional** (efetivo exercício, desempenho por
+  perspectivas, aperfeiçoamento, assunção de responsabilidades). Estrutura diferente
+  do PrAp/QtAp/QlAp da calculadora de teletrabalho.
+- `IN_007_2025.pdf` — comprovação de assunção de responsabilidade (agente de
+  contratação, gestor/fiscal de contratos) para a mesma evolução funcional; a faixa
+  de complexidade que define é de **contratos**, não de atividades de teletrabalho.
+- `Lei_nº_23_241_2025.pdf` — o que conta e o que não conta como efetivo exercício no
+  nível, também para evolução funcional.
+
+Nenhuma delas menciona "teletrabalho" ou "supletiv[a]" no texto. Todas as citações já
+existentes nas telas (art. 7º, 20, 22, 23) apontam para "a minuta", que é o documento
+que a seção "Repositório público" deste `CLAUDE.md` proíbe commitar ou analisar sem
+que o trecho seja colado na conversa.
+
+Sem o texto da minuta, não há como identificar os dispositivos corretos para as
+faixas de InCp, PrAp e QtAp (calculadora), nem para as demais seções sem remissão,
+sem inventar regra. Retomar colando os trechos pertinentes da minuta.
 
 ---
 
