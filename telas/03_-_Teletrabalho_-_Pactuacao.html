@@ -7,94 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/promove.css">
 <style>
-:root{
-  --ink:oklch(30% 0.02 255);
-  --muted:oklch(48% 0.02 255);
-  --faint:oklch(60% 0.01 255);
-  --line:oklch(91% 0.006 255);
-  --page:oklch(98% 0.003 255);
-  --card:#fff;
-  --soft:oklch(96.5% 0.004 255);
-  --blue:oklch(48% 0.13 255);
-  --blue-bg:oklch(96% 0.025 255);
-  --green:oklch(45% 0.13 150);
-  --green-bg:oklch(95% 0.035 150);
-  --amber:oklch(52% 0.12 75);
-  --amber-bg:oklch(96% 0.045 80);
-  --red:oklch(50% 0.17 25);
-  --red-bg:oklch(96% 0.03 25);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--page);color:var(--ink);
-  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-}
-.wrap{max-width:900px;margin:0 auto;padding:32px 24px 64px}
-
-.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
-h1{font-size:24px;font-weight:700;margin:4px 0 2px}
-.sub{font-size:14px;color:var(--muted);margin:0}
-
-.head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
 .roles{display:flex;gap:8px;align-items:center}
 .roles-lbl{font-size:12.5px;color:var(--muted)}
 .role-btn.on{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
-.section{margin-bottom:32px}
-.section-title{font-size:16px;font-weight:700;margin:0 0 8px}
-
-.ident{padding:20px 22px;margin-bottom:28px}
-.ident-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 28px}
-.ident-item .lbl{font-size:12.5px;color:var(--blue);margin-bottom:1px}
-.ident-item .val{font-size:14px;color:var(--ink)}
-
-.plan{padding:18px 22px;margin-bottom:28px}
-.kv{display:flex;gap:12px;padding:5px 0;flex-wrap:wrap;align-items:center}
-.kv .k{font-size:13.5px;color:var(--blue);min-width:196px;flex-shrink:0}
-.kv .v{font-size:13.5px;color:var(--ink)}
-.kv .calc{font-size:13.5px;color:var(--muted)}
-
 .ent-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
 .ent-prio{font-size:12.5px;color:var(--muted)}
 .ent-log{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.6}
-
-.at + .at{border-top:1px solid var(--line)}
-.at-h{width:100%;background:none;border:none;border-radius:0;text-align:left;display:block;cursor:pointer;
-      font-family:inherit;color:inherit;padding:13px 18px}
-.at-h:hover{background:var(--soft)}
-.at-h-in{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.at-name{font-size:13.5px;font-weight:500}
-.at-b{padding:2px 18px 18px}
-.chev{display:inline-block;width:14px;margin-right:8px;color:var(--faint);font-size:11px;transition:transform .15s}
-.at.col .at-b{display:none}
-.at.col .chev{transform:rotate(-90deg)}
-.addrow{padding:14px 18px;border-top:1px solid var(--line)}
-
-.chip{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;white-space:nowrap}
-.chip-green{background:var(--green-bg);color:var(--green)}
-.chip-amber{background:var(--amber-bg);color:var(--amber)}
-.chip-blue{background:var(--blue-bg);color:var(--blue)}
-.chip-gray{background:var(--soft);color:var(--muted)}
-
-.log{margin-top:12px;padding:10px 12px;background:var(--soft);border-radius:10px;font-size:12.5px;color:var(--muted);line-height:1.6}
 .acts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
 .ent-acts{display:flex;gap:10px;margin:12px 0 0;flex-wrap:wrap}
 
-input[type=text],select{
-  font-family:inherit;font-size:13px;color:var(--ink);background:#fff;
-  border:1px solid var(--line);border-radius:8px;padding:6px 9px
-}
-input[type=text]:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
-button{
-  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
-  background:var(--card);border:1px solid var(--line);border-radius:9px;
-  padding:8px 14px;cursor:pointer
-}
-button:hover{background:var(--soft)}
-button.sm{font-size:12.5px;padding:5px 11px}
+.kv input[type=text],.kv select{width:auto}
 
 .removed{padding:16px 20px;background:var(--soft);border-radius:14px;margin-bottom:28px}
 .removed .t{font-size:13.5px;font-weight:600;margin-bottom:4px}
@@ -102,14 +27,6 @@ button.sm{font-size:12.5px;padding:5px 11px}
 
 .foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .foot .tacit{font-size:12.5px;color:var(--muted);flex:1;min-width:220px;text-align:right}
-
-.rs .oc{display:none !important}
-.rc .os{display:none !important}
-
-@media(max-width:640px){
-  .wrap{padding:20px 14px 48px}
-  .kv .k{min-width:100%}
-}
 </style>
 </head>
 <body id="pk" class="rc">
@@ -141,18 +58,20 @@ button.sm{font-size:12.5px;padding:5px 11px}
     </div>
   </div>
 
-  <div class="card plan">
-    <div class="kv"><span class="k">Vigência do plano:</span><span class="v">01/11/2026 a 31/12/2026</span></div>
-    <div class="kv"><span class="k">Regime:</span>
-      <span class="oc"><select><option>Teletrabalho parcial</option><option>Presencial integral</option></select></span>
-      <span class="os v">Teletrabalho parcial</span>
+  <div class="section">
+    <div class="card card-pad">
+      <div class="kv"><span class="k">Vigência do plano:</span><span class="v">01/11/2026 a 31/12/2026</span></div>
+      <div class="kv"><span class="k">Regime:</span>
+        <span class="oc"><select><option>Teletrabalho parcial</option><option>Presencial integral</option></select></span>
+        <span class="os v">Teletrabalho parcial</span>
+      </div>
+      <div class="kv"><span class="k">Comparecimento presencial:</span>
+        <span class="oc"><select><option>2 dias por semana</option><option>1 dia por semana</option><option>Quinzenal</option></select></span>
+        <span class="os v">2 dias por semana</span>
+      </div>
+      <div class="kv"><span class="k">Controle de jornada:</span><span class="calc">Cumprimento do plano de trabalho, aferido por relatório semanal de entregas</span></div>
+      <div class="kv"><span class="k">Situação:</span><span class="calc">Proposta enviada em 28/10 · ajustada pela chefia em 30/10 · aceite até 04/11/2026</span></div>
     </div>
-    <div class="kv"><span class="k">Comparecimento presencial:</span>
-      <span class="oc"><select><option>2 dias por semana</option><option>1 dia por semana</option><option>Quinzenal</option></select></span>
-      <span class="os v">2 dias por semana</span>
-    </div>
-    <div class="kv"><span class="k">Controle de jornada:</span><span class="calc">Cumprimento do plano de trabalho, aferido por relatório semanal de entregas</span></div>
-    <div class="kv"><span class="k">Situação:</span><span class="calc">Proposta enviada em 28/10 · ajustada pela chefia em 30/10 · aceite até 04/11/2026</span></div>
   </div>
 
   <!-- Entrega 1 -->
@@ -166,14 +85,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
 
     <div class="card">
 
-      <div class="at">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Conferência das prestações de contas de repasse</span>
+      <div class="acc">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Conferência das prestações de contas de repasse</span>
             <span class="chip chip-green">Validada</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Origem:</span><span class="calc">Proposta pelo servidor em 28/10/2026</span></div>
           <div class="kv"><span class="k">Tipo de atividade:</span><span class="calc">Estruturante</span></div>
           <div class="kv"><span class="k">Regime de execução:</span><span class="v">Teletrabalho</span></div>
@@ -191,14 +110,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
         </div>
       </div>
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Notificação de contratadas com pendência documental</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Notificação de contratadas com pendência documental</span>
             <span class="chip chip-amber">Ajustada pela chefia</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Origem:</span><span class="calc">Proposta pelo servidor em 28/10/2026</span></div>
           <div class="kv"><span class="k">Tipo de atividade:</span><span class="calc">Estruturante</span></div>
           <div class="kv"><span class="k">Regime de execução:</span>
@@ -255,14 +174,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
 
     <div class="card">
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Análise da documentação das entidades proponentes</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Análise da documentação das entidades proponentes</span>
             <span class="chip chip-gray">Aguardando validação</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Origem:</span><span class="calc">Proposta pelo servidor em 28/10/2026</span></div>
           <div class="kv"><span class="k">Tipo de atividade:</span><span class="calc">Finalística</span></div>
           <div class="kv"><span class="k">Regime de execução:</span>
@@ -299,14 +218,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
         </div>
       </div>
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Consolidação do relatório trimestral de convênios</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Consolidação do relatório trimestral de convênios</span>
             <span class="chip chip-blue">Incluída pela chefia</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Origem:</span><span class="calc">Incluída por João Ferreira em 30/10/2026</span></div>
           <div class="kv"><span class="k">Tipo de atividade:</span><span class="calc">Finalística</span></div>
           <div class="kv"><span class="k">Regime de execução:</span>
@@ -364,14 +283,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
 
     <div class="card">
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Conferência e atualização dos dados cadastrais das entidades</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Conferência e atualização dos dados cadastrais das entidades</span>
             <span class="chip chip-gray">Rascunho do servidor</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Origem:</span><span class="calc">Acrescentada por Maria da Silva em 02/11/2026</span></div>
           <div class="kv"><span class="k">Tipo de atividade:</span><span class="calc">Estruturante</span></div>
           <div class="kv"><span class="k">Regime de execução:</span>
@@ -432,7 +351,7 @@ button.sm{font-size:12.5px;padding:5px 11px}
 </div>
 
 <script>
-document.querySelectorAll('.at-h').forEach(function(h){
+document.querySelectorAll('.acc-h').forEach(function(h){
   h.addEventListener('click', function(){
     h.parentElement.classList.toggle('col');
   });
