@@ -7,44 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/promove.css">
 <style>
-:root{
-  --ink:oklch(30% 0.02 255);
-  --muted:oklch(48% 0.02 255);
-  --faint:oklch(60% 0.01 255);
-  --line:oklch(91% 0.006 255);
-  --page:oklch(98% 0.003 255);
-  --card:#fff;
-  --soft:oklch(96.5% 0.004 255);
-  --blue:oklch(48% 0.13 255);
-  --blue-bg:oklch(96% 0.025 255);
-  --green:oklch(45% 0.13 150);
-  --red:oklch(50% 0.17 25);
-  --amber:oklch(52% 0.12 75);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--page);color:var(--ink);
-  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-}
-.wrap{max-width:1180px;margin:0 auto;padding:32px 24px 64px}
-
-.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
-h1{font-size:24px;font-weight:700;margin:4px 0 2px}
-.sub{font-size:14px;color:var(--muted);margin:0 0 28px}
-
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
-.section-title{font-size:16px;font-weight:700;margin:0 0 4px}
-.section-meta{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.6}
-
-label,.lbl{display:block;font-size:12.5px;color:var(--blue);margin-bottom:4px}
-input,select{
-  font-family:inherit;font-size:13.5px;color:var(--ink);background:#fff;
-  border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%
-}
-input:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
-
 .jornada{margin-bottom:22px}
 .jhead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
 .jgrid{display:grid;grid-template-columns:150px 250px 1fr;gap:16px;align-items:end}
@@ -106,14 +70,14 @@ table.ref th{color:var(--muted);font-weight:400}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap wrap-wide">
 
   <div class="eyebrow">Promove – teletrabalho</div>
   <h1>Como a nota da atividade é calculada</h1>
   <p class="sub">Simulação, demonstração do cálculo e matriz de prazo por quantidade</p>
 
   <!-- Jornada -->
-  <div class="card jornada">
+  <div class="card card-pad jornada">
     <div class="jhead">
       <div class="section-title" style="margin:0">Jornada do servidor</div>
       <div id="jres" style="font-size:13px"></div>
@@ -135,7 +99,7 @@ table.ref th{color:var(--muted);font-weight:400}
   <div class="cols">
 
     <!-- Simulação -->
-    <div class="card">
+    <div class="card card-pad">
       <div class="section-title">Simulação</div>
       <p class="section-meta">Os quatro elementos que formam a nota da atividade.</p>
 
@@ -192,7 +156,7 @@ table.ref th{color:var(--muted);font-weight:400}
     </div>
 
     <!-- Demonstração -->
-    <div class="card">
+    <div class="card card-pad">
       <div class="section-title">Demonstração do cálculo</div>
       <p class="section-meta">Cada índice apurado a partir dos dados ao lado.</p>
       <div id="demo"></div>
