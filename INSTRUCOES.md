@@ -112,7 +112,7 @@ Levantar o impacto em cada tela **antes** de alterar qualquer arquivo.
 
 ## Tarefa 6 — Telas que ainda faltam
 
-**Estado:** [ ] pendente
+**Estado:** [x] concluída
 
 - Registro de evidência, acionado pelo botão da tela do servidor.
 - Relatório semanal montado, acionado pelo botão da tela do servidor.

@@ -69,6 +69,9 @@ INSTRUCOES.md           fila de tarefas
 | `08_-_Teletrabalho_-_Desligamentos_Unidade.html` | Desligamentos da unidade | Unidade setorial |
 | `09_-_Teletrabalho_-_Painel_Central.html` | Painel do órgão central | Órgão central |
 | `10_-_Teletrabalho_-_Calculadora_Resultado.html` | Cálculo da nota da atividade | Demonstração |
+| `11_-_Teletrabalho_-_Registro_de_Evidencia.html` | Registro de evidência | Servidor |
+| `12_-_Teletrabalho_-_Relatorio_Semanal.html` | Relatório semanal montado | Servidor |
+| `13_-_Teletrabalho_-_Repactuacao.html` | Repactuação do plano de trabalho | Servidor e chefia |
 
 ## Convenções
 
