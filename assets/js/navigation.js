@@ -76,46 +76,44 @@ var PromoveNav = (function () {
     central: {
       rotulo: "Órgão Central (SEAD)",
       fases: [
-        { nome: "Painel", telas: [
-          { id: "09", rotulo: "Painel Central de Teletrabalho" }
-        ]}
-      ]
-    },
-    completo: {
-      rotulo: "Visão Completa",
-      fases: [
-        { nome: "Titular da unidade", telas: [
+        { nome: "Mapeamento", telas: [
           { id: "01", rotulo: "Mapeamento de entregas e atividades" }
         ]},
-        { nome: "Servidor e chefia imediata", telas: [
-          { id: "02", rotulo: "Requerimento de adesão" },
+        { nome: "Adesão", telas: [
+          { id: "02", rotulo: "Requerimento de adesão" }
+        ]},
+        { nome: "Pactuação", telas: [
           { id: "03", rotulo: "Pactuação do plano de trabalho" },
-          { id: "04", rotulo: "Plano de trabalho do servidor" },
-          { id: "05", rotulo: "Verificação dos resultados" },
-          { id: "11", rotulo: "Registro de evidência" },
-          { id: "12", rotulo: "Relatório semanal montado" },
           { id: "13", rotulo: "Repactuação do plano de trabalho" }
         ]},
-        { nome: "Unidade setorial", telas: [
+        { nome: "Execução & Evidências", telas: [
+          { id: "04", rotulo: "Plano de trabalho do servidor" },
+          { id: "11", rotulo: "Registro de evidência" },
+          { id: "12", rotulo: "Relatório semanal montado" }
+        ]},
+        { nome: "Avaliação", telas: [
+          { id: "05", rotulo: "Verificação dos resultados" }
+        ]},
+        { nome: "Painéis e classificação", telas: [
           { id: "06", rotulo: "Painel da unidade setorial" },
           { id: "07", rotulo: "Ordem apurada do órgão" },
           { id: "08", rotulo: "Desligamentos da unidade" }
         ]},
-        { nome: "Órgão central", telas: [
+        { nome: "Painel central", telas: [
           { id: "09", rotulo: "Painel do órgão central" }
         ]}
       ]
     }
   };
 
-  var ORDEM_PERFIS = ["chefia", "servidor", "titular_rh", "central", "completo"];
+  var ORDEM_PERFIS = ["chefia", "servidor", "titular_rh", "central"];
 
   function perfilAtivo() {
     try {
       var v = window.localStorage.getItem(CHAVE_PERFIL);
-      return PERFIS[v] ? v : "completo";
+      return PERFIS[v] ? v : "central";
     } catch (e) {
-      return "completo";
+      return "central";
     }
   }
 
@@ -168,8 +166,7 @@ var PromoveNav = (function () {
     var ativo = perfilAtivo();
     document.querySelectorAll("[data-perfis]").forEach(function (card) {
       var perfis = card.getAttribute("data-perfis").split(" ");
-      var mostra = ativo === "completo" || perfis.indexOf(ativo) !== -1;
-      card.hidden = !mostra;
+      card.hidden = perfis.indexOf(ativo) === -1;
     });
   }
 

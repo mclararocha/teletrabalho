@@ -95,10 +95,10 @@ table.ref th{color:var(--muted);font-weight:400}
         <select id="carga"><option value="8" selected>8 horas</option><option value="6">6 horas</option></select></div>
       <div><span class="lbl">Atalhos</span><select id="preset"></select></div>
       <div class="jwin">
-        <div><span class="lbl">Manhã, de</span><input type="time" id="m1" value="08:00"></div>
-        <div><span class="lbl">até</span><input type="time" id="m2" value="12:00"></div>
-        <div><span class="lbl">Tarde, de</span><input type="time" id="t1" value="14:00"></div>
-        <div><span class="lbl">até</span><input type="time" id="t2" value="18:00"></div>
+        <div><span class="lbl">Manhã, de</span><input type="time" id="m1"></div>
+        <div><span class="lbl">até</span><input type="time" id="m2"></div>
+        <div><span class="lbl">Tarde, de</span><input type="time" id="t1"></div>
+        <div><span class="lbl">até</span><input type="time" id="t2"></div>
       </div>
     </div>
     <p class="jnote">Intervalo mínimo de 1 hora entre os turnos. A carga de 8 horas exige dois turnos; a de 6 horas admite turno único. Os horários da pactuação e da conclusão ficam limitados às janelas definidas aqui, em intervalos de 30 minutos. Consideram-se apenas os dias de segunda a sexta; feriados não são descontados nesta simulação.</p>
@@ -114,9 +114,9 @@ table.ref th{color:var(--muted);font-weight:400}
       <div class="bh"><span class="bt">1 · Complexidade</span><span class="bv" id="bvc"></span></div>
       <div class="g2">
         <div><span class="lbl">Impacto</span>
-          <select id="imp"><option>Baixo</option><option>Médio</option><option selected>Alto</option></select></div>
+          <select id="imp"><option>Selecionar</option><option>Baixo</option><option>Médio</option><option>Alto</option></select></div>
         <div><span class="lbl">Dificuldade</span>
-          <select id="dif"><option>Baixa</option><option>Média</option><option selected>Alta</option></select></div>
+          <select id="dif"><option>Selecionar</option><option>Baixa</option><option>Média</option><option>Alta</option></select></div>
       </div>
 
       <div class="blk">
@@ -125,17 +125,17 @@ table.ref th{color:var(--muted);font-weight:400}
         <div class="rot">Pactuado</div>
         <div class="pr">
           <div><span class="lbl">Início</span>
-            <div class="dt"><input type="date" id="pi" value="2026-11-03"><select id="pih"></select></div></div>
+            <div class="dt"><input type="date" id="pi"><select id="pih"></select></div></div>
           <div><span class="lbl">Conclusão</span>
-            <div class="dt"><input type="date" id="pf" value="2026-11-17"><select id="pfh"></select></div></div>
+            <div class="dt"><input type="date" id="pf"><select id="pfh"></select></div></div>
         </div>
 
         <div class="rot">Realizado</div>
         <div class="pr" style="margin-bottom:0">
           <div><span class="lbl">Início</span>
-            <div class="dt"><input type="date" id="ri" value="2026-11-03"><select id="rih"></select></div></div>
+            <div class="dt"><input type="date" id="ri"><select id="rih"></select></div></div>
           <div><span class="lbl">Conclusão</span>
-            <div class="dt"><input type="date" id="rf" value="2026-11-17"><select id="rfh"></select></div></div>
+            <div class="dt"><input type="date" id="rf"><select id="rfh"></select></div></div>
         </div>
 
         <div id="warn" class="warn"></div>
@@ -144,8 +144,8 @@ table.ref th{color:var(--muted);font-weight:400}
       <div class="blk">
         <div class="bh"><span class="bt">3 · Quantidade</span><span class="bv" id="bvq"></span></div>
         <div class="g2">
-          <div><span class="lbl">Pactuada</span><input type="number" id="qp" value="8" min="1"></div>
-          <div><span class="lbl">Realizada</span><input type="number" id="qr" value="8" min="0"></div>
+          <div><span class="lbl">Pactuada</span><input type="number" id="qp" placeholder="8" min="1"></div>
+          <div><span class="lbl">Realizada</span><input type="number" id="qr" placeholder="8" min="0"></div>
         </div>
       </div>
 
@@ -153,12 +153,13 @@ table.ref th{color:var(--muted);font-weight:400}
         <div class="bh"><span class="bt">4 · Qualidade</span><span class="bv" id="bvl"></span></div>
         <div><span class="lbl">Nível apurado pela chefia</span>
           <select id="qual">
+            <option>Selecionar</option>
             <option value="0">Inaceitável · 0</option>
             <option value="4">Ruim · 4</option>
             <option value="6">Regular · 6</option>
             <option value="8">Boa · 8</option>
             <option value="10">Precisa · 10</option>
-            <option value="12" selected>Excepcional · 12</option>
+            <option value="12">Excepcional · 12</option>
           </select></div>
       </div>
     </div>
@@ -182,8 +183,8 @@ table.ref th{color:var(--muted);font-weight:400}
   <p class="section-meta" id="mtxsub"></p>
 
   <div class="params">
-    <div><span class="lbl">Atraso que ainda pontua, até (%)</span><input type="number" id="lp" value="80" min="71" step="1"></div>
-    <div><span class="lbl">Quantidade que já pontua, a partir de (%)</span><input type="number" id="lq" value="15" min="1" max="24" step="1"></div>
+    <div><span class="lbl">Atraso que ainda pontua, até (%)</span><input type="number" id="lp" placeholder="80" min="71" step="1"></div>
+    <div><span class="lbl">Quantidade que já pontua, a partir de (%)</span><input type="number" id="lq" placeholder="15" min="1" max="24" step="1"></div>
   </div>
 
   <div class="mtxwrap">
@@ -455,8 +456,18 @@ table.ref th{color:var(--muted);font-weight:400}
     var imp = $("imp").value, dif = $("dif").value;
     var nivel = COMPLEX[imp+"|"+dif], ic = ICOMP[nivel];
     var qi = parseFloat($("qual").value);
-    var qlap = qi * ic;
 
+    if (!nivel || isNaN(qi)) {
+      $("bvc").textContent = ""; $("bvl").textContent = "";
+      $("demo").innerHTML = '<div class="step sl">Selecione impacto, dificuldade e qualidade apurada para ver a simulação.</div>';
+      $("res").textContent = "—"; $("resx").textContent = ""; $("warn").textContent = "";
+      $("bvp").textContent = ""; $("bvq").textContent = "";
+      $("mtx").innerHTML = "";
+      $("mtxsub").textContent = "Selecione impacto, dificuldade e qualidade apurada para ver a matriz.";
+      return;
+    }
+
+    var qlap = qi * ic;
     $("bvc").textContent = nivel + " · InCp " + n1(ic);
     $("bvl").textContent = "QlAp " + n1(qlap);
 

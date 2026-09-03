@@ -78,11 +78,16 @@ INSTRUCOES.md           fila de tarefas
 ## Navegação por perfil
 
 `assets/js/navigation.js` é a fonte única de quais telas pertencem a cada perfil
-(Chefia da Unidade, Servidor, Titular/RH Setorial, Órgão Central, Visão Completa) e
-com que rótulo — a mesma tela pode ter um rótulo diferente por perfil (ex.: a tela 03
-é "Elaboração e Validação pela Chefia" para a chefia e "Visualização e Aceite do
-Servidor" para o servidor). Ao acrescentar ou remover uma tela de um perfil, altere
-`PERFIS` nesse arquivo — nunca duplique a lista em HTML.
+(Chefia da Unidade, Servidor, Titular/RH Setorial, Órgão Central) e com que rótulo —
+a mesma tela pode ter um rótulo diferente por perfil (ex.: a tela 03 é "Elaboração e
+Validação pela Chefia" para a chefia e "Visualização e Aceite do Servidor" para o
+servidor). Ao acrescentar ou remover uma tela de um perfil, altere `PERFIS` nesse
+arquivo — nunca duplique a lista em HTML.
+
+O perfil **Órgão Central (SEAD)** enxerga todas as telas do fluxo, agrupadas por
+fase, e é o **perfil padrão**: sem escolha salva em `localStorage`, `index.html` e
+a sidebar de qualquer tela partem dessa visão completa. Não existe mais um perfil
+"Visão Completa" separado — o Órgão Central acumula esse papel.
 
 Cada tela carrega esse script e chama `PromoveNav.init({ atual: "NN", raiz: "" })`
 (no `index.html`, `raiz: "telas/"` e `atual: null`). O script renderiza:
@@ -93,10 +98,32 @@ Cada tela carrega esse script e chama `PromoveNav.init({ atual: "NN", raiz: "" }
   (chave `promove_perfil`) e não redireciona a tela atual;
 - no `index.html`, o filtro dos grupos de card por `data-perfis` no `.grupo`.
 
-Toda tela nova precisa: do `<script src=".../navigation.js">`, do `<div class="wrap">`
-envolvido por `<div class="app-shell"><aside id="sidebar" class="sidebar"></aside>...`,
-do contêiner `<div id="seletor-perfil"></div>` no lugar do antigo `<span class="nav-role">`,
-e da chamada `PromoveNav.init(...)` antes de `</body>`.
+Toda tela nova precisa: do `<script src=".../navigation.js">`, do `<div class="app-shell">`
+com `<aside id="sidebar" class="sidebar"></aside>` seguido do contêiner de conteúdo
+(`<div class="wrap">`/`<div class="wrap wrap-wide">`, ou `<main class="wrap wrap-wide">`
+no caso do `index.html`), do contêiner `<div id="seletor-perfil"></div>` no lugar do
+antigo `<span class="nav-role">`, e da chamada `PromoveNav.init(...)` antes de
+`</body>`.
+
+## Formulários sem dado de exemplo ("Modo Limpo")
+
+Campos de formulário (`<input>`, `<select>`, `<textarea>`) não carregam mais valor
+de exemplo chumbado no HTML — usam `placeholder` (texto/número) ou ficam vazios
+(data/hora, que não renderizam placeholder de forma confiável em todos os
+navegadores). `<select>` ganha uma primeira opção neutra "Selecionar" no lugar do
+antigo `<option selected>`. O objetivo é permitir popular os campos via JavaScript
+no futuro (um eventual `store.js`), sem dado fictício sobrando na marcação.
+
+Isso vale só para **campos editáveis**. Texto de exibição somente leitura (spans
+`.v`, `.calc`, `.os v`/`.oc v` etc.) continua usando os dados da persona única —
+ver "Consistência dos dados de exemplo".
+
+Exceção: o `<select id="carga">` (carga diária) da calculadora (tela 10) mantém o
+valor padrão de 8 horas, porque é parâmetro operacional do simulador — sem ele,
+`montaPresets()` quebra ao indexar `PRESETS[""]`. A função `calc()` da mesma tela
+trata a ausência de impacto/dificuldade/qualidade apurada com uma verificação de
+guarda no início (retorna cedo com mensagem "Selecione..." em vez de tentar montar
+o resultado com valores indefinidos).
 
 ## Telas
 
