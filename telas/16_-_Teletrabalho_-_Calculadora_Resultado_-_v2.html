@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROMOVE – Teletrabalho · Cálculo da nota da atividade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:oklch(30% 0.02 255);
+  --muted:oklch(48% 0.02 255);
+  --faint:oklch(60% 0.01 255);
+  --line:oklch(91% 0.006 255);
+  --page:oklch(98% 0.003 255);
+  --card:#fff;
+  --soft:oklch(96.5% 0.004 255);
+  --blue:oklch(48% 0.13 255);
+  --blue-bg:oklch(96% 0.025 255);
+  --green:oklch(45% 0.13 150);
+  --red:oklch(50% 0.17 25);
+  --amber:oklch(52% 0.12 75);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--page);color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 24px 64px}
+
+.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:24px;font-weight:700;margin:4px 0 2px}
+.sub{font-size:14px;color:var(--muted);margin:0 0 28px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+.section-title{font-size:16px;font-weight:700;margin:0 0 4px}
+.section-meta{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.6}
+
+label,.lbl{display:block;font-size:12.5px;color:var(--blue);margin-bottom:4px}
+input,select{
+  font-family:inherit;font-size:13.5px;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%
+}
+input:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
+
+.jornada{margin-bottom:22px}
+.jhead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.jgrid{display:grid;grid-template-columns:150px 250px 1fr;gap:16px;align-items:end}
+.jwin{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.jnote{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6}
+
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;margin-bottom:32px}
+.blk{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.bh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.bt{font-size:14px;font-weight:600}
+.bv{font-size:12.5px;color:var(--muted);text-align:right}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rot{font-size:13px;font-weight:600;margin:0 0 8px}
+.pr{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.dt{display:flex;gap:8px}
+.dt input[type=date]{flex:1 1 150px;min-width:145px}
+.dt select{flex:0 0 96px;width:96px}
+.warn{font-size:12px;color:var(--amber);line-height:1.5;margin-top:10px}
+
+.step{padding:11px 0;border-top:1px solid var(--line)}
+.srow{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.sl{font-size:12.5px;color:var(--muted)}
+.sv{font-size:13.5px}
+.sr{font-size:14px;font-weight:600;color:var(--blue);white-space:nowrap}
+.total{margin-top:16px;background:var(--blue-bg);border-radius:12px;padding:16px 18px;display:flex;justify-content:space-between;align-items:baseline}
+.total .t{font-size:14px;color:var(--blue)}
+.total .v{font-size:34px;font-weight:700;color:var(--blue)}
+.totalx{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+
+.params{background:var(--soft);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:grid;grid-template-columns:260px 300px;gap:20px;align-items:end}
+
+.mtxwrap{display:flex;gap:10px}
+.axisy{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding-top:52px}
+.axis{font-size:11px;font-weight:700;letter-spacing:.06em}
+table.mt{border-collapse:collapse;table-layout:fixed;width:100%;min-width:900px}
+table.mt td,table.mt th{font-size:11px;text-align:center;padding:0;height:30px;border:1px solid var(--soft)}
+th.rh{font-size:11px;text-align:right;padding-right:8px;color:var(--muted);font-weight:400;border:none;width:170px}
+th.ix{background:var(--soft);font-weight:700;width:30px}
+th.qh{border:none;color:var(--muted);font-weight:400;line-height:1.2;padding:0 2px;font-size:10.5px}
+td.hit{outline:3px solid var(--ink);outline-offset:-3px;font-weight:700}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+.formula{background:var(--soft);border-radius:14px;padding:20px 22px;margin-top:36px}
+.fbox{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:18px}
+.fmain{font-size:17px;line-height:1.9}
+.fnotes{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.9}
+.refs{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px}
+table.ref{border-collapse:collapse;width:100%}
+table.ref th,table.ref td{font-size:12px;padding:5px 7px;border-bottom:1px solid var(--line);text-align:left}
+table.ref th{color:var(--muted);font-weight:400}
+
+@media(max-width:1000px){
+  .cols{grid-template-columns:1fr}
+  .jgrid{grid-template-columns:1fr}
+  .refs{grid-template-columns:1fr}
+  .params{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Promove – teletrabalho</div>
+  <h1>Como a nota da atividade é calculada</h1>
+  <p class="sub">Simulação, demonstração do cálculo e matriz de prazo por quantidade</p>
+
+  <!-- Jornada -->
+  <div class="card jornada">
+    <div class="jhead">
+      <div class="section-title" style="margin:0">Jornada do servidor</div>
+      <div id="jres" style="font-size:13px"></div>
+    </div>
+    <div class="jgrid">
+      <div><span class="lbl">Carga diária</span>
+        <select id="carga"><option value="8" selected>8 horas</option><option value="6">6 horas</option></select></div>
+      <div><span class="lbl">Atalhos</span><select id="preset"></select></div>
+      <div class="jwin">
+        <div><span class="lbl">Manhã, de</span><input type="time" id="m1" value="08:00"></div>
+        <div><span class="lbl">até</span><input type="time" id="m2" value="12:00"></div>
+        <div><span class="lbl">Tarde, de</span><input type="time" id="t1" value="14:00"></div>
+        <div><span class="lbl">até</span><input type="time" id="t2" value="18:00"></div>
+      </div>
+    </div>
+    <p class="jnote">Intervalo mínimo de 1 hora entre os turnos. A carga de 8 horas exige dois turnos; a de 6 horas admite turno único. Os horários da pactuação e da conclusão ficam limitados às janelas definidas aqui, em intervalos de 30 minutos. Consideram-se apenas os dias de segunda a sexta; feriados não são descontados nesta simulação.</p>
+  </div>
+
+  <div class="cols">
+
+    <!-- Simulação -->
+    <div class="card">
+      <div class="section-title">Simulação</div>
+      <p class="section-meta">Os quatro elementos que formam a nota da atividade.</p>
+
+      <div class="bh"><span class="bt">1 · Complexidade</span><span class="bv" id="bvc"></span></div>
+      <div class="g2">
+        <div><span class="lbl">Impacto</span>
+          <select id="imp"><option>Baixo</option><option>Médio</option><option selected>Alto</option></select></div>
+        <div><span class="lbl">Dificuldade</span>
+          <select id="dif"><option>Baixa</option><option>Média</option><option selected>Alta</option></select></div>
+      </div>
+
+      <div class="blk">
+        <div class="bh"><span class="bt">2 · Prazos</span><span class="bv" id="bvp"></span></div>
+
+        <div class="rot">Pactuado</div>
+        <div class="pr">
+          <div><span class="lbl">Início</span>
+            <div class="dt"><input type="date" id="pi" value="2026-11-03"><select id="pih"></select></div></div>
+          <div><span class="lbl">Conclusão</span>
+            <div class="dt"><input type="date" id="pf" value="2026-11-17"><select id="pfh"></select></div></div>
+        </div>
+
+        <div class="rot">Realizado</div>
+        <div class="pr" style="margin-bottom:0">
+          <div><span class="lbl">Início</span>
+            <div class="dt"><input type="date" id="ri" value="2026-11-03"><select id="rih"></select></div></div>
+          <div><span class="lbl">Conclusão</span>
+            <div class="dt"><input type="date" id="rf" value="2026-11-17"><select id="rfh"></select></div></div>
+        </div>
+
+        <div id="warn" class="warn"></div>
+      </div>
+
+      <div class="blk">
+        <div class="bh"><span class="bt">3 · Quantidade</span><span class="bv" id="bvq"></span></div>
+        <div class="g2">
+          <div><span class="lbl">Pactuada</span><input type="number" id="qp" value="8" min="1"></div>
+          <div><span class="lbl">Realizada</span><input type="number" id="qr" value="8" min="0"></div>
+        </div>
+      </div>
+
+      <div class="blk">
+        <div class="bh"><span class="bt">4 · Qualidade</span><span class="bv" id="bvl"></span></div>
+        <div><span class="lbl">Nível apurado pela chefia</span>
+          <select id="qual">
+            <option value="0">Inaceitável · 0</option>
+            <option value="4">Ruim · 4</option>
+            <option value="6">Regular · 6</option>
+            <option value="8">Boa · 8</option>
+            <option value="10">Precisa · 10</option>
+            <option value="12" selected>Excepcional · 12</option>
+          </select></div>
+      </div>
+    </div>
+
+    <!-- Demonstração -->
+    <div class="card">
+      <div class="section-title">Demonstração do cálculo</div>
+      <p class="section-meta">Cada índice apurado a partir dos dados ao lado.</p>
+      <div id="demo"></div>
+      <div class="total">
+        <span class="t">Nota da atividade</span>
+        <span class="v" id="res">—</span>
+      </div>
+      <div class="totalx" id="resx"></div>
+    </div>
+
+  </div>
+
+  <!-- Matriz -->
+  <div class="section-title">Matriz prazo apurado × quantidade apurada</div>
+  <p class="section-meta" id="mtxsub"></p>
+
+  <div class="params">
+    <div><span class="lbl">Atraso que ainda pontua, até (%)</span><input type="number" id="lp" value="80" min="71" step="1"></div>
+    <div><span class="lbl">Quantidade que já pontua, a partir de (%)</span><input type="number" id="lq" value="15" min="1" max="24" step="1"></div>
+  </div>
+
+  <div class="mtxwrap">
+    <div class="axisy"><span class="axis" style="writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap">PRAZO APURADO</span></div>
+    <div style="flex:1;min-width:0;overflow-x:auto">
+      <div class="axis" style="text-align:center;margin-bottom:6px;padding-left:200px">QUANTIDADE APURADA</div>
+      <table class="mt" id="mtx"></table>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="sw" style="background:#1B7F4A"></span>10 a 12</span>
+    <span><span class="sw" style="background:#7FBF5C"></span>8 a 10</span>
+    <span><span class="sw" style="background:#F2CE3E"></span>6 a 8</span>
+    <span><span class="sw" style="background:#E88B3C"></span>4 a 6</span>
+    <span><span class="sw" style="background:#C7462F"></span>abaixo de 4</span>
+    <span><span class="sw" style="background:#E4E2DC"></span>nota zerada</span>
+    <span style="color:var(--ink)">Contorno: posição da simulação</span>
+  </div>
+
+  <!-- Fórmula -->
+  <div class="formula">
+    <div class="section-title">Fórmula</div>
+    <div class="fbox" style="margin-top:14px">
+      <div class="fmain">Nota da atividade&nbsp;=&nbsp;<span style="color:var(--blue);font-weight:600">( PrAp + QtAp + QlAp )</span>&nbsp;÷&nbsp;3&nbsp;&nbsp;·&nbsp;&nbsp;QlAp&nbsp;=&nbsp;InQl&nbsp;×&nbsp;InCp</div>
+      <div class="fnotes">
+        Desvio de prazo = (horas úteis realizadas − horas úteis pactuadas) ÷ horas úteis pactuadas<br>
+        Quantidade = quantidade realizada ÷ quantidade pactuada<br>
+        Horas úteis contam somente dentro da jornada configurada, de segunda a sexta<br>
+        Nota zero em PrAp, QtAp ou QlAp zera a nota da entrega inteira, e não apenas desta atividade
+      </div>
+    </div>
+    <div class="refs">
+      <div>
+        <div class="lbl">Complexidade</div>
+        <table class="ref">
+          <tr><th>Impacto × dificuldade</th><th style="text-align:right">Nível</th></tr>
+          <tr><td>Baixo × baixa</td><td style="text-align:right">Muito baixa</td></tr>
+          <tr><td>Baixo × média · médio × baixa</td><td style="text-align:right">Baixa</td></tr>
+          <tr><td>Baixo × alta · médio × média · alto × baixa</td><td style="text-align:right">Média</td></tr>
+          <tr><td>Médio × alta · alto × média</td><td style="text-align:right">Alta</td></tr>
+          <tr><td>Alto × alta</td><td style="text-align:right">Muito alta</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="lbl">InCp por nível</div>
+        <table class="ref">
+          <tr><th>Nível</th><th style="text-align:right">InCp</th></tr>
+          <tr><td>Muito baixa</td><td style="text-align:right">0,6</td></tr>
+          <tr><td>Baixa</td><td style="text-align:right">0,7</td></tr>
+          <tr><td>Média</td><td style="text-align:right">0,8</td></tr>
+          <tr><td>Alta</td><td style="text-align:right">0,9</td></tr>
+          <tr><td>Muito alta</td><td style="text-align:right">1,0</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="lbl">InQl · Tabela 6</div>
+        <table class="ref">
+          <tr><th>Qualidade de execução</th><th style="text-align:right">InQl</th></tr>
+          <tr><td>Inaceitável</td><td style="text-align:right">0</td></tr>
+          <tr><td>Ruim</td><td style="text-align:right">4</td></tr>
+          <tr><td>Regular</td><td style="text-align:right">6</td></tr>
+          <tr><td>Boa</td><td style="text-align:right">8</td></tr>
+          <tr><td>Precisa</td><td style="text-align:right">10</td></tr>
+          <tr><td>Excepcional</td><td style="text-align:right">12</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var COMPLEX = {
+    "Baixo|Baixa":"Muito baixa","Baixo|Média":"Baixa","Baixo|Alta":"Média",
+    "Médio|Baixa":"Baixa","Médio|Média":"Média","Médio|Alta":"Alta",
+    "Alto|Baixa":"Média","Alto|Média":"Alta","Alto|Alta":"Muito alta"
+  };
+  var ICOMP = {"Muito baixa":0.6,"Baixa":0.7,"Média":0.8,"Alta":0.9,"Muito alta":1.0};
+
+  var PRESETS = {
+    "8": [["08:00","12:00","14:00","18:00"],["07:00","12:00","13:00","16:00"],
+          ["08:00","12:00","13:00","17:00"],["07:00","11:00","13:00","17:00"],
+          ["09:00","13:00","14:00","18:00"]],
+    "6": [["07:00","13:00","",""],["08:00","14:00","",""],["12:00","18:00","",""],
+          ["07:00","11:00","13:00","15:00"],["08:00","11:00","13:00","16:00"]]
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  function n1(x){ return x.toFixed(1).replace(".", ","); }
+  function n2(x){ return x.toFixed(2).replace(".", ","); }
+
+  function linhasPrazo(L){
+    return [
+      {lab:"antecipado maior que 25%", ix:12},
+      {lab:"antecipado até 25%",       ix:11},
+      {lab:"na data",                  ix:10},
+      {lab:"atraso até 10%",           ix:9},
+      {lab:"atraso até 20%",           ix:8},
+      {lab:"atraso até 30%",           ix:7},
+      {lab:"atraso até 40%",           ix:6},
+      {lab:"atraso até 50%",           ix:5},
+      {lab:"atraso até 60%",           ix:4},
+      {lab:"atraso até 70%",           ix:3},
+      {lab:"atraso até "+L+"%",        ix:2},
+      {lab:"atraso maior que "+L+"%",  ix:0}
+    ];
+  }
+  function colunasQuant(Q){
+    return [
+      {lab:"até "+n2(Q-0.01)+"%", ix:0},
+      {lab:Q+" a 24,99%",   ix:2},
+      {lab:"25 a 34,99%",   ix:3},
+      {lab:"35 a 44,99%",   ix:4},
+      {lab:"45 a 54,99%",   ix:5},
+      {lab:"55 a 64,99%",   ix:6},
+      {lab:"65 a 74,99%",   ix:7},
+      {lab:"75 a 84,99%",   ix:8},
+      {lab:"85 a 94,99%",   ix:9},
+      {lab:"95 a 104,99%",  ix:10},
+      {lab:"105 a 124,99%", ix:11},
+      {lab:"125% ou mais",  ix:12}
+    ];
+  }
+  function faixaPrazo(z, L){
+    var p = z*100;
+    if (p > L)    return {ix:0,  f:"atraso maior que "+L+"%"};
+    if (p > 70)   return {ix:2,  f:"atraso até "+L+"%"};
+    if (p > 60)   return {ix:3,  f:"atraso até 70%"};
+    if (p > 50)   return {ix:4,  f:"atraso até 60%"};
+    if (p > 40)   return {ix:5,  f:"atraso até 50%"};
+    if (p > 30)   return {ix:6,  f:"atraso até 40%"};
+    if (p > 20)   return {ix:7,  f:"atraso até 30%"};
+    if (p > 10)   return {ix:8,  f:"atraso até 20%"};
+    if (p > 0)    return {ix:9,  f:"atraso até 10%"};
+    if (p === 0)  return {ix:10, f:"na data"};
+    if (p >= -25) return {ix:11, f:"antecipado até 25%"};
+    return {ix:12, f:"antecipado maior que 25%"};
+  }
+  function faixaQuant(a, Q){
+    var p = a*100;
+    if (p < Q)   return {ix:0,  f:"até "+n2(Q-0.01)+"%"};
+    if (p < 25)  return {ix:2,  f:Q+" a 24,99%"};
+    if (p < 35)  return {ix:3,  f:"25 a 34,99%"};
+    if (p < 45)  return {ix:4,  f:"35 a 44,99%"};
+    if (p < 55)  return {ix:5,  f:"45 a 54,99%"};
+    if (p < 65)  return {ix:6,  f:"55 a 64,99%"};
+    if (p < 75)  return {ix:7,  f:"65 a 74,99%"};
+    if (p < 85)  return {ix:8,  f:"75 a 84,99%"};
+    if (p < 95)  return {ix:9,  f:"85 a 94,99%"};
+    if (p < 105) return {ix:10, f:"95 a 104,99%"};
+    if (p < 125) return {ix:11, f:"105 a 124,99%"};
+    return {ix:12, f:"125% ou mais"};
+  }
+
+  function pad(n){ return (n<10?"0":"")+n; }
+  function hm(v){
+    if (!v) return null;
+    var p = v.split(":");
+    if (p.length < 2 || isNaN(parseInt(p[0],10))) return null;
+    return {h:parseInt(p[0],10), m:parseInt(p[1],10)};
+  }
+  function mins(o){ return o.h*60 + o.m; }
+  function janelas(){
+    var out = [];
+    [["m1","m2"],["t1","t2"]].forEach(function(par){
+      var a = hm($(par[0]).value), b = hm($(par[1]).value);
+      if (a && b && mins(b) > mins(a)) out.push([a, b, (mins(b)-mins(a))/60]);
+    });
+    return out;
+  }
+  function validaJornada(jn, carga){
+    if (!jn.length) return {ok:false, msg:"informe ao menos uma janela válida"};
+    var diaria = jn.reduce(function(s,w){ return s + w[2]; }, 0);
+    if (jn.length === 1 && carga === 8)
+      return {ok:false, msg:"a carga de 8 horas exige dois turnos, com intervalo mínimo de 1 hora"};
+    if (jn.length === 2) {
+      var gap = mins(jn[1][0]) - mins(jn[0][1]);
+      if (gap < 60) return {ok:false, msg:"intervalo de " + gap + " minutos; o mínimo é de 1 hora"};
+    }
+    if (Math.abs(diaria - carga) > 0.001)
+      return {ok:false, msg:n1(diaria) + "h por dia, mas a carga escolhida é de " + carga + "h"};
+    return {ok:true, msg:"jornada válida · " + n1(diaria) + "h por dia · " + n1(diaria*5) + "h por semana"};
+  }
+  function horariosDaJornada(jn){
+    var out = [];
+    jn.forEach(function(w){
+      for (var m = mins(w[0]); m <= mins(w[1]); m += 30) {
+        var v = pad(Math.floor(m/60)) + ":" + pad(m%60);
+        if (out.indexOf(v) === -1) out.push(v);
+      }
+    });
+    return out;
+  }
+  function preencheHoras(jn){
+    var opts = horariosDaJornada(jn);
+    [["pih",0],["pfh",1],["rih",0],["rfh",1]].forEach(function(par){
+      var el = $(par[0]), antigo = el.value;
+      el.innerHTML = opts.map(function(o){ return "<option>"+o+"</option>"; }).join("");
+      if (opts.indexOf(antigo) >= 0) el.value = antigo;
+      else if (opts.length) el.value = par[1] === 0 ? opts[0] : opts[opts.length-1];
+    });
+  }
+  function montaPresets(){
+    var c = $("carga").value;
+    $("preset").innerHTML = "<option value=''>Escolher…</option>" + PRESETS[c].map(function(p){
+      var lab = p[2] ? (p[0]+"–"+p[1]+" e "+p[2]+"–"+p[3]) : (p[0]+"–"+p[1]+", turno único");
+      return "<option value='"+p.join("|")+"'>"+lab+"</option>";
+    }).join("");
+  }
+  function dt(dId, hId){
+    var d = $(dId).value, h = $(hId).value;
+    if (!d || !h) return null;
+    var x = new Date(d + "T" + h + ":00");
+    return isNaN(x) ? null : x;
+  }
+  function horasUteis(a, b, jn){
+    if (!a || !b || b <= a || !jn.length) return 0;
+    var total = 0;
+    var cur = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+    var last = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+    var guard = 0;
+    while (cur <= last && guard < 4000) {
+      var dow = cur.getDay();
+      if (dow >= 1 && dow <= 5) {
+        for (var i = 0; i < jn.length; i++) {
+          var ws = new Date(cur); ws.setHours(jn[i][0].h, jn[i][0].m, 0, 0);
+          var we = new Date(cur); we.setHours(jn[i][1].h, jn[i][1].m, 0, 0);
+          var s = Math.max(ws.getTime(), a.getTime());
+          var e = Math.min(we.getTime(), b.getTime());
+          if (e > s) total += (e - s) / 3600000;
+        }
+      }
+      cur.setDate(cur.getDate() + 1);
+      guard++;
+    }
+    return total;
+  }
+  function fds(){
+    var nomes = {pi:"início pactuado", pf:"conclusão pactuada", ri:"início realizado", rf:"conclusão realizada"};
+    var bad = [];
+    ["pi","pf","ri","rf"].forEach(function(id){
+      var v = $(id).value; if (!v) return;
+      var dow = new Date(v+"T12:00:00").getDay();
+      if (dow === 0 || dow === 6) bad.push(nomes[id]);
+    });
+    return bad;
+  }
+  function cor(v){
+    if (v >= 10) return ["#1B7F4A","#FFFFFF"];
+    if (v >= 8)  return ["#7FBF5C","#173D14"];
+    if (v >= 6)  return ["#F2CE3E","#4A3A05"];
+    if (v >= 4)  return ["#E88B3C","#4A2606"];
+    if (v > 0)   return ["#C7462F","#FFFFFF"];
+    return ["#E4E2DC","#7B7975"];
+  }
+
+  function calc(){
+    var jn = janelas();
+    var carga = parseFloat($("carga").value);
+    var v = validaJornada(jn, carga);
+    $("jres").innerHTML = "<span style='color:" + (v.ok ? "var(--green)" : "var(--red)") + "'>" + v.msg + "</span>";
+
+    var L = parseFloat($("lp").value); if (isNaN(L) || L < 71) L = 80;
+    var Q = parseFloat($("lq").value); if (isNaN(Q) || Q < 1 || Q > 24) Q = 15;
+
+    var imp = $("imp").value, dif = $("dif").value;
+    var nivel = COMPLEX[imp+"|"+dif], ic = ICOMP[nivel];
+    var qi = parseFloat($("qual").value);
+    var qlap = qi * ic;
+
+    $("bvc").textContent = nivel + " · InCp " + n1(ic);
+    $("bvl").textContent = "QlAp " + n1(qlap);
+
+    if (!v.ok) {
+      $("demo").innerHTML = '<div class="step sl">Ajuste a jornada antes de simular.</div>';
+      $("res").textContent = "—"; $("resx").textContent = ""; $("warn").textContent = "";
+      $("bvp").textContent = ""; $("bvq").textContent = "";
+      montar(nivel, ic, qi, L, Q, null, null);
+      return;
+    }
+
+    preencheHoras(jn);
+    var b = fds();
+    $("warn").textContent = b.length ? "Atenção: " + b.join(", ") + " em fim de semana; esse dia não gera horas úteis." : "";
+
+    var hp = horasUteis(dt("pi","pih"), dt("pf","pfh"), jn);
+    var hr = horasUteis(dt("ri","rih"), dt("rf","rfh"), jn);
+    var qp = parseFloat($("qp").value), qr = parseFloat($("qr").value);
+
+    if (!hp || hp <= 0 || !qp || qp <= 0 || isNaN(qr)) {
+      $("demo").innerHTML = '<div class="step sl">Preencha as datas, os horários e as quantidades para ver o cálculo.</div>';
+      $("res").textContent = "—"; $("resx").textContent = "";
+      $("bvp").textContent = ""; $("bvq").textContent = "";
+      montar(nivel, ic, qi, L, Q, null, null);
+      return;
+    }
+
+    var z = (hr - hp) / hp;
+    var P = faixaPrazo(z, L);
+    var a = qr / qp;
+    var C = faixaQuant(a, Q);
+
+    $("bvp").textContent = n1(hp) + "h pactuadas · PrAp " + P.ix;
+    $("bvq").textContent = n1(a*100) + "% · QtAp " + C.ix;
+
+    var html = "";
+    html += '<div class="step"><div class="srow"><span class="sl">Complexidade · InCp</span><span class="sr">'+n1(ic)+'</span></div>'
+          + '<div class="sv">'+imp+' × '+dif+' → '+nivel+'</div></div>';
+    html += '<div class="step"><div class="srow"><span class="sl">Prazo apurado · PrAp</span><span class="sr">'+P.ix+'</span></div>'
+          + '<div class="sv">'+n1(hp)+'h pactuadas · '+n1(hr)+'h realizadas · desvio '+n1(z*100)+'%</div>'
+          + '<div class="sl">Faixa: '+P.f+'</div></div>';
+    html += '<div class="step"><div class="srow"><span class="sl">Quantidade apurada · QtAp</span><span class="sr">'+C.ix+'</span></div>'
+          + '<div class="sv">'+qr+' de '+qp+' · '+n1(a*100)+'% do pactuado</div>'
+          + '<div class="sl">Faixa: '+C.f+'</div></div>';
+    html += '<div class="step"><div class="srow"><span class="sl">Qualidade apurada · QlAp</span><span class="sr">'+n1(qlap)+'</span></div>'
+          + '<div class="sv">InQl '+qi+' × InCp '+n1(ic)+' = '+n2(qlap)+'</div></div>';
+    $("demo").innerHTML = html;
+
+    if (P.ix === 0 || C.ix === 0 || qlap === 0) {
+      $("res").textContent = "0,00";
+      var motivo = P.ix === 0 ? "o prazo apurado ficou em zero"
+                 : (C.ix === 0 ? "a quantidade apurada ficou em zero" : "a qualidade apurada ficou em zero");
+      $("resx").textContent = "Nota zerada porque " + motivo + ". Pelo art. 33, § 10, isso zera a nota da entrega inteira.";
+      montar(nivel, ic, qi, L, Q, P.ix, C.ix);
+      return;
+    }
+
+    var r = (P.ix + C.ix + qlap) / 3;
+    $("res").textContent = n2(r);
+    $("resx").textContent = "Média aritmética simples de " + P.ix + ", " + C.ix + " e " + n1(qlap) + ", em escala de 0 a 12.";
+    montar(nivel, ic, qi, L, Q, P.ix, C.ix);
+  }
+
+  function montar(nivel, ic, qi, L, Q, hitP, hitQ){
+    var qlap = qi * ic;
+    $("mtxsub").innerHTML = "Nota da atividade para cada combinação, com complexidade <strong>"
+      + nivel.toLowerCase() + "</strong> (InCp " + n1(ic) + ") e qualidade apurada em <strong>" + n1(qlap) + "</strong>.";
+
+    var PR = linhasPrazo(L), QT = colunasQuant(Q);
+    var h = "<thead><tr><th class='rh'></th><th class='ix' style='border:none'></th>";
+    for (var j=0;j<QT.length;j++) h += "<th class='qh'>"+QT[j].lab+"</th>";
+    h += "</tr><tr><th class='rh'></th><th class='ix' style='border:none'></th>";
+    for (var j1=0;j1<QT.length;j1++) h += "<th class='ix'>"+QT[j1].ix+"</th>";
+    h += "</tr></thead><tbody>";
+
+    for (var i=0;i<PR.length;i++){
+      h += "<tr><th class='rh'>"+PR[i].lab+"</th><th class='ix'>"+PR[i].ix+"</th>";
+      for (var j2=0;j2<QT.length;j2++){
+        var zera = (PR[i].ix === 0 || QT[j2].ix === 0 || qlap === 0);
+        var val = zera ? 0 : (PR[i].ix + QT[j2].ix + qlap) / 3;
+        var c = cor(val);
+        var hit = (hitP !== null && PR[i].ix === hitP && QT[j2].ix === hitQ) ? "hit" : "";
+        h += "<td class='"+hit+"' style='background:"+c[0]+";color:"+c[1]+"'>"+n2(val)+"</td>";
+      }
+      h += "</tr>";
+    }
+    $("mtx").innerHTML = h + "</tbody>";
+  }
+
+  $("carga").addEventListener("change", function(){ montaPresets(); calc(); });
+  $("preset").addEventListener("change", function(){
+    if (!this.value) return;
+    var p = this.value.split("|");
+    $("m1").value = p[0]; $("m2").value = p[1];
+    $("t1").value = p[2]; $("t2").value = p[3];
+    calc();
+  });
+  ["m1","m2","t1","t2","imp","dif","pi","pih","pf","pfh","ri","rih","rf","rfh","qp","qr","qual","lp","lq"].forEach(function(id){
+    var el = $(id);
+    el.addEventListener("input", calc);
+    el.addEventListener("change", calc);
+  });
+
+  montaPresets();
+  preencheHoras(janelas());
+  calc();
+})();
+</script>
+</body>
+</html>
