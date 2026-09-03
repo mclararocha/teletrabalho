@@ -7,7 +7,7 @@ Marque `[x]` ao concluir e pare para revisão antes de seguir.
 
 ## Tarefa 1 — Conferir e padronizar os nomes dos arquivos
 
-**Estado:** [ ] pendente
+**Estado:** [x] concluída
 
 Duas coisas a resolver em `telas/`:
 

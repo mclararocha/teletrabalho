@@ -68,10 +68,7 @@ INSTRUCOES.md           fila de tarefas
 | `07_-_Teletrabalho_-_Ordem_Apurada.html` | Ordem apurada do órgão | Unidade setorial |
 | `08_-_Teletrabalho_-_Desligamentos_Unidade.html` | Desligamentos da unidade | Unidade setorial |
 | `09_-_Teletrabalho_-_Painel_Central.html` | Painel do órgão central | Órgão central |
-| `16_-_Teletrabalho_-_Calculadora_Resultado.html` | Cálculo da nota da atividade | Demonstração |
-
-A numeração da calculadora está fora da sequência por herança das versões anteriores.
-Renomear é a tarefa 1 de `INSTRUCOES.md`.
+| `10_-_Teletrabalho_-_Calculadora_Resultado.html` | Cálculo da nota da atividade | Demonstração |
 
 ## Convenções
 
