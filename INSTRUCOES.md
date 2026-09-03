@@ -41,7 +41,7 @@ Não avance para a tela seguinte sem confirmação.
 
 ## Tarefa 3 — Navegação entre telas
 
-**Estado:** [ ] pendente
+**Estado:** [x] concluída
 
 Acrescentar ao topo de cada tela uma barra discreta com o retorno ao `index.html` e o
 nome do perfil correspondente. Sem menu completo: o protótipo se navega pelo hub.
