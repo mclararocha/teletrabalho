@@ -8,16 +8,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/promove.css">
+<script src="../assets/js/navigation.js"></script>
 <style>
 .drill{margin-top:14px}
 </style>
 </head>
 <body>
+<div class="app-shell">
+<aside id="sidebar" class="sidebar"></aside>
 <div class="wrap">
 
   <div class="nav-top">
     <a href="../index.html" class="nav-back">← Painel de telas</a>
-    <span class="nav-role">Unidade setorial</span>
+    <div id="seletor-perfil"></div>
   </div>
 
   <div class="eyebrow">Promove – teletrabalho</div>
@@ -204,6 +207,7 @@
   </div>
 
 </div>
+</div>
 
 <script>
 document.querySelectorAll('.acc-h').forEach(function(h){
@@ -212,5 +216,6 @@ document.querySelectorAll('.acc-h').forEach(function(h){
   });
 });
 </script>
+<script>PromoveNav.init({ atual: "06", raiz: "" });</script>
 </body>
 </html>

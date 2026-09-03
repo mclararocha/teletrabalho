@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/promove.css">
+<script src="../assets/js/navigation.js"></script>
 <style>
 .roles{display:flex;gap:8px;align-items:center}
 .roles-lbl{font-size:12.5px;color:var(--muted)}
@@ -30,11 +31,13 @@
 </style>
 </head>
 <body id="pk" class="rc">
+<div class="app-shell">
+<aside id="sidebar" class="sidebar"></aside>
 <div class="wrap">
 
   <div class="nav-top">
     <a href="../index.html" class="nav-back">← Painel de telas</a>
-    <span class="nav-role">Servidor e chefia</span>
+    <div id="seletor-perfil"></div>
   </div>
 
   <div class="head">
@@ -354,6 +357,7 @@
   </div>
 
 </div>
+</div>
 
 <script>
 document.querySelectorAll('.acc-h').forEach(function(h){
@@ -372,5 +376,6 @@ function setRole(r){
 bs.addEventListener('click', function(){ setRole('rs'); });
 bc.addEventListener('click', function(){ setRole('rc'); });
 </script>
+<script>PromoveNav.init({ atual: "03", raiz: "" });</script>
 </body>
 </html>

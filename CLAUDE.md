@@ -66,13 +66,37 @@ dados de exemplo").
 ## Estrutura
 
 ```
-index.html              hub de navegação
+index.html              hub de navegação, com o seletor de perfil
 telas/                  uma tela por arquivo, numeradas
 normas/                 legislação publicada, em PDF
 assets/css/promove.css  folha compartilhada, fonte única da verdade visual
+assets/js/navigation.js fonte única da sidebar e do seletor de perfil
 docs/                   decisões de projeto
 INSTRUCOES.md           fila de tarefas
 ```
+
+## Navegação por perfil
+
+`assets/js/navigation.js` é a fonte única de quais telas pertencem a cada perfil
+(Chefia da Unidade, Servidor, Titular/RH Setorial, Órgão Central, Visão Completa) e
+com que rótulo — a mesma tela pode ter um rótulo diferente por perfil (ex.: a tela 03
+é "Elaboração e Validação pela Chefia" para a chefia e "Visualização e Aceite do
+Servidor" para o servidor). Ao acrescentar ou remover uma tela de um perfil, altere
+`PERFIS` nesse arquivo — nunca duplique a lista em HTML.
+
+Cada tela carrega esse script e chama `PromoveNav.init({ atual: "NN", raiz: "" })`
+(no `index.html`, `raiz: "telas/"` e `atual: null`). O script renderiza:
+
+- a sidebar (`#sidebar`, dentro de `.app-shell`), agrupada por fase para os perfis
+  que seguem o fluxo completo, com a Calculadora fixada ao final;
+- o seletor de perfil (`#seletor-perfil`), que grava a escolha em `localStorage`
+  (chave `promove_perfil`) e não redireciona a tela atual;
+- no `index.html`, o filtro dos grupos de card por `data-perfis` no `.grupo`.
+
+Toda tela nova precisa: do `<script src=".../navigation.js">`, do `<div class="wrap">`
+envolvido por `<div class="app-shell"><aside id="sidebar" class="sidebar"></aside>...`,
+do contêiner `<div id="seletor-perfil"></div>` no lugar do antigo `<span class="nav-role">`,
+e da chamada `PromoveNav.init(...)` antes de `</body>`.
 
 ## Telas
 

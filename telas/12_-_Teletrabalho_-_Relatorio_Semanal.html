@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/promove.css">
+<script src="../assets/js/navigation.js"></script>
 <style>
 .back{margin-bottom:18px}
 .row{display:flex;align-items:center;gap:14px;padding:13px 18px}
@@ -17,11 +18,13 @@
 </style>
 </head>
 <body>
+<div class="app-shell">
+<aside id="sidebar" class="sidebar"></aside>
 <div class="wrap">
 
   <div class="nav-top">
     <a href="../index.html" class="nav-back">← Painel de telas</a>
-    <span class="nav-role">Servidor</span>
+    <div id="seletor-perfil"></div>
   </div>
 
   <div class="back"><a class="btn sm" href="04_-_Teletrabalho_-_Servidor.html">← Meu plano de trabalho</a></div>
@@ -103,5 +106,7 @@
   </div>
 
 </div>
+</div>
+<script>PromoveNav.init({ atual: "12", raiz: "" });</script>
 </body>
 </html>

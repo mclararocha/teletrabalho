@@ -117,3 +117,20 @@ Levantar o impacto em cada tela **antes** de alterar qualquer arquivo.
 - Registro de evidência, acionado pelo botão da tela do servidor.
 - Relatório semanal montado, acionado pelo botão da tela do servidor.
 - Repactuação do plano, hoje apenas mencionada na tela de pactuação.
+
+---
+
+## Tarefa 7 — Experiência por perfis e menu lateral
+
+**Estado:** [x] concluída
+
+Pedida diretamente na conversa, não estava na fila original. Objetivo: dar "cara de
+sistema" ao protótipo com um seletor de perfil (Chefia da Unidade, Servidor,
+Titular/RH Setorial, Órgão Central, Visão Completa) e uma sidebar de navegação
+agrupada por fase, mantendo a Calculadora sempre acessível.
+
+Implementado em `assets/js/navigation.js` (fonte única da taxonomia perfil → telas,
+com rótulo contextual por perfil), com o perfil ativo persistido em `localStorage`
+— o que exigiu revisar a proibição de `localStorage` no `CLAUDE.md` (ver
+"Persistência local"). Sidebar e seletor aplicados às 13 telas e ao `index.html`,
+que também passou a filtrar os grupos de card pelo perfil selecionado.

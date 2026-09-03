@@ -8,8 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/promove.css">
+<script src="assets/js/navigation.js"></script>
 <style>
-  .hero{margin-bottom:36px}
+  .hero{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .hero-txt{flex:1;min-width:220px}
+  .hero-sel{font-size:12px;color:var(--muted);margin-bottom:6px}
   .grupo{margin-bottom:36px}
   .grupo-tit{font-size:13px;font-weight:700;color:var(--blue);letter-spacing:.04em;
              text-transform:uppercase;margin:0 0 12px}
@@ -20,6 +23,7 @@
   .num{font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.06em}
   .nome{font-size:16px;font-weight:600;margin:4px 0 6px}
   .desc{font-size:12.5px;color:var(--muted);line-height:1.6}
+  .grupo-calc a.tela{border-color:var(--blue-line);background:var(--blue-bg)}
   .nota{background:var(--amber-bg);border-radius:var(--radius-md);padding:16px 20px;
         font-size:13px;color:var(--amber);line-height:1.7}
 </style>
@@ -28,102 +32,123 @@
 <div class="wrap wrap-wide">
 
   <div class="hero">
-    <div class="eyebrow">Promove – teletrabalho</div>
-    <h1>Protótipo de telas</h1>
-    <p class="sub">Secretaria de Estado da Administração · Gerência de Normas e Critérios de Produtividade</p>
+    <div class="hero-txt">
+      <div class="eyebrow">Promove – teletrabalho</div>
+      <h1>Protótipo de telas</h1>
+      <p class="sub">Secretaria de Estado da Administração · Gerência de Normas e Critérios de Produtividade</p>
+    </div>
+    <div>
+      <div class="hero-sel">Simular perfil ativo</div>
+      <div id="seletor-perfil"></div>
+    </div>
   </div>
 
-  <div class="grupo">
-    <p class="grupo-tit">Titular da unidade</p>
+  <div class="grupo" data-perfis="chefia">
+    <p class="grupo-tit">Chefia da Unidade</p>
     <div class="grade">
       <a class="tela" href="telas/01_-_Teletrabalho_-_Mapeamento.html">
         <div class="num">Tela 01</div>
-        <div class="nome">Mapeamento de entregas e atividades</div>
+        <div class="nome">Mapeamento de Entregas e Atividades da Unidade</div>
         <div class="desc">Complexidade, tempo de execução no presencial, elegibilidade ao teletrabalho e envio ao CIAT.</div>
+      </a>
+      <a class="tela" href="telas/02_-_Teletrabalho_-_Adesao.html">
+        <div class="num">Tela 02</div>
+        <div class="nome">Análise de Adesão</div>
+        <div class="desc">Aceite ou indeferimento justificado do requerimento de adesão ao teletrabalho.</div>
+      </a>
+      <a class="tela" href="telas/03_-_Teletrabalho_-_Pactuacao.html">
+        <div class="num">Tela 03</div>
+        <div class="nome">Pactuação do Plano de Trabalho</div>
+        <div class="desc">Elaboração e validação do plano pela chefia, com registro de alterações.</div>
+      </a>
+      <a class="tela" href="telas/05_-_Teletrabalho_-_Chefia.html">
+        <div class="num">Tela 05</div>
+        <div class="nome">Avaliação e Verificação de Resultados</div>
+        <div class="desc">Nota por atividade, nota da entrega e verificação mensal das entregas.</div>
+      </a>
+      <a class="tela" href="telas/13_-_Teletrabalho_-_Repactuacao.html">
+        <div class="num">Tela 13</div>
+        <div class="nome">Análise e Validação de Repactuação</div>
+        <div class="desc">Análise do pedido de ajuste do servidor a campos travados pela pactuação.</div>
       </a>
     </div>
   </div>
 
-  <div class="grupo">
-    <p class="grupo-tit">Servidor e chefia imediata</p>
+  <div class="grupo" data-perfis="servidor">
+    <p class="grupo-tit">Servidor</p>
     <div class="grade">
       <a class="tela" href="telas/02_-_Teletrabalho_-_Adesao.html">
         <div class="num">Tela 02</div>
-        <div class="nome">Requerimento de adesão</div>
+        <div class="nome">Requerimento Inicial de Adesão ao Teletrabalho</div>
         <div class="desc">Condições requeridas, atividades e metas propostas, verificação de vedações, declaração de ciência e assinaturas.</div>
       </a>
       <a class="tela" href="telas/03_-_Teletrabalho_-_Pactuacao.html">
         <div class="num">Tela 03</div>
-        <div class="nome">Pactuação do plano de trabalho</div>
-        <div class="desc">Tela única com visões de servidor e de chefia, registro de alterações e aceite do plano.</div>
+        <div class="nome">Pactuação do Plano de Trabalho</div>
+        <div class="desc">Visualização e aceite do plano proposto pela chefia.</div>
       </a>
       <a class="tela" href="telas/04_-_Teletrabalho_-_Servidor.html">
         <div class="num">Tela 04</div>
-        <div class="nome">Plano de trabalho do servidor</div>
-        <div class="desc">Relatórios semanais, entregas e atividades com evidência registrada por atividade.</div>
-      </a>
-      <a class="tela" href="telas/05_-_Teletrabalho_-_Chefia.html">
-        <div class="num">Tela 05</div>
-        <div class="nome">Verificação dos resultados</div>
-        <div class="desc">Nota por atividade, nota da entrega e verificação mensal, com seleção do servidor.</div>
+        <div class="nome">Meu Plano de Trabalho</div>
+        <div class="desc">Acompanhamento e execução: relatórios semanais, entregas e atividades.</div>
       </a>
       <a class="tela" href="telas/11_-_Teletrabalho_-_Registro_de_Evidencia.html">
         <div class="num">Tela 11</div>
-        <div class="nome">Registro de evidência</div>
+        <div class="nome">Registro de Evidências das Atividades</div>
         <div class="desc">Formulário de evidência de uma atividade concluída, acionado pela tela do servidor.</div>
       </a>
       <a class="tela" href="telas/12_-_Teletrabalho_-_Relatorio_Semanal.html">
         <div class="num">Tela 12</div>
-        <div class="nome">Relatório semanal montado</div>
+        <div class="nome">Submissão do Relatório Semanal</div>
         <div class="desc">Relatório da semana composto automaticamente pelo sistema, para conferência antes da submissão.</div>
       </a>
       <a class="tela" href="telas/13_-_Teletrabalho_-_Repactuacao.html">
         <div class="num">Tela 13</div>
-        <div class="nome">Repactuação do plano de trabalho</div>
+        <div class="nome">Solicitação de Ajuste / Repactuação do Plano</div>
         <div class="desc">Solicitação de alteração de campos travados após a validação, para nova avaliação da chefia.</div>
       </a>
     </div>
   </div>
 
-  <div class="grupo">
-    <p class="grupo-tit">Unidade setorial de gestão de pessoas</p>
+  <div class="grupo" data-perfis="titular_rh">
+    <p class="grupo-tit">Titular do Órgão / RH Setorial</p>
     <div class="grade">
       <a class="tela" href="telas/06_-_Teletrabalho_-_Painel_Setorial.html">
         <div class="num">Tela 06</div>
-        <div class="nome">Painel da unidade setorial</div>
+        <div class="nome">Painel Setorial da Unidade</div>
         <div class="desc">Limite fixado pelo titular, aptidão das unidades, ordem de prioridade e desligamentos.</div>
       </a>
       <a class="tela" href="telas/07_-_Teletrabalho_-_Ordem_Apurada.html">
         <div class="num">Tela 07</div>
-        <div class="nome">Ordem apurada do órgão</div>
+        <div class="nome">Ordem Apurada de Classificação</div>
         <div class="desc">Requerimentos aptos em ordem única, com a faixa de corte das vagas remanescentes.</div>
       </a>
       <a class="tela" href="telas/08_-_Teletrabalho_-_Desligamentos_Unidade.html">
         <div class="num">Tela 08</div>
-        <div class="nome">Desligamentos da unidade</div>
+        <div class="nome">Desligamentos da Unidade</div>
         <div class="desc">Fundamento, ato, data e retorno ao presencial de cada desligamento do ciclo.</div>
       </a>
     </div>
   </div>
 
-  <div class="grupo">
-    <p class="grupo-tit">Órgão central de gestão de pessoal</p>
+  <div class="grupo" data-perfis="central">
+    <p class="grupo-tit">Órgão Central de Gestão de Pessoal (SEAD)</p>
     <div class="grade">
       <a class="tela" href="telas/09_-_Teletrabalho_-_Painel_Central.html">
         <div class="num">Tela 09</div>
-        <div class="nome">Painel do órgão central</div>
+        <div class="nome">Painel Central de Teletrabalho</div>
         <div class="desc">Cobertura da implantação, situação por órgão, pendências e sistemas próprios. Usa Chart.js por CDN.</div>
       </a>
     </div>
   </div>
 
-  <div class="grupo">
-    <p class="grupo-tit">Demonstração</p>
+  <div class="grupo grupo-calc">
+    <p class="grupo-tit">Utilitário — acessível em qualquer perfil</p>
     <div class="grade">
       <a class="tela" href="telas/10_-_Teletrabalho_-_Calculadora_Resultado.html">
         <div class="num">Tela 10</div>
-        <div class="nome">Cálculo da nota da atividade</div>
-        <div class="desc">Calculadora com jornada configurável, demonstração do cálculo e matriz de prazo por quantidade.</div>
+        <div class="nome">Calculadora de Resultados</div>
+        <div class="desc">Jornada configurável, demonstração do cálculo da nota da atividade e matriz de prazo por quantidade.</div>
       </a>
     </div>
   </div>
@@ -135,5 +160,6 @@
   </div>
 
 </div>
+<script>PromoveNav.init({ atual: null, raiz: "telas/" });</script>
 </body>
 </html>

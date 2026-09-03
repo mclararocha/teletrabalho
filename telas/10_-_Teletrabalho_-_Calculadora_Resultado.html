@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/promove.css">
+<script src="../assets/js/navigation.js"></script>
 <style>
 .jornada{margin-bottom:22px}
 .jhead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
@@ -70,11 +71,13 @@ table.ref th{color:var(--muted);font-weight:400}
 </style>
 </head>
 <body>
+<div class="app-shell">
+<aside id="sidebar" class="sidebar"></aside>
 <div class="wrap wrap-wide">
 
   <div class="nav-top">
     <a href="../index.html" class="nav-back">← Painel de telas</a>
-    <span class="nav-role">Demonstração</span>
+    <div id="seletor-perfil"></div>
   </div>
 
   <div class="eyebrow">Promove – teletrabalho</div>
@@ -251,6 +254,7 @@ table.ref th{color:var(--muted);font-weight:400}
     </div>
   </div>
 
+</div>
 </div>
 
 <script>
@@ -561,5 +565,6 @@ table.ref th{color:var(--muted);font-weight:400}
   calc();
 })();
 </script>
+<script>PromoveNav.init({ atual: "10", raiz: "" });</script>
 </body>
 </html>

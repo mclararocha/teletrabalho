@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/promove.css">
+<script src="../assets/js/navigation.js"></script>
 <style>
 .head select{width:auto}
 
@@ -25,11 +26,13 @@
 </style>
 </head>
 <body>
+<div class="app-shell">
+<aside id="sidebar" class="sidebar"></aside>
 <div class="wrap">
 
   <div class="nav-top">
     <a href="../index.html" class="nav-back">← Painel de telas</a>
-    <span class="nav-role">Órgão central</span>
+    <div id="seletor-perfil"></div>
   </div>
 
   <div class="head">
@@ -272,6 +275,7 @@
   </div>
 
 </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
@@ -339,5 +343,6 @@ new Chart(document.getElementById('cDes'), {
   options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { display: false } } }
 });
 </script>
+<script>PromoveNav.init({ atual: "09", raiz: "" });</script>
 </body>
 </html>

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/promove.css">
+<script src="../assets/js/navigation.js"></script>
 <style>
 .back{margin-bottom:18px}
 .pos{display:inline-block;min-width:30px;color:var(--muted);font-weight:400}
@@ -15,11 +16,13 @@
 </style>
 </head>
 <body>
+<div class="app-shell">
+<aside id="sidebar" class="sidebar"></aside>
 <div class="wrap">
 
   <div class="nav-top">
     <a href="../index.html" class="nav-back">← Painel de telas</a>
-    <span class="nav-role">Unidade setorial</span>
+    <div id="seletor-perfil"></div>
   </div>
 
   <div class="back"><button class="sm">← Painel da unidade setorial</button></div>
@@ -315,6 +318,7 @@
   </div>
 
 </div>
+</div>
 <script>
 document.querySelectorAll('.acc-h').forEach(function(h){
   h.addEventListener('click', function(){
@@ -322,5 +326,6 @@ document.querySelectorAll('.acc-h').forEach(function(h){
   });
 });
 </script>
+<script>PromoveNav.init({ atual: "07", raiz: "" });</script>
 </body>
 </html>
