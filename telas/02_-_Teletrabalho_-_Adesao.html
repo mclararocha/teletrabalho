@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROMOVE – Teletrabalho · Requerimento de adesão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:oklch(30% 0.02 255);
+  --muted:oklch(48% 0.02 255);
+  --faint:oklch(60% 0.01 255);
+  --line:oklch(91% 0.006 255);
+  --page:oklch(98% 0.003 255);
+  --card:#fff;
+  --soft:oklch(96.5% 0.004 255);
+  --blue:oklch(48% 0.13 255);
+  --blue-bg:oklch(96% 0.025 255);
+  --green:oklch(45% 0.13 150);
+  --green-bg:oklch(95% 0.035 150);
+  --amber:oklch(52% 0.12 75);
+  --amber-bg:oklch(96% 0.045 80);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--page);color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:900px;margin:0 auto;padding:32px 24px 64px}
+
+.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:24px;font-weight:700;margin:4px 0 2px}
+.sub{font-size:14px;color:var(--muted);margin:0}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;white-space:nowrap}
+.chip-green{background:var(--green-bg);color:var(--green)}
+.chip-amber{background:var(--amber-bg);color:var(--amber)}
+.chip-gray{background:var(--soft);color:var(--muted)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.section{margin-bottom:32px}
+.section-title{font-size:16px;font-weight:700;margin:0 0 4px}
+.section-meta{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.6}
+
+.ident{padding:20px 22px;margin-bottom:32px}
+.ident-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 28px}
+.ident-item .lbl{font-size:12.5px;color:var(--blue);margin-bottom:1px}
+.ident-item .val{font-size:14px;color:var(--ink)}
+
+.pad{padding:18px 22px}
+.kv{display:flex;gap:12px;padding:5px 0;flex-wrap:wrap;align-items:center}
+.kv .k{font-size:13.5px;color:var(--blue);min-width:214px;flex-shrink:0}
+.kv .v{font-size:13.5px;color:var(--ink)}
+.kv .calc{font-size:13.5px;color:var(--muted)}
+
+.row{display:flex;align-items:flex-start;gap:14px;padding:14px 18px}
+.row + .row{border-top:1px solid var(--line)}
+.row .t{font-size:13.5px}
+.row .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tick{color:var(--green);font-size:15px;flex-shrink:0;line-height:1.5}
+
+input[type=text],select{
+  font-family:inherit;font-size:13px;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:6px 9px
+}
+input[type=text]:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
+button{
+  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:9px;
+  padding:8px 14px;cursor:pointer
+}
+button:hover{background:var(--soft)}
+button.sm{font-size:12.5px;padding:5px 11px}
+.foot{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+@media(max-width:640px){
+  .wrap{padding:20px 14px 48px}
+  .kv .k{min-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div>
+      <div class="eyebrow">Promove – teletrabalho</div>
+      <h1>Requerimento de adesão ao teletrabalho</h1>
+      <p class="sub">Protocolado em 08/10/2026 · Gerência de Saúde · SEAD</p>
+    </div>
+    <span class="chip chip-amber">Aguardando assinatura do gestor</span>
+  </div>
+
+  <div class="card ident">
+    <div class="ident-grid">
+      <div class="ident-item"><div class="lbl">Nome</div><div class="val">Rose Margarida</div></div>
+      <div class="ident-item"><div class="lbl">CPF</div><div class="val">987.123.456-00</div></div>
+      <div class="ident-item"><div class="lbl">Código do vínculo</div><div class="val">20874</div></div>
+      <div class="ident-item"><div class="lbl">Cargo efetivo</div><div class="val">Analista de Gestão Governamental</div></div>
+      <div class="ident-item"><div class="lbl">Órgão de origem</div><div class="val">SEAD</div></div>
+      <div class="ident-item"><div class="lbl">Órgão de lotação</div><div class="val">SEAD</div></div>
+      <div class="ident-item"><div class="lbl">Unidade administrativa</div><div class="val">Gerência de Saúde</div></div>
+      <div class="ident-item"><div class="lbl">Chefia imediata</div><div class="val">João Ferreira</div></div>
+    </div>
+  </div>
+
+  <!-- Condições -->
+  <div class="section">
+    <div class="section-title">Condições requeridas</div>
+    <p class="section-meta">Elementos exigidos no requerimento, nos termos do art. 7º da minuta.</p>
+    <div class="card pad">
+      <div class="kv"><span class="k">Modalidade:</span><select><option>Teletrabalho parcial</option></select></div>
+      <div class="kv"><span class="k">Comparecimento presencial:</span><select><option>2 dias por semana</option><option>1 dia por semana</option><option>Quinzenal</option></select></div>
+      <div class="kv"><span class="k">Controle de jornada:</span><span class="calc">Cumprimento do plano de trabalho, aferido por relatório semanal de entregas</span></div>
+      <div class="kv"><span class="k">Início pretendido:</span><select><option>01/01/2027</option><option>01/03/2027</option></select></div>
+      <div class="kv"><span class="k">Local de execução:</span><input type="text" value="Goiânia, GO" size="24"></div>
+    </div>
+  </div>
+
+  <!-- Atividades e metas -->
+  <div class="section">
+    <div class="section-title">Atividades e metas propostas</div>
+    <p class="section-meta">Só podem ser indicadas atividades marcadas como elegíveis no mapeamento da unidade. As metas do teletrabalho devem ser superiores às da mesma atividade no regime presencial.</p>
+    <div class="card">
+      <div class="row">
+        <div style="flex:1;min-width:0">
+          <div class="t">Conferência das prestações de contas de repasse</div>
+          <div class="d">Referência presencial do mapeamento: 6 instrumentos por mês</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <input type="text" value="8" size="4">
+          <span class="d" style="margin:0">por mês</span>
+        </div>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0">
+          <div class="t">Análise da documentação das entidades proponentes</div>
+          <div class="d">Referência presencial do mapeamento: 9 processos por mês</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <input type="text" value="12" size="4">
+          <span class="d" style="margin:0">por mês</span>
+        </div>
+      </div>
+      <div class="row">
+        <button class="sm">Acrescentar atividade do mapeamento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verificação -->
+  <div class="section">
+    <div class="section-title">Verificação de requisitos e vedações</div>
+    <p class="section-meta">Apurada pelo sistema no momento do protocolo e reavaliada a cada assinatura.</p>
+    <div class="card">
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Unidade autorizada pelo titular da Pasta</div><div class="d">Portaria nº 412, de 15/08/2026</div></div>
+        <span class="chip chip-green">Atendido</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Unidade com mapeamento validado pelo CIAT</div></div>
+        <span class="chip chip-green">Atendido</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Atividades elegíveis à execução remota</div></div>
+        <span class="chip chip-green">Atendido</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Ausência de penalidade disciplinar nos últimos 2 anos</div><div class="d">Consulta ao RHNet em 08/10/2026</div></div>
+        <span class="chip chip-green">Atendido</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Ausência de desligamento anterior por não atingimento de metas</div></div>
+        <span class="chip chip-green">Atendido</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Vaga disponível no órgão</div><div class="d">286 de 300 servidores em regime · 5º na ordem apurada, dentro das 14 vagas remanescentes</div></div>
+        <span class="chip chip-green">Atendido</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Declaração -->
+  <div class="section">
+    <div class="section-title">Declaração de ciência</div>
+    <p class="section-meta">Firmada pela servidora no ato da assinatura, nos termos do art. 20 da minuta.</p>
+    <div class="card">
+      <div class="row"><span class="tick">✓</span><div class="t">O monitoramento das atividades será feito exclusivamente pelo sistema PROMOVE.</div></div>
+      <div class="row"><span class="tick">✓</span><div class="t">Comprometo-me a cumprir o plano de trabalho pactuado, com todas as variáveis nele estabelecidas.</div></div>
+      <div class="row"><span class="tick">✓</span><div class="t">A admissão no regime é ato discricionário da Administração e não constitui direito do solicitante.</div></div>
+      <div class="row"><span class="tick">✓</span><div class="t">Responsabilizo-me pela estrutura física e tecnológica e pelas despesas dela decorrentes, sem direito a indenização ou reembolso.</div></div>
+      <div class="row"><span class="tick">✓</span><div class="t">Tenho ciência das hipóteses de desligamento do regime e das responsabilidades a mim atribuídas.</div></div>
+    </div>
+  </div>
+
+  <!-- Assinaturas -->
+  <div class="section">
+    <div class="section-title">Assinaturas</div>
+    <p class="section-meta">O art. 7º exige a subscrição pelo servidor, pela chefia imediata e pelo gestor da unidade.</p>
+    <div class="card">
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Rose Margarida · servidora</div><div class="d">Assinado em 08/10/2026</div></div>
+        <span class="chip chip-green">Assinado</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">João Ferreira · chefia imediata</div><div class="d">Assinado em 09/10/2026</div></div>
+        <span class="chip chip-green">Assinado</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Titular da Gerência de Saúde · gestor da unidade</div><div class="d">Aguardando assinatura</div></div>
+        <span class="chip chip-amber">Pendente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button>Salvar rascunho</button>
+    <button>Assinar e encaminhar</button>
+  </div>
+
+</div>
+</body>
+</html>

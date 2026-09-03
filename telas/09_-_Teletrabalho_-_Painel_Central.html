@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROMOVE – Teletrabalho · Painel do órgão central</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:oklch(30% 0.02 255);
+  --muted:oklch(48% 0.02 255);
+  --faint:oklch(60% 0.01 255);
+  --line:oklch(91% 0.006 255);
+  --page:oklch(98% 0.003 255);
+  --card:#fff;
+  --soft:oklch(96.5% 0.004 255);
+  --blue:oklch(48% 0.13 255);
+  --blue-bg:oklch(96% 0.025 255);
+  --green:oklch(45% 0.13 150);
+  --green-bg:oklch(95% 0.035 150);
+  --amber:oklch(52% 0.12 75);
+  --amber-bg:oklch(96% 0.045 80);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--page);color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px;margin:0 auto;padding:32px 24px 64px}
+
+.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:24px;font-weight:700;margin:4px 0 2px}
+.sub{font-size:14px;color:var(--muted);margin:0}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;white-space:nowrap}
+.chip-green{background:var(--green-bg);color:var(--green)}
+.chip-amber{background:var(--amber-bg);color:var(--amber)}
+.chip-gray{background:var(--soft);color:var(--muted)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.block{margin-bottom:36px}
+.block-title{font-size:16px;font-weight:700;margin:0 0 2px}
+.block-meta{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.6}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:36px}
+.metric{background:var(--soft);border-radius:12px;padding:16px 18px}
+.metric .lbl{font-size:13px;color:var(--muted)}
+.metric .num{font-size:26px;font-weight:700;margin-top:2px}
+
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:12px;font-size:12.5px;color:var(--muted)}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:6px}
+
+.it + .it,.it + .row,.row + .it{border-top:1px solid var(--line)}
+.row + .row{border-top:1px solid var(--line)}
+.it-h{width:100%;background:none;border:none;border-radius:0;text-align:left;display:block;cursor:pointer;
+      font-family:inherit;color:inherit;padding:13px 18px}
+.it-h:hover{background:var(--soft)}
+.it-h-in{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.it-name{font-size:13.5px;font-weight:500}
+.it-b{padding:2px 18px 18px 40px}
+.chev{display:inline-block;width:14px;margin-right:8px;color:var(--faint);font-size:11px;transition:transform .15s}
+.it.col .it-b{display:none}
+.it.col .chev{transform:rotate(-90deg)}
+.row{display:flex;align-items:center;gap:14px;padding:13px 18px}
+.row .t{font-size:13.5px}
+.row .d{font-size:12.5px;color:var(--muted)}
+
+.kv{display:flex;gap:12px;padding:4px 0;flex-wrap:wrap;align-items:center}
+.kv .k{font-size:13.5px;color:var(--blue);min-width:242px;flex-shrink:0}
+.kv .v{font-size:13.5px;color:var(--ink)}
+.kv .calc{font-size:13.5px;color:var(--muted)}
+
+.sub-item{padding:10px 0}
+.sub-item + .sub-item{border-top:1px solid var(--line)}
+.sub-item .nm{font-size:13.5px;font-weight:500;margin-bottom:4px}
+
+input[type=text],select{
+  font-family:inherit;font-size:13px;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:7px 10px
+}
+input[type=text]:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
+button{
+  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:9px;
+  padding:8px 14px;cursor:pointer
+}
+button:hover{background:var(--soft)}
+.foot{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+@media(max-width:640px){
+  .wrap{padding:20px 14px 48px}
+  .kv .k{min-width:100%}
+  .it-b{padding-left:18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div>
+      <div class="eyebrow">Promove – teletrabalho</div>
+      <h1>Painel do órgão central de gestão de pessoas</h1>
+      <p class="sub">Subsecretaria de Gestão e Desenvolvimento de Pessoas · SEAD</p>
+    </div>
+    <select><option>Bimestre set–out 2026</option><option>Bimestre jul–ago 2026</option><option>Bimestre mai–jun 2026</option></select>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="lbl">Órgãos implantados</div><div class="num">18 de 31</div></div>
+    <div class="metric"><div class="lbl">Unidades aptas</div><div class="num">214 de 1.284</div></div>
+    <div class="metric"><div class="lbl">Servidores em teletrabalho</div><div class="num">2.417</div></div>
+    <div class="metric"><div class="lbl">Desligamentos no bimestre</div><div class="num">71</div></div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Evolução da implantação</div>
+    <p class="block-meta">Órgãos e entidades com o sistema em operação, por bimestre.</p>
+    <div style="position:relative;width:100%;height:230px">
+      <canvas id="cImp" role="img" aria-label="Linha da evolução do número de órgãos com o sistema implantado ao longo de 2026">Órgãos implantados: jan–fev 4, mar–abr 8, mai–jun 12, jul–ago 16, set–out 18, de um total de 31.</canvas>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Unidades aptas por órgão</div>
+    <p class="block-meta">Unidades com mapeamento validado, sobre o total de unidades do órgão.</p>
+    <div class="legend">
+      <span><span class="sw" style="background:#2a78d6"></span>Aptas</span>
+      <span><span class="sw" style="background:#c3c2b7"></span>Demais unidades</span>
+    </div>
+    <div style="position:relative;width:100%;height:290px">
+      <canvas id="cApt" role="img" aria-label="Barras horizontais empilhadas das unidades aptas por órgão">SES 62 de 148, DETRAN 19 de 34, SEINFRA 12 de 27, SEAD 7 de 11, SEDUC 0 de 96.</canvas>
+    </div>
+  </div>
+
+  <div class="block">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div class="block-title">Situação por órgão</div>
+      <div style="font-size:12.5px;color:var(--faint)">Exibindo 5 de 31 órgãos e entidades</div>
+    </div>
+    <p class="block-meta">Indicadores apurados no bimestre de referência.</p>
+    <input type="text" placeholder="Buscar órgão ou entidade" style="width:100%;margin-bottom:14px">
+
+    <div class="card">
+
+      <div class="it">
+        <button class="it-h">
+          <div class="it-h-in">
+            <span class="it-name"><span class="chev">▾</span>Secretaria de Estado da Saúde · SES</span>
+            <span class="chip chip-green">Implantado</span>
+          </div>
+        </button>
+        <div class="it-b">
+          <div class="kv"><span class="k">Implantação:</span><span class="v">Concluída em 01/07/2026</span></div>
+          <div class="kv"><span class="k">Unidades aptas:</span><span class="v">62 de 148</span></div>
+          <div class="kv"><span class="k">Servidores em teletrabalho:</span><span class="v">1.104</span></div>
+          <div class="kv"><span class="k">Relatórios semanais em dia:</span><span class="v">81%</span></div>
+          <div class="kv"><span class="k">Avaliações concluídas no prazo:</span><span class="v">87%</span></div>
+          <div class="kv"><span class="k">Resultado médio dos planos:</span><span class="v">8,3</span></div>
+          <div class="kv"><span class="k">Desligamentos no bimestre:</span><span class="v">26</span></div>
+        </div>
+      </div>
+
+      <div class="it col">
+        <button class="it-h">
+          <div class="it-h-in">
+            <span class="it-name"><span class="chev">▾</span>Departamento Estadual de Trânsito · DETRAN</span>
+            <span class="chip chip-green">Implantado</span>
+          </div>
+        </button>
+        <div class="it-b">
+          <div class="kv"><span class="k">Implantação:</span><span class="v">Concluída em 01/08/2026</span></div>
+          <div class="kv"><span class="k">Unidades aptas:</span><span class="v">19 de 34</span></div>
+          <div class="kv"><span class="k">Servidores em teletrabalho:</span><span class="v">212</span></div>
+          <div class="kv"><span class="k">Relatórios semanais em dia:</span><span class="v">88%</span></div>
+          <div class="kv"><span class="k">Avaliações concluídas no prazo:</span><span class="v">92%</span></div>
+          <div class="kv"><span class="k">Resultado médio dos planos:</span><span class="v">8,5</span></div>
+          <div class="kv"><span class="k">Desligamentos no bimestre:</span><span class="v">4</span></div>
+        </div>
+      </div>
+
+      <div class="it col">
+        <button class="it-h">
+          <div class="it-h-in">
+            <span class="it-name"><span class="chev">▾</span>Secretaria de Estado de Infraestrutura · SEINFRA</span>
+            <span class="chip chip-amber">Atenção</span>
+          </div>
+        </button>
+        <div class="it-b">
+          <div class="kv"><span class="k">Implantação:</span><span class="v">Concluída em 01/07/2026</span></div>
+          <div class="kv"><span class="k">Unidades aptas:</span><span class="v">12 de 27</span></div>
+          <div class="kv"><span class="k">Servidores em teletrabalho:</span><span class="v">96</span></div>
+          <div class="kv"><span class="k">Relatórios semanais em dia:</span><span class="v">76%</span></div>
+          <div class="kv"><span class="k">Avaliações concluídas no prazo:</span><span class="v">71%</span></div>
+          <div class="kv"><span class="k">Resultado médio dos planos:</span><span class="v">8,1</span></div>
+          <div class="kv"><span class="k">Desligamentos no bimestre:</span><span class="v">5</span></div>
+        </div>
+      </div>
+
+      <div class="it col">
+        <button class="it-h">
+          <div class="it-h-in">
+            <span class="it-name"><span class="chev">▾</span>Secretaria de Estado da Administração · SEAD</span>
+            <span class="chip chip-green">Implantado</span>
+          </div>
+        </button>
+        <div class="it-b">
+          <div class="kv"><span class="k">Implantação:</span><span class="v">Concluída em 01/06/2026</span></div>
+          <div class="kv"><span class="k">Unidades aptas:</span><span class="v">7 de 11</span></div>
+          <div class="kv"><span class="k">Servidores em teletrabalho:</span><span class="v">286</span></div>
+          <div class="kv"><span class="k">Relatórios semanais em dia:</span><span class="v">94%</span></div>
+          <div class="kv"><span class="k">Avaliações concluídas no prazo:</span><span class="v">100%</span></div>
+          <div class="kv"><span class="k">Resultado médio dos planos:</span><span class="v">8,7</span></div>
+          <div class="kv"><span class="k">Desligamentos no bimestre:</span><span class="v">9</span></div>
+        </div>
+      </div>
+
+      <div class="it col">
+        <button class="it-h">
+          <div class="it-h-in">
+            <span class="it-name"><span class="chev">▾</span>Secretaria de Estado da Educação · SEDUC</span>
+            <span class="chip chip-gray">Não implantado</span>
+          </div>
+        </button>
+        <div class="it-b">
+          <div class="kv"><span class="k">Implantação:</span><span class="v">Prevista para 01/12/2026</span></div>
+          <div class="kv"><span class="k">Unidades aptas:</span><span class="v">0 de 96</span></div>
+          <div class="kv"><span class="k">Servidores em teletrabalho:</span><span class="v">0</span></div>
+          <div class="kv"><span class="k">Relatórios semanais em dia:</span><span class="calc">Não aplicável</span></div>
+          <div class="kv"><span class="k">Avaliações concluídas no prazo:</span><span class="calc">Não aplicável</span></div>
+          <div class="kv"><span class="k">Resultado médio dos planos:</span><span class="calc">Não aplicável</span></div>
+          <div class="kv"><span class="k">Desligamentos no bimestre:</span><span class="v">0</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Pendências e situações excepcionais</div>
+    <p class="block-meta">Situações que restringem ou excepcionam a adoção do regime.</p>
+
+    <div class="card">
+
+      <div class="it col">
+        <button class="it-h">
+          <div class="it-h-in">
+            <span class="it-name"><span class="chev">▾</span>Órgãos fora do cronograma de implantação</span>
+            <span class="chip chip-amber">4</span>
+          </div>
+        </button>
+        <div class="it-b">
+          <div class="sub-item">
+            <div class="nm">Secretaria de Estado de Desenvolvimento Social · SEDS</div>
+            <div class="kv"><span class="k">Prazo do cronograma:</span><span class="v">01/08/2026</span></div>
+            <div class="kv"><span class="k">Atraso:</span><span class="v">92 dias</span></div>
+            <div class="kv"><span class="k">Etapa em curso:</span><span class="v">Mapeamento das unidades</span></div>
+          </div>
+          <div class="sub-item">
+            <div class="nm">Universidade Estadual de Goiás · UEG</div>
+            <div class="kv"><span class="k">Prazo do cronograma:</span><span class="v">01/09/2026</span></div>
+            <div class="kv"><span class="k">Atraso:</span><span class="v">61 dias</span></div>
+            <div class="kv"><span class="k">Etapa em curso:</span><span class="v">Integração do sistema próprio de produtividade</span></div>
+          </div>
+          <div class="sub-item">
+            <div class="nm">Agência Goiana de Regulação · AGR</div>
+            <div class="kv"><span class="k">Prazo do cronograma:</span><span class="v">01/09/2026</span></div>
+            <div class="kv"><span class="k">Atraso:</span><span class="v">61 dias</span></div>
+            <div class="kv"><span class="k">Etapa em curso:</span><span class="v">Capacitação das chefias</span></div>
+          </div>
+          <div class="sub-item">
+            <div class="nm">Instituto Mauro Borges · IMB</div>
+            <div class="kv"><span class="k">Prazo do cronograma:</span><span class="v">01/10/2026</span></div>
+            <div class="kv"><span class="k">Atraso:</span><span class="v">31 dias</span></div>
+            <div class="kv"><span class="k">Etapa em curso:</span><span class="v">Mapeamento das unidades</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Mapeamentos aguardando validação do CIAT há mais de 30 dias</div></div>
+        <span class="chip chip-amber">11</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0"><div class="t">Órgãos com avaliações de plano concluídas fora do prazo</div></div>
+        <span class="chip chip-amber">3</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0">
+          <div class="t">Unidades com mapeamento fora de validade e servidores em regime</div>
+          <div class="d">Revisão pendente por alteração de estrutura ou de processo de trabalho</div>
+        </div>
+        <span class="chip chip-amber">2</span>
+      </div>
+      <div class="row">
+        <div style="flex:1;min-width:0">
+          <div class="t">Designações excepcionais sem mapeamento</div>
+          <div class="d">Emergência, calamidade ou impedimento de funcionamento da unidade</div>
+        </div>
+        <span class="chip chip-gray">6</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Desligamentos por motivo</div>
+    <p class="block-meta">71 desligamentos no bimestre, em todos os órgãos.</p>
+    <div class="legend">
+      <span><span class="sw" style="background:#2a78d6"></span>De ofício 28</span>
+      <span><span class="sw" style="background:#eb6834"></span>Por resultado insuficiente 19</span>
+      <span><span class="sw" style="background:#1baf7a"></span>A pedido do servidor 17</span>
+      <span><span class="sw" style="background:#eda100"></span>Movimentação ou nova lotação 7</span>
+    </div>
+    <div style="position:relative;width:100%;height:250px">
+      <canvas id="cDes" role="img" aria-label="Rosca dos desligamentos do regime por motivo">De ofício 28, por resultado insuficiente 19, a pedido do servidor 17, movimentação ou nova lotação 7.</canvas>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Sistemas próprios de produtividade</div>
+    <p class="block-meta">Órgãos excepcionados da obrigatoriedade, cujos sistemas devem ser integrados ao PROMOVE.</p>
+    <div class="card">
+      <div class="row">
+        <div style="flex:1;min-width:0">
+          <div class="t">Universidade Estadual de Goiás · UEG</div>
+          <div class="d">Comunicação recebida em 18/06/2026 · integração pendente</div>
+        </div>
+        <span class="chip chip-amber">Pendente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button>Exportar dados do bimestre</button>
+    <button>Gerar informação gerencial bimestral</button>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+document.querySelectorAll('.it-h').forEach(function(h){
+  h.addEventListener('click', function(){
+    h.parentElement.classList.toggle('col');
+  });
+});
+
+Chart.defaults.font.family = "'Public Sans', system-ui, sans-serif";
+Chart.defaults.color = '#898781';
+var grid = '#e1e0d9';
+
+new Chart(document.getElementById('cImp'), {
+  type: 'line',
+  data: {
+    labels: ['jan–fev','mar–abr','mai–jun','jul–ago','set–out'],
+    datasets: [{
+      data: [4,8,12,16,18],
+      borderColor: '#2a78d6',
+      backgroundColor: 'rgba(42,120,214,0.10)',
+      borderWidth: 2, fill: true, tension: 0.25,
+      pointRadius: 4, pointBackgroundColor: '#2a78d6', pointBorderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 31, ticks: { stepSize: 8 }, grid: { color: grid } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('cApt'), {
+  type: 'bar',
+  data: {
+    labels: ['SES','DETRAN','SEINFRA','SEAD','SEDUC'],
+    datasets: [
+      { label: 'Aptas', data: [62,19,12,7,0], backgroundColor: '#2a78d6', borderRadius: 4, barThickness: 20 },
+      { label: 'Demais', data: [86,15,15,4,96], backgroundColor: '#c3c2b7', borderRadius: 4, barThickness: 20 }
+    ]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { stacked: true, beginAtZero: true, grid: { color: grid } },
+      y: { stacked: true, grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('cDes'), {
+  type: 'doughnut',
+  data: {
+    labels: ['De ofício','Por resultado insuficiente','A pedido do servidor','Movimentação ou nova lotação'],
+    datasets: [{
+      data: [28,19,17,7],
+      backgroundColor: ['#2a78d6','#eb6834','#1baf7a','#eda100'],
+      borderWidth: 2, borderColor: '#fcfcfb'
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { display: false } } }
+});
+</script>
+</body>
+</html>
