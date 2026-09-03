@@ -7,92 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/promove.css">
 <style>
-:root{
-  --ink:oklch(30% 0.02 255);
-  --muted:oklch(48% 0.02 255);
-  --faint:oklch(60% 0.01 255);
-  --line:oklch(91% 0.006 255);
-  --page:oklch(98% 0.003 255);
-  --card:#fff;
-  --soft:oklch(96.5% 0.004 255);
-  --blue:oklch(48% 0.13 255);
-  --blue-bg:oklch(96% 0.025 255);
-  --green:oklch(45% 0.13 150);
-  --green-bg:oklch(95% 0.035 150);
-  --amber:oklch(52% 0.12 75);
-  --amber-bg:oklch(96% 0.045 80);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--page);color:var(--ink);
-  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-}
-.wrap{max-width:900px;margin:0 auto;padding:32px 24px 64px}
-
-.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
-h1{font-size:24px;font-weight:700;margin:4px 0 2px}
-.sub{font-size:14px;color:var(--muted);margin:0}
-.head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
-
-.chip{display:inline-block;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;white-space:nowrap}
-.chip-green{background:var(--green-bg);color:var(--green)}
-.chip-amber{background:var(--amber-bg);color:var(--amber)}
-.chip-gray{background:var(--soft);color:var(--muted)}
-
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
-.section{margin-bottom:32px}
-.section-title{font-size:16px;font-weight:700;margin:0 0 8px}
-
-.status{padding:18px 22px;margin-bottom:28px}
-.kv{display:flex;gap:12px;padding:5px 0;flex-wrap:wrap;align-items:center}
-.kv .k{font-size:13.5px;color:var(--blue);min-width:250px;flex-shrink:0}
-.kv .v{font-size:13.5px;color:var(--ink)}
-.kv .calc{font-size:13.5px;color:var(--muted)}
-
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:32px}
-.metric{background:var(--soft);border-radius:12px;padding:16px 18px}
-.metric .lbl{font-size:13px;color:var(--muted)}
-.metric .num{font-size:26px;font-weight:700;margin-top:2px}
-.metric .num.warn{color:var(--amber)}
-
 .ent-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .ent-lbl{font-size:12.5px;color:var(--muted)}
-
-.at + .at{border-top:1px solid var(--line)}
-.at-h{width:100%;background:none;border:none;border-radius:0;text-align:left;display:block;cursor:pointer;
-      font-family:inherit;color:inherit;padding:13px 18px}
-.at-h:hover{background:var(--soft)}
-.at-h-in{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.at-name{font-size:13.5px;font-weight:500}
-.at-b{padding:2px 18px 18px}
-.chev{display:inline-block;width:14px;margin-right:8px;color:var(--faint);font-size:11px;transition:transform .15s}
-.at.col .at-b{display:none}
-.at.col .chev{transform:rotate(-90deg)}
-.addrow{padding:14px 18px;border-top:1px solid var(--line)}
-
-input[type=text],select{
-  font-family:inherit;font-size:13px;color:var(--ink);background:#fff;
-  border:1px solid var(--line);border-radius:8px;padding:6px 9px
-}
-input[type=text]:focus,select:focus{outline:2px solid var(--blue-bg);border-color:var(--blue)}
-input::placeholder{color:var(--faint)}
-button{
-  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
-  background:var(--card);border:1px solid var(--line);border-radius:9px;
-  padding:8px 14px;cursor:pointer
-}
-button:hover{background:var(--soft)}
-button.sm{font-size:12.5px;padding:5px 11px}
+.ent-head select,.kv input[type=text],.kv select{width:auto}
 
 .foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .foot .warn{font-size:12.5px;color:var(--amber)}
-
-@media(max-width:640px){
-  .wrap{padding:20px 14px 48px}
-  .kv .k{min-width:100%}
-}
 </style>
 </head>
 <body>
@@ -107,10 +29,12 @@ button.sm{font-size:12.5px;padding:5px 11px}
     <span class="chip chip-amber">Em elaboração</span>
   </div>
 
-  <div class="card status">
-    <div class="kv"><span class="k">Última validação pelo CIAT:</span><span class="v">14/08/2026</span></div>
-    <div class="kv"><span class="k">Revisão em curso:</span><span class="v">Iniciada em 20/10/2026 por João Ferreira</span></div>
-    <div class="kv"><span class="k">Efeito:</span><span class="calc">Sem mapeamento validado, a unidade não pode adotar o regime de teletrabalho</span></div>
+  <div class="section">
+    <div class="card card-pad">
+      <div class="kv"><span class="k">Última validação pelo CIAT:</span><span class="v">14/08/2026</span></div>
+      <div class="kv"><span class="k">Revisão em curso:</span><span class="v">Iniciada em 20/10/2026 por João Ferreira</span></div>
+      <div class="kv"><span class="k">Efeito:</span><span class="calc">Sem mapeamento validado, a unidade não pode adotar o regime de teletrabalho</span></div>
+    </div>
   </div>
 
   <div class="metrics">
@@ -130,14 +54,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
 
     <div class="card">
 
-      <div class="at">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Conferência das prestações de contas de repasse</span>
+      <div class="acc">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Conferência das prestações de contas de repasse</span>
             <span class="chip chip-green">Elegível</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Tipo de atividade:</span><select><option>Estruturante</option><option>Finalística</option></select></div>
           <div class="kv"><span class="k">Impacto:</span><select><option>Médio</option><option>Baixo</option><option>Alto</option></select></div>
           <div class="kv"><span class="k">Dificuldade:</span><select><option>Média</option><option>Baixa</option><option>Alta</option></select></div>
@@ -149,14 +73,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
         </div>
       </div>
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Notificação de contratadas com pendência documental</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Notificação de contratadas com pendência documental</span>
             <span class="chip chip-green">Elegível</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Tipo de atividade:</span><select><option>Estruturante</option><option>Finalística</option></select></div>
           <div class="kv"><span class="k">Impacto:</span><select><option>Baixo</option><option>Médio</option><option>Alto</option></select></div>
           <div class="kv"><span class="k">Dificuldade:</span><select><option>Média</option><option>Baixa</option><option>Alta</option></select></div>
@@ -168,14 +92,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
         </div>
       </div>
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Vistoria presencial em unidade de acolhimento</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Vistoria presencial em unidade de acolhimento</span>
             <span class="chip chip-gray">Não elegível</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Tipo de atividade:</span><select><option>Finalística</option><option>Estruturante</option></select></div>
           <div class="kv"><span class="k">Impacto:</span><select><option>Alto</option><option>Baixo</option><option>Médio</option></select></div>
           <div class="kv"><span class="k">Dificuldade:</span><select><option>Alta</option><option>Baixa</option><option>Média</option></select></div>
@@ -202,14 +126,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
 
     <div class="card">
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Análise da documentação das entidades proponentes</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Análise da documentação das entidades proponentes</span>
             <span class="chip chip-amber">Sem justificativa</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Tipo de atividade:</span><select><option>Finalística</option><option>Estruturante</option></select></div>
           <div class="kv"><span class="k">Impacto:</span><select><option>Médio</option><option>Baixo</option><option>Alto</option></select></div>
           <div class="kv"><span class="k">Dificuldade:</span><select><option>Baixa</option><option>Média</option><option>Alta</option></select></div>
@@ -221,14 +145,14 @@ button.sm{font-size:12.5px;padding:5px 11px}
         </div>
       </div>
 
-      <div class="at col">
-        <button class="at-h">
-          <div class="at-h-in">
-            <span class="at-name"><span class="chev">▾</span>Emissão de despacho de instrução</span>
+      <div class="acc col">
+        <button class="acc-h">
+          <div class="acc-h-in">
+            <span class="acc-name"><span class="chev">▾</span>Emissão de despacho de instrução</span>
             <span class="chip chip-green">Elegível</span>
           </div>
         </button>
-        <div class="at-b">
+        <div class="acc-b">
           <div class="kv"><span class="k">Tipo de atividade:</span><select><option>Finalística</option><option>Estruturante</option></select></div>
           <div class="kv"><span class="k">Impacto:</span><select><option>Médio</option><option>Baixo</option><option>Alto</option></select></div>
           <div class="kv"><span class="k">Dificuldade:</span><select><option>Média</option><option>Baixa</option><option>Alta</option></select></div>
@@ -256,7 +180,7 @@ button.sm{font-size:12.5px;padding:5px 11px}
 </div>
 
 <script>
-document.querySelectorAll('.at-h').forEach(function(h){
+document.querySelectorAll('.acc-h').forEach(function(h){
   h.addEventListener('click', function(){
     h.parentElement.classList.toggle('col');
   });
