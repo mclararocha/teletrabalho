@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROMOVE — Tela principal da Comissão Setorial de Evolução Funcional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:oklch(97.5% 0.003 255);
+    color:oklch(25% 0.02 255);
+    -webkit-font-smoothing:antialiased;
+  }
+  .card { background:#fff; border:1px solid oklch(91% 0.006 255); border-radius:16px; padding:20px 24px; margin-bottom:20px; }
+  .card-title { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:800; }
+  .card-sub { margin-top:6px; font-size:12.5px; color:oklch(55% 0.02 255); }
+  .sec-label { font-size:13px; font-weight:700; color:oklch(48% 0.02 255); }
+  .kv { display:flex; justify-content:space-between; gap:16px; padding:9px 0; border-top:1px solid oklch(93% 0.004 255); font-size:14px; }
+  .kv > span:first-child { color:oklch(50% 0.02 255); flex-shrink:0; }
+  .kv > span:last-child { text-align:right; color:oklch(35% 0.06 235); font-weight:600; }
+  .badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; white-space:nowrap; height:fit-content; display:inline-block; }
+  .b-ok   { color:oklch(38% 0.11 150); background:oklch(94% 0.05 150); }
+  .b-warn { color:oklch(38% 0.09 75);  background:oklch(95% 0.05 75); }
+  .b-crit { color:#fff;                background:oklch(48% 0.18 25); }
+  .b-neut { color:oklch(50% 0.01 255); background:oklch(94% 0.006 255); }
+  .b-info { color:oklch(42% 0.16 255); background:oklch(95% 0.03 255); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th { text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+       color:oklch(58% 0.01 255); padding:6px 8px 6px 0; }
+  td { padding:12px 8px 12px 0; border-top:1px solid oklch(93% 0.004 255); vertical-align:top; }
+  td:last-child, th:last-child { padding-right:0; text-align:right; }
+  .sub { font-size:11.5px; color:oklch(58% 0.01 255); font-weight:400; }
+  .fld { font-size:11.5px; line-height:1.6; margin-top:3px; }
+  .fld i { font-style:normal; color:oklch(60% 0.01 255); }
+  .fld b { font-weight:600; color:oklch(42% 0.02 255); }
+  .note { font-size:11.5px; color:oklch(58% 0.01 255); line-height:1.6; margin-top:12px; }
+  .lnk { color:oklch(42% 0.16 255); font-weight:700; cursor:pointer; }
+  .lnk::after { content:' \203A'; color:oklch(65% 0.01 255); }
+  details > summary { list-style:none; cursor:pointer; }
+  details > summary::-webkit-details-marker { display:none; }
+  .chev { display:inline-block; transition:transform .15s; color:oklch(65% 0.01 255); font-weight:700; }
+  details[open] > summary .chev { transform:rotate(90deg); }
+  .chip { font-size:12px; font-weight:600; padding:5px 12px; border-radius:20px; cursor:pointer;
+          border:1px solid oklch(90% 0.006 255); background:#fff; color:oklch(45% 0.02 255); font-family:inherit; }
+  .chip[aria-pressed="true"] { background:oklch(95% 0.03 255); border-color:oklch(85% 0.05 255); color:oklch(42% 0.16 255); }
+
+  .metric { background:#fff; border:1px solid oklch(91% 0.006 255); border-radius:14px; padding:16px 18px; }
+  .m-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:oklch(52% 0.02 255); }
+  .m-grid { display:flex; gap:22px; margin-top:12px; flex-wrap:wrap; }
+  .m-num { font-size:24px; font-weight:800; line-height:1; }
+  .m-cap { font-size:11.5px; color:oklch(58% 0.01 255); margin-top:5px; }
+
+  .subcard { border-top:1px solid oklch(93% 0.004 255); padding-top:14px; margin-top:20px; }
+  .sub-head { font-size:16px; font-weight:800; color:oklch(24% 0.02 255);
+              padding-left:11px; border-left:3px solid oklch(52% 0.16 255); }
+  .sec-head { font-size:15px; font-weight:800; color:oklch(26% 0.02 255);
+              padding-left:11px; border-left:3px solid oklch(52% 0.16 255); }
+  .scrollbox { max-height:440px; overflow-y:auto; margin-top:10px;
+               border:1px solid oklch(93% 0.004 255); border-radius:10px; padding:0 14px; }
+  .scrollbox table tr:first-child th { position:sticky; top:0; background:#fff; z-index:2;
+                                       box-shadow:0 1px 0 oklch(91% 0.006 255); }
+  .scrollbox::-webkit-scrollbar { width:10px; }
+  .scrollbox::-webkit-scrollbar-thumb { background:oklch(88% 0.006 255); border-radius:6px; border:3px solid #fff; }
+  .scrollbox td:first-of-type { border-top:none; }
+
+  .unit { border-top:1px solid oklch(93% 0.004 255); padding:14px 0 4px; }
+  .unit-name { font-size:15px; font-weight:800; }
+  .unit-cod { font-size:11.5px; font-weight:400; color:oklch(62% 0.01 255); margin-left:6px; }
+  .unit-body { padding-left:26px; margin-top:10px; }
+
+  .srch { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 4px; }
+  .srch input { font-family:inherit; font-size:12.5px; padding:7px 12px; border-radius:9px;
+                border:1px solid oklch(90% 0.006 255); background:oklch(98.5% 0.002 255);
+                color:oklch(30% 0.02 255); min-width:200px; flex:1; }
+  .srch input::placeholder { color:oklch(66% 0.01 255); }
+  .srch select { font-family:inherit; font-size:12.5px; padding:7px 12px; border-radius:9px;
+                 border:1px solid oklch(90% 0.006 255); background:#fff; color:oklch(30% 0.02 255); }
+
+  .mins { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+  .mins-lab { font-size:11.5px; color:oklch(58% 0.01 255); margin-right:2px; }
+  .req { display:inline-block; font-size:11px; font-weight:600; padding:3px 9px; border-radius:6px; }
+  .r-ok { color:oklch(38% 0.11 150); background:oklch(94% 0.05 150); }
+  .r-no { color:oklch(42% 0.16 25); background:oklch(95% 0.04 25); }
+
+  .pnl { border-top:1px solid oklch(93% 0.004 255); padding:13px 0 3px; }
+  .pnl-name { font-size:14.5px; font-weight:700; }
+  .pnl-body { padding-left:24px; margin-top:8px; font-size:12.5px; color:oklch(45% 0.02 255); line-height:1.7; }
+  .pnl-body ul { margin:7px 0 0 16px; }
+  .pnl-body li { margin-bottom:3px; }
+  .pnl-tag { font-size:10.5px; font-weight:700; color:oklch(50% 0.09 195); background:oklch(95% 0.03 195);
+             padding:3px 8px; border-radius:6px; white-space:nowrap; }
+
+  .tl-row { display:flex; gap:16px; padding:16px 0; border-top:1px solid oklch(93% 0.004 255); }
+  .tl-date { width:86px; flex-shrink:0; font-size:12px; color:oklch(50% 0.02 255); padding-top:2px; }
+  .tl-proto { font-size:11px; color:oklch(65% 0.01 255); margin-top:3px; }
+  .tl-title { font-size:14.5px; font-weight:700; }
+  .tl-name { font-size:12.5px; color:oklch(45% 0.02 255); margin-top:2px; }
+  .tl-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .tl-det { font-size:12.5px; color:oklch(40% 0.02 255); margin-top:7px; }
+
+  .m-sub { font-size:11.5px; color:oklch(62% 0.01 255); margin-top:3px; line-height:1.5; }
+  .apur { background:oklch(98.5% 0.004 255); border:1px solid oklch(93% 0.004 255);
+          border-radius:12px; padding:16px 18px; }
+  .bar { position:relative; height:12px; background:oklch(93% 0.004 255);
+         border-radius:6px; overflow:hidden; margin-top:18px; }
+  .bar i { position:absolute; top:0; bottom:0; display:block; }
+  .bar b { position:absolute; top:0; bottom:0; width:2px; background:#fff; }
+  .bar-lab { display:flex; justify-content:space-between; font-size:11.5px;
+             color:oklch(58% 0.01 255); margin-top:6px; }
+  .bar-leg { display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px;
+             color:oklch(52% 0.02 255); margin-top:10px; }
+  .bar-leg em { display:inline-block; width:9px; height:9px; border-radius:2px;
+                margin-right:5px; font-style:normal; }
+  .callout { background:oklch(96% 0.02 255); border-radius:10px; padding:11px 13px;
+             margin-top:14px; font-size:12.5px; color:oklch(35% 0.08 255); line-height:1.7; }
+  table.tr3 { table-layout:fixed; }
+  table.tr3 td { padding:9px 0; }
+  table.tr3 td.ok { color:oklch(38% 0.11 150); font-weight:600; text-align:left; }
+  table.tr3 td.no { color:oklch(45% 0.16 25); font-weight:600; text-align:left; }
+  table.tr3 th:last-child, table.tr3 td:last-child { text-align:left; padding-right:0; }
+  .hide { display:none !important; }
+</style>
+</head>
+<body>
+
+<div style="min-height:100vh;padding:48px 24px 96px;display:flex;justify-content:center">
+<div style="width:100%;max-width:880px">
+
+  <div style="margin-bottom:24px">
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:oklch(55% 0.02 255);margin-bottom:8px">PROMOVE &middot; Perfil Comiss&atilde;o Setorial de Evolu&ccedil;&atilde;o Funcional</div>
+    <h1 style="font-size:30px;font-weight:800;letter-spacing:-0.01em;line-height:1.2">Helena Martins Vasconcelos</h1>
+    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span class="badge b-info">Membro titular</span>
+      <span class="badge b-ok">Voto de qualidade</span>
+      <span style="font-size:13px;color:oklch(50% 0.02 255)">CSEF da Secretaria de Estado da Sa&uacute;de &mdash; SES</span>
+    </div>
+  </div>
+
+  <div class="card" style="padding:16px 24px">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <div>
+        <div class="sec-label">Atua&ccedil;&atilde;o da comiss&atilde;o</div>
+        <div class="sub" style="margin-top:3px">A compet&ecirc;ncia muda conforme o v&iacute;nculo do servidor com o &oacute;rg&atilde;o</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="filtros-ctx">
+        <button class="chip" aria-pressed="true" data-ctx="origem">Comiss&atilde;o de origem</button>
+        <button class="chip" aria-pressed="false" data-ctx="lotacao">Comiss&atilde;o de lota&ccedil;&atilde;o</button>
+      </div>
+    </div>
+    <div class="note" data-ctx-note="origem">Como comiss&atilde;o de <b>origem</b>: valida&ccedil;&atilde;o de titula&ccedil;&atilde;o acad&ecirc;mica e de assun&ccedil;&atilde;o de responsabilidades dos tipos VII a X (art. 61, IV e V, do Decreto n&ordm; 10.802/2025) e consolida&ccedil;&atilde;o do cumprimento dos requisitos para envio ao titular (art. 53, &sect;&sect; 1&ordm; e 2&ordm;).</div>
+    <div class="note hide" data-ctx-note="lotacao">Como comiss&atilde;o de <b>lota&ccedil;&atilde;o</b>: julgamento dos recursos de desempenho e de valida&ccedil;&atilde;o de a&ccedil;&atilde;o educacional (art. 37, II, e art. 41, &sect; 5&ordm;, do Decreto n&ordm; 10.802/2025). Documentos e relat&oacute;rios de servidores de origem diversa devem ser encaminhados &agrave; CSEF de origem (art. 61, &sect;&sect; 1&ordm; e 2&ordm;).</div>
+  </div>
+
+  <details class="card" open>
+    <summary class="card-title">
+      <span class="chev">&rsaquo;</span>Composi&ccedil;&atilde;o da comiss&atilde;o
+    </summary>
+    <p class="card-sub">Art. 57 do Decreto n&ordm; 10.802/2025 &middot; m&iacute;nimo de tr&ecirc;s membros titulares e respectivos suplentes, todos servidores efetivos</p>
+
+    <div class="sec-label" style="margin:20px 0 2px">Identifica&ccedil;&atilde;o</div>
+    <div class="kv"><span>&Oacute;rg&atilde;o</span><span>Secretaria de Estado da Sa&uacute;de &mdash; SES</span></div>
+    <div class="kv"><span>Ato de designa&ccedil;&atilde;o</span><span>Portaria n&ordm; 214/2026-SES, de 12 de janeiro de 2026<br><span class="sub">Di&aacute;rio Oficial n&ordm; 24.698, de 14 de janeiro de 2026</span></span></div>
+    <div class="kv"><span>Carreira</span><span>Lei n&ordm; 22.524/2024 &middot; n&iacute;veis A a S &middot; sem estrutura de classes</span></div>
+    <div class="kv"><span>Servidores no &acirc;mbito da comiss&atilde;o</span><span>4.812 servidores ativos &middot; 5.063 vagas no Anexo I</span></div>
+
+    <div class="metric" style="margin:22px 0 0;background:oklch(98.5% 0.004 255)">
+      <div class="m-title">Composi&ccedil;&atilde;o atual</div>
+      <div class="m-grid">
+        <div><div class="m-num">5</div><div class="m-cap">titulares</div></div>
+        <div><div class="m-num">5</div><div class="m-cap">suplentes</div></div>
+        <div><div class="m-num" style="color:oklch(52% 0.14 75)">1</div><div class="m-cap">titular afastado</div></div>
+      </div>
+      <div style="border-top:1px solid oklch(93% 0.004 255);margin-top:18px;padding-top:16px">
+        <div class="m-title">Qu&oacute;rum de delibera&ccedil;&atilde;o</div>
+        <div class="m-grid">
+          <div><div class="m-num" style="color:oklch(45% 0.14 150)">4</div><div class="m-cap">titulares em exerc&iacute;cio</div></div>
+          <div><div class="m-num">5</div><div class="m-cap">suplentes aptos</div></div>
+          <div><div class="m-num">3</div><div class="m-cap">m&iacute;nimo para validar</div></div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:16px">Relat&oacute;rios e pareceres validados por tr&ecirc;s membros; decis&otilde;es efetivadas pela maioria deles (art. 57, § 1&ordm;). Podem ser acrescidos membros conforme o quantitativo de servidores lotados, sempre com titular e suplente (art. 57, § 3&ordm;).</div>
+    </div>
+
+    <div class="sec-head" style="margin:30px 0 6px">Membros</div>
+
+    <details class="unit" open>
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Helena Martins Vasconcelos</span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Voto de qualidade</span><span class="badge b-ok">Apta</span></span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Condi&ccedil;&atilde;o</span><span>Membro titular</span></div>
+        <div class="kv"><span>Unidade</span><span>Ger&ecirc;ncia de Gest&atilde;o e Desenvolvimento de Pessoas &mdash; GGDP/SES<br><span class="sub">Unidade setorial de gest&atilde;o e desenvolvimento de pessoas &middot; art. 57, &sect; 2&ordm;</span></span></div>
+        <div class="kv"><span>V&iacute;nculo</span><span>Servidora efetiva &middot; Enfermeira</span></div>
+        <div class="kv"><span>Suplente</span><span>Paulo Ricardo Nunes &middot; GGDP<br><span class="sub">Servidor efetivo</span></span></div>
+        <div class="kv"><span>Designa&ccedil;&atilde;o</span><span>Portaria n&ordm; 214/2026-SES, de 12 de janeiro de 2026</span></div>
+        <div class="note">Membro obrigat&oacute;rio da unidade setorial de gest&atilde;o e desenvolvimento de pessoas, a quem cabe o voto de qualidade (art. 57, &sect; 2&ordm;).</div>
+      </div>
+    </details>
+
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Carla Menezes Duarte</span>
+        <span class="badge b-ok">Apta</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Condi&ccedil;&atilde;o</span><span>Membro titular</span></div>
+        <div class="kv"><span>Unidade</span><span>Superintend&ecirc;ncia de Gest&atilde;o Integrada</span></div>
+        <div class="kv"><span>V&iacute;nculo</span><span>Servidora efetiva &middot; M&eacute;dica</span></div>
+        <div class="kv"><span>Suplente</span><span>Diego Almeida Prado &middot; Superintend&ecirc;ncia de Gest&atilde;o Integrada<br><span class="sub">Servidor efetivo</span></span></div>
+        <div class="kv"><span>Designa&ccedil;&atilde;o</span><span>Portaria n&ordm; 214/2026-SES, de 12 de janeiro de 2026</span></div>
+      </div>
+    </details>
+
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Eduardo Tavares Lopes</span>
+        <span class="badge b-ok">Apto</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Condi&ccedil;&atilde;o</span><span>Membro titular</span></div>
+        <div class="kv"><span>Unidade</span><span>Superintend&ecirc;ncia de Vigil&acirc;ncia em Sa&uacute;de</span></div>
+        <div class="kv"><span>V&iacute;nculo</span><span>Servidor efetivo &middot; Auditor de Sistemas e Servi&ccedil;os de Sa&uacute;de</span></div>
+        <div class="kv"><span>Suplente</span><span>S&iacute;lvia Ramos Peixoto &middot; Superintend&ecirc;ncia de Vigil&acirc;ncia em Sa&uacute;de<br><span class="sub">Servidora efetiva</span></span></div>
+        <div class="kv"><span>Designa&ccedil;&atilde;o</span><span>Portaria n&ordm; 214/2026-SES, de 12 de janeiro de 2026</span></div>
+      </div>
+    </details>
+
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Renata Carvalho Bastos</span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-neut">Membro acrescido</span><span class="badge b-ok">Apta</span></span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Condi&ccedil;&atilde;o</span><span>Membro titular</span></div>
+        <div class="kv"><span>Unidade</span><span>Superintend&ecirc;ncia de Aten&ccedil;&atilde;o Integral &agrave; Sa&uacute;de</span></div>
+        <div class="kv"><span>V&iacute;nculo</span><span>Servidora efetiva &middot; Enfermeira</span></div>
+        <div class="kv"><span>Suplente</span><span>Thiago Moreira Fialho &middot; Superintend&ecirc;ncia de Aten&ccedil;&atilde;o Integral &agrave; Sa&uacute;de<br><span class="sub">Servidor efetivo</span></span></div>
+        <div class="kv"><span>Designa&ccedil;&atilde;o</span><span>Portaria n&ordm; 214/2026-SES, de 12 de janeiro de 2026</span></div>
+        <div class="note">Membro acrescido em raz&atilde;o do quantitativo de servidores lotados no &oacute;rg&atilde;o (art. 57, &sect; 3&ordm;).</div>
+      </div>
+    </details>
+
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Gustavo Pires Amorim</span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-neut">Membro acrescido</span><span class="badge b-crit">Nova indica&ccedil;&atilde;o exigida</span></span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Condi&ccedil;&atilde;o</span><span>Membro titular</span></div>
+        <div class="kv"><span>Unidade</span><span>Ger&ecirc;ncia de Auditoria</span></div>
+        <div class="kv"><span>V&iacute;nculo</span><span>Servidor efetivo &middot; Assistente T&eacute;cnico de Sa&uacute;de</span></div>
+        <div class="kv"><span>Suplente</span><span>Larissa Fontes Barreto &middot; Ger&ecirc;ncia de Auditoria<br><span class="sub">Servidora efetiva &middot; em atua&ccedil;&atilde;o desde 21/07/2026</span></span></div>
+        <div class="kv"><span>Afastamento</span><span style="color:oklch(48% 0.18 25)">Licen&ccedil;a para tratamento de sa&uacute;de &middot; desde 21/07/2026 &middot; 34 dias consecutivos</span></div>
+        <div class="kv"><span>Provid&ecirc;ncia</span><span>Indica&ccedil;&atilde;o de novo representante pelo titular do &oacute;rg&atilde;o</span></div>
+        <div class="note">Afastamentos, licen&ccedil;as ou aus&ecirc;ncias por per&iacute;odo superior a trinta dias consecutivos exigem a indica&ccedil;&atilde;o de novo representante (art. 57, &sect; 4&ordm;).</div>
+      </div>
+    </details>
+  </details>
+
+  <div class="card">
+    <div class="card-title">Manifesta&ccedil;&otilde;es da comiss&atilde;o</div>
+    <p class="card-sub">Itens em aberto, classificados por situa&ccedil;&atilde;o de prazo &middot; contagem em dias &uacute;teis, salvo a an&aacute;lise de titula&ccedil;&atilde;o acad&ecirc;mica, contada em dias corridos</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 6px" id="filtros-prazo">
+      <button class="chip" aria-pressed="true" data-pz="todos">Todos &middot; 16</button>
+      <button class="chip" aria-pressed="false" data-pz="vencido">Prazo vencido &middot; 2</button>
+      <button class="chip" aria-pressed="false" data-pz="iminente">Vence em at&eacute; 2 dias &middot; 3</button>
+      <button class="chip" aria-pressed="false" data-pz="prazo">No prazo &middot; 6</button>
+      <button class="chip" aria-pressed="false" data-pz="prorrogado">Prorrogado &middot; 1</button>
+      <button class="chip" aria-pressed="false" data-pz="diligencia">Em dilig&ecirc;ncia &middot; 4</button>
+    </div>
+
+    <div class="srch">
+      <select id="f-tipo">
+        <option value="todos">Todos os tipos de manifesta&ccedil;&atilde;o</option>
+        <option value="recurso">Recurso de desempenho</option>
+        <option value="recursoaperf">Recurso de a&ccedil;&atilde;o educacional</option>
+        <option value="titulacao">Titula&ccedil;&atilde;o acad&ecirc;mica</option>
+        <option value="reconsideracao">Reconsidera&ccedil;&atilde;o de titula&ccedil;&atilde;o</option>
+        <option value="previa">Manifesta&ccedil;&atilde;o pr&eacute;via de &aacute;rea do conhecimento</option>
+        <option value="assuncao">Assun&ccedil;&atilde;o de responsabilidades &middot; VII a X</option>
+        <option value="dilccef">Dilig&ecirc;ncia da CCEF</option>
+        <option value="dilcsef">Dilig&ecirc;ncia entre CSEFs</option>
+        <option value="requisicao">Requisi&ccedil;&atilde;o de informa&ccedil;&otilde;es</option>
+        <option value="cnpq">&Aacute;reas do conhecimento &middot; CNPq</option>
+      </select>
+      <input id="f-busca" type="text" placeholder="Buscar por servidor ou processo">
+    </div>
+
+    <div class="scrollbox">
+      <table>
+        <tr>
+          <th style="width:29%">Servidor e processo</th>
+          <th style="width:29%">Manifesta&ccedil;&atilde;o</th>
+          <th style="width:19%">Prazo</th>
+          <th style="width:23%">Situa&ccedil;&atilde;o</th>
+        </tr>
+
+        <tr class="mf" data-pz="vencido" data-tipo="recurso" data-busca="maria da silva 202600005015516">
+          <td><span class="lnk">Maria da Silva</span><div class="sub">202600005015516</div></td>
+          <td>Recurso de desempenho<div class="sub">Art. 39 &middot; decis&atilde;o final &middot; 5 dias &uacute;teis</div></td>
+          <td>18/08/2026<div class="sub" style="color:oklch(48% 0.18 25)">2 dias &uacute;teis em atraso</div></td>
+          <td><span class="badge b-crit">Prazo vencido</span><div class="fld"><i>Relator</i> <b>Eduardo Tavares Lopes</b> &middot; votos 1/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="vencido" data-tipo="assuncao" data-busca="marcos vinícius teixeira 202600005014882">
+          <td><span class="lnk">Marcos Vin&iacute;cius Teixeira</span><div class="sub">202600005014882</div></td>
+          <td>Assun&ccedil;&atilde;o de responsabilidades<div class="sub">Art. 61, V &middot; publica&ccedil;&atilde;o de artigo &middot; art. 42, VII</div></td>
+          <td>19/08/2026<div class="sub" style="color:oklch(48% 0.18 25)">1 dia &uacute;til em atraso</div></td>
+          <td><span class="badge b-crit">Prazo vencido</span><div class="fld"><i>Relator</i> <b>Carla Menezes Duarte</b> &middot; votos 2/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="iminente" data-tipo="recurso" data-busca="vanessa correia lima 202600005015702">
+          <td><span class="lnk">Vanessa Correia Lima</span><div class="sub">202600005015702</div></td>
+          <td>Recurso de desempenho<div class="sub">Art. 39 &middot; decis&atilde;o final &middot; 5 dias &uacute;teis</div></td>
+          <td>31/08/2026<div class="sub">1 dia &uacute;til restante</div></td>
+          <td><span class="badge b-warn">Vence em at&eacute; 2 dias</span><div class="fld"><i>Relator</i> <b>Renata Carvalho Bastos</b> &middot; votos 2/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="iminente" data-tipo="recursoaperf" data-busca="rafael antunes moreira 202600005015744">
+          <td><span class="lnk">Rafael Antunes Moreira</span><div class="sub">202600005015744</div></td>
+          <td>Recurso de a&ccedil;&atilde;o educacional<div class="sub">Art. 41, &sect; 5&ordm; &middot; trâmite dos arts. 38 e 39 &middot; 5 dias &uacute;teis</div></td>
+          <td>01/09/2026<div class="sub">2 dias &uacute;teis restantes</div></td>
+          <td><span class="badge b-warn">Vence em at&eacute; 2 dias</span><div class="fld"><i>Relator</i> <b>Helena Martins Vasconcelos</b> &middot; votos 0/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="iminente" data-tipo="reconsideracao" data-busca="letícia amorim rocha 202600005014109">
+          <td><span class="lnk">Let&iacute;cia Amorim Rocha</span><div class="sub">202600005014109</div></td>
+          <td>Reconsidera&ccedil;&atilde;o de titula&ccedil;&atilde;o<div class="sub">Art. 45, &sect; 9&ordm; &middot; manifesta&ccedil;&atilde;o definitiva &middot; 10 dias &uacute;teis</div></td>
+          <td>01/09/2026<div class="sub">2 dias &uacute;teis restantes</div></td>
+          <td><span class="badge b-warn">Vence em at&eacute; 2 dias</span><div class="fld"><i>Relator</i> <b>Eduardo Tavares Lopes</b> &middot; votos 1/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prazo" data-tipo="titulacao" data-busca="fernanda queiroz alves 202600005015801">
+          <td><span class="lnk">Fernanda Queiroz Alves</span><div class="sub">202600005015801</div></td>
+          <td>Titula&ccedil;&atilde;o acad&ecirc;mica<div class="sub">Art. 45, &sect; 4&ordm; &middot; especializa&ccedil;&atilde;o &middot; 30 dias</div></td>
+          <td>21/09/2026<div class="sub">24 dias restantes</div></td>
+          <td><span class="badge b-info">Em an&aacute;lise</span><div class="fld"><i>Relator</i> <b>Carla Menezes Duarte</b> &middot; votos 0/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prazo" data-tipo="titulacao" data-busca="juliana ferreira castro 202600005015812">
+          <td><span class="lnk">Juliana Ferreira Castro</span><div class="sub">202600005015812</div></td>
+          <td>Titula&ccedil;&atilde;o acad&ecirc;mica<div class="sub">Art. 45, &sect; 4&ordm; &middot; mestrado &middot; 30 dias</div></td>
+          <td>23/09/2026<div class="sub">26 dias restantes</div></td>
+          <td><span class="badge b-info">Em an&aacute;lise</span><div class="fld"><i>Relator</i> <b>Renata Carvalho Bastos</b> &middot; votos 0/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prazo" data-tipo="previa" data-busca="bruno sales andrade 202600005015820">
+          <td><span class="lnk">Bruno Sales Andrade</span><div class="sub">202600005015820</div></td>
+          <td>Manifesta&ccedil;&atilde;o pr&eacute;via de &aacute;rea do conhecimento<div class="sub">Art. 45, &sect; 2&ordm; &middot; antes do in&iacute;cio da p&oacute;s-gradua&ccedil;&atilde;o</div></td>
+          <td>Sem prazo expresso<div class="sub">Entrada em 24/08/2026</div></td>
+          <td><span class="badge b-info">Em an&aacute;lise</span><div class="fld"><i>Relator</i> <b>Helena Martins Vasconcelos</b> &middot; votos 0/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prazo" data-tipo="assuncao" data-busca="cláudia neves barbosa 202600005015833">
+          <td><span class="lnk">Cl&aacute;udia Neves Barbosa</span><div class="sub">202600005015833</div></td>
+          <td>Assun&ccedil;&atilde;o de responsabilidades<div class="sub">Art. 61, V &middot; aprova&ccedil;&atilde;o em evento &middot; art. 42, VIII</div></td>
+          <td>Sem prazo expresso<div class="sub">Entrada em 25/08/2026</div></td>
+          <td><span class="badge b-info">Em an&aacute;lise</span><div class="fld"><i>Relator</i> <b>Eduardo Tavares Lopes</b> &middot; votos 0/3</div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prazo" data-tipo="requisicao" data-busca="ana beatriz rodrigues lima 202600005015791">
+          <td><span class="lnk">Ana Beatriz Rodrigues Lima</span><div class="sub">202600005015791 &middot; chefia</div></td>
+          <td>Requisi&ccedil;&atilde;o de informa&ccedil;&otilde;es &agrave; chefia<div class="sub">Art. 61, VIII &middot; subs&iacute;dio a recurso de desempenho</div></td>
+          <td>Sem prazo expresso<div class="sub">Expedida em 26/08/2026</div></td>
+          <td><span class="badge b-neut">Aguardando resposta</span><div class="fld"><i>Expedida por</i> <b>Renata Carvalho Bastos</b></div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prazo" data-tipo="cnpq" data-busca="áreas do conhecimento cnpq 202600005013440">
+          <td>&Aacute;reas do conhecimento &mdash; CNPq<div class="sub">202600005013440 &middot; cargo de origem</div></td>
+          <td>Rela&ccedil;&atilde;o das &aacute;reas com as atribui&ccedil;&otilde;es dos cargos<div class="sub">Art. 61, II &middot; encaminhamento ao titular do &oacute;rg&atilde;o</div></td>
+          <td>Fluxo cont&iacute;nuo<div class="sub">Revis&atilde;o iniciada em 03/08/2026</div></td>
+          <td><span class="badge b-info">Em elabora&ccedil;&atilde;o</span><div class="fld"><i>Com aux&iacute;lio da</i> <b>GGDP</b></div></td>
+        </tr>
+
+        <tr class="mf" data-pz="prorrogado" data-tipo="titulacao" data-busca="paula regina siqueira 202600005015002">
+          <td><span class="lnk">Paula Regina Siqueira</span><div class="sub">202600005015002</div></td>
+          <td>Titula&ccedil;&atilde;o acad&ecirc;mica<div class="sub">Art. 45, &sect; 4&ordm; &middot; doutorado &middot; 30 dias</div></td>
+          <td>15/09/2026<div class="sub">Prorrogado em 15/08/2026</div></td>
+          <td><span class="badge b-warn">Prazo prorrogado</span><div class="fld"><i>Justificativa</i> <b>Necessidade de verifica&ccedil;&atilde;o de revalida&ccedil;&atilde;o de t&iacute;tulo estrangeiro</b></div></td>
+        </tr>
+
+        <tr class="mf" data-pz="diligencia" data-tipo="titulacao" data-busca="carlos eduardo pimentel 202600005014675">
+          <td><span class="lnk">Carlos Eduardo Pimentel</span><div class="sub">202600005014675</div></td>
+          <td>Titula&ccedil;&atilde;o acad&ecirc;mica<div class="sub">Art. 45, &sect; 5&ordm; &middot; dilig&ecirc;ncia antes da delibera&ccedil;&atilde;o final</div></td>
+          <td>Contagem suspensa<div class="sub">Dilig&ecirc;ncia expedida em 12/08/2026</div></td>
+          <td><span class="badge b-neut">Em dilig&ecirc;ncia</span><div class="fld"><i>Aguarda</i> <b>Hist&oacute;rico escolar e ata de defesa</b></div></td>
+        </tr>
+
+        <tr class="mf" data-pz="diligencia" data-tipo="dilccef" data-busca="henrique batista salgado 202600005014901">
+          <td><span class="lnk">Henrique Batista Salgado</span><div class="sub">202600005014901</div></td>
+          <td>Dilig&ecirc;ncia da CCEF<div class="sub">Art. 61, VII &middot; atendimento a solicita&ccedil;&atilde;o da comiss&atilde;o central</div></td>
+          <td>Conforme solicitado<div class="sub">Recebida em 20/08/2026</div></td>
+          <td><span class="badge b-neut">Em dilig&ecirc;ncia</span><div class="fld"><i>Solicitante</i> <b>CCEF &middot; PCR da Secretaria de Estado da Sa&uacute;de</b></div></td>
+        </tr>
+
+        <tr class="mf" data-pz="diligencia" data-tipo="dilcsef" data-busca="otávio brandão reis 202600005014955">
+          <td><span class="lnk">Ot&aacute;vio Brand&atilde;o Reis</span><div class="sub">202600005014955 &middot; lota&ccedil;&atilde;o externa</div></td>
+          <td>Dilig&ecirc;ncia &agrave; CSEF de lota&ccedil;&atilde;o<div class="sub">Art. 53, &sect; 3&ordm; &middot; esclarecimentos sobre desempenho</div></td>
+          <td>Sem prazo expresso<div class="sub">Expedida em 18/08/2026</div></td>
+          <td><span class="badge b-neut">Em dilig&ecirc;ncia</span><div class="fld"><i>Destinat&aacute;ria</i> <b>CSEF &middot; Secretaria de Estado de Desenvolvimento Social</b></div></td>
+        </tr>
+
+        <tr class="mf" data-pz="diligencia" data-tipo="assuncao" data-busca="sandra oliveira caetano 202600005015010">
+          <td><span class="lnk">Sandra Oliveira Caetano</span><div class="sub">202600005015010</div></td>
+          <td>Assun&ccedil;&atilde;o de responsabilidades<div class="sub">Art. 61, V &middot; registro de patente &middot; art. 42, IX</div></td>
+          <td>Contagem suspensa<div class="sub">Dilig&ecirc;ncia expedida em 21/08/2026</div></td>
+          <td><span class="badge b-neut">Em dilig&ecirc;ncia</span><div class="fld"><i>Aguarda</i> <b>Comprova&ccedil;&atilde;o de registro no INPI</b></div></td>
+        </tr>
+      </table>
+    </div>
+    <p class="note">A reconsidera&ccedil;&atilde;o do desempenho &eacute; da chefia (art. 38); o recurso s&oacute; sobe &agrave; comiss&atilde;o quando a chefia nega a reconsidera&ccedil;&atilde;o ou o servidor recusa a reconsidera&ccedil;&atilde;o parcial (art. 38, &sect; 6&ordm;). J&aacute; na titula&ccedil;&atilde;o acad&ecirc;mica, a reconsidera&ccedil;&atilde;o &eacute; dirigida &agrave; pr&oacute;pria comiss&atilde;o (art. 45, &sect; 7&ordm;). O Decreto n&atilde;o fixa prazo para a an&aacute;lise da assun&ccedil;&atilde;o de responsabilidades dos tipos VII a X nem para as dilig&ecirc;ncias entre comiss&otilde;es.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Valida&ccedil;&atilde;o de evolu&ccedil;&otilde;es funcionais</div>
+    <p class="card-sub">Art. 53, &sect;&sect; 1&ordm; e 2&ordm;, do Decreto n&ordm; 10.802/2025 &middot; verifica&ccedil;&atilde;o do cumprimento dos crit&eacute;rios consolidada mensalmente pela CSEF do &oacute;rg&atilde;o de origem</p>
+
+    <div class="metric" style="margin-top:18px;background:oklch(98.5% 0.004 255)">
+      <div class="m-title">Situa&ccedil;&atilde;o dos servidores &middot; consolida&ccedil;&atilde;o 08/2026</div>
+      <div class="m-grid">
+        <div><div class="m-num">4.812</div><div class="m-cap">no &acirc;mbito da comiss&atilde;o</div></div>
+        <div><div class="m-num" style="color:oklch(45% 0.14 150)">195</div><div class="m-cap">aptos</div></div>
+        <div><div class="m-num" style="color:oklch(52% 0.14 75)">4.617</div><div class="m-cap">com pend&ecirc;ncia</div></div>
+      </div>
+      <div class="kv" style="margin-top:16px"><span>M&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026 &middot; fechamento do Sistema de Pontos</span></div>
+      <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+      <div class="kv"><span>Envio ao titular do &oacute;rg&atilde;o</span><span>At&eacute; o 15&ordm; dia &uacute;til &middot; 21/08/2026</span></div>
+      <div class="kv"><span>Ato de concess&atilde;o pelo titular</span><span>At&eacute; o &uacute;ltimo dia &uacute;til do m&ecirc;s &middot; art. 53, § 4&ordm;</span></div>
+      <div class="kv"><span>Efeitos funcionais e financeiros</span><span>A partir de 01/09/2026 &middot; art. 53, § 5&ordm;</span></div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 6px" id="filtros-ev">
+      <button class="chip" aria-pressed="true" data-ev="todos">Todos &middot; 4.812</button>
+      <button class="chip" aria-pressed="false" data-ev="apto">Aptos &middot; 195</button>
+      <button class="chip" aria-pressed="false" data-ev="pend">Com pend&ecirc;ncia &middot; 4.617</button>
+    </div>
+
+    <div style="display:none;flex-wrap:wrap;gap:6px;margin:10px 0 6px;padding-left:14px;border-left:2px solid oklch(90% 0.006 255)" id="filtros-pend">
+      <button class="chip" aria-pressed="true" data-pend="todas">Todas as pend&ecirc;ncias</button>
+      <button class="chip" aria-pressed="false" data-pend="pts">Pontua&ccedil;&atilde;o do pr&oacute;ximo n&iacute;vel &middot; 3.940</button>
+      <button class="chip" aria-pressed="false" data-pend="apf">Aperfei&ccedil;oamento &middot; 1.605</button>
+      <button class="chip" aria-pressed="false" data-pend="int">Interst&iacute;cio m&iacute;nimo &middot; 702</button>
+      <button class="chip" aria-pressed="false" data-pend="des">Desempenho &middot; 214</button>
+    </div>
+
+    <p class="note" style="margin:14px 0 0">Pontua&ccedil;&atilde;o e interst&iacute;cio s&atilde;o as condi&ccedil;&otilde;es dos incisos II e IV do art. 47 do Decreto n&ordm; 10.802/2025; efetivo exerc&iacute;cio, desempenho e aperfei&ccedil;oamento s&atilde;o as pontua&ccedil;&otilde;es m&iacute;nimas dos requisitos obrigat&oacute;rios, de que trata o inciso III do mesmo artigo. Um mesmo servidor pode acumular pend&ecirc;ncias, de modo que a soma dos subtipos ultrapassa o total. A separa&ccedil;&atilde;o entre aptos e pendentes considera apenas os requisitos obrigat&oacute;rios: an&aacute;lises em curso sobre assun&ccedil;&atilde;o de responsabilidades ou titula&ccedil;&atilde;o acad&ecirc;mica, por serem aceleradores, aparecem no card de manifesta&ccedil;&otilde;es e n&atilde;o alteram a situa&ccedil;&atilde;o do servidor. A lista exibe onze exemplos, dos 4.812 servidores.</p>
+
+    <div id="lista-ev">
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Letícia Amorim Rocha</span>
+            <div class="sub" style="margin:4px 0 0 26px">Enfermeira &middot; Grupo Analista de Sa&uacute;de &middot; n&iacute;vel E &rarr; F</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Apta</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo E &rarr; F</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel E</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">253,518</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">61,518 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">19</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">13,518</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo F &rarr; G &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:50.00%;background:oklch(52% 0.16 255)"></i><i style="left:50.00%;width:14.08%;background:oklch(55% 0.18 25)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span><span>N&iacute;vel G &middot; 288</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo E &rarr; F</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">A pontua&ccedil;&atilde;o do n&iacute;vel F foi alcan&ccedil;ada em 07/2026. A evolu&ccedil;&atilde;o s&oacute; se efetiva com o ato de concess&atilde;o do titular do &oacute;rg&atilde;o.</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>01/2025</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>19</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>3,800<div class="sub">19 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>100h &middot; 9,000<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">12,218</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">8,000</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">mestrado validado em 26/06/2026</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Marcos Vinícius Teixeira</span>
+            <div class="sub" style="margin:4px 0 0 26px">Auditor de Sistemas e Servi&ccedil;os de Sa&uacute;de &middot; n&iacute;vel D &rarr; E</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Apto</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo D &rarr; E</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel D</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">242,600</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">98,600 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">13</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 12 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 8&ordm;</div></div>
+              <div><div class="m-num">50,600</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo E &rarr; F &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:33.33%;background:oklch(52% 0.16 255)"></i><i style="left:33.33%;width:35.14%;background:oklch(55% 0.18 25)"></i><b style="left:33.3333%"></b><b style="left:66.6667%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel D &middot; 144</span><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span><span>N&iacute;vel G &middot; 288</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo D &rarr; E</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">A pontua&ccedil;&atilde;o do ciclo ultrapassou o equivalente aos dois n&iacute;veis subsequentes, o que reduz o interst&iacute;cio m&iacute;nimo a doze meses e a carga hor&aacute;ria m&iacute;nima de aperfei&ccedil;oamento a quarenta horas (art. 47, §§ 8&ordm; e 9&ordm;). A assun&ccedil;&atilde;o inclui designa&ccedil;&otilde;es anteriores ao enquadramento, computadas na forma do art. 68, IV, alinea a.</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>07/2025</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>13</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>2,600<div class="sub">13 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">40h &middot; 3,6 pontos</td>
+                <td>50h &middot; 4,500<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">48,000</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">24,000</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">doutorado validado em 14/05/2026</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Roberto Alves Nogueira</span>
+            <div class="sub" style="margin:4px 0 0 26px">T&eacute;cnico em Enfermagem &middot; Grupo Assistente de Sa&uacute;de &middot; n&iacute;vel C &rarr; D</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-info">Lota&ccedil;&atilde;o externa</span><span class="badge b-ok">Apto</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo C &rarr; D</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel C</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">144,900</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">48,900 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">18</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">0,900</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo D &rarr; E &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:50.00%;background:oklch(52% 0.16 255)"></i><i style="left:50.00%;width:0.94%;background:oklch(55% 0.18 25)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel C &middot; 96</span><span>N&iacute;vel D &middot; 144</span><span>N&iacute;vel E &middot; 192</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo C &rarr; D</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">Servidor de origem da SES e lotado na Secretaria de Estado de Desenvolvimento Social. O relat&oacute;rio consolidado da CSEF de lota&ccedil;&atilde;o foi recebido em 12/08/2026 (art. 61, §§ 1&ordm; e 2&ordm;).</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>02/2025</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>18</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>3,600<div class="sub">18 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>70h &middot; 6,300<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">12,000</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">sem registro no ciclo</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Cláudia Neves Barbosa</span>
+            <div class="sub" style="margin:4px 0 0 26px">T&eacute;cnica em Radiologia &middot; Grupo Assistente de Sa&uacute;de &middot; n&iacute;vel F &rarr; G</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Apta</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo F &rarr; G</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel F</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">291,900</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">51,900 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">16</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 15 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">3,900</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo G &rarr; H &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:50.00%;background:oklch(52% 0.16 255)"></i><i style="left:50.00%;width:4.06%;background:oklch(55% 0.18 25)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel F &middot; 240</span><span>N&iacute;vel G &middot; 288</span><span>N&iacute;vel H &middot; 336</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo F &rarr; G</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">Interst&iacute;cio m&iacute;nimo reduzido a quinze meses por direito a aposentadoria especial, nos termos da legisla&ccedil;&atilde;o previdenci&aacute;ria (art. 47, § 7&ordm;).</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>04/2025</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>16</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>3,200<div class="sub">16 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>80h &middot; 7,200<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">9,500</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">8,000</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">mestrado validado em 30/01/2026</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Bruno Sales Andrade</span>
+            <div class="sub" style="margin:4px 0 0 26px">Analista T&eacute;cnico de Sa&uacute;de &middot; n&iacute;vel B &rarr; C</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Apto</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo B &rarr; C</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel B</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">101,900</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">53,900 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">25</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">5,900</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo C &rarr; D &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:50.00%;background:oklch(52% 0.16 255)"></i><i style="left:50.00%;width:6.15%;background:oklch(55% 0.18 25)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel B &middot; 48</span><span>N&iacute;vel C &middot; 96</span><span>N&iacute;vel D &middot; 144</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo B &rarr; C</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">Ciclo iniciado na data dos efeitos da primeira evolu&ccedil;&atilde;o concedida ap&oacute;s o enquadramento, na forma do art. 68, I. Sem aceleradores relevantes, a pontua&ccedil;&atilde;o s&oacute; alcan&ccedil;ou os 48 pontos no vig&eacute;simo terceiro m&ecirc;s.</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>07/2024</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>25</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>5,000<div class="sub">25 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>60h &middot; 5,400<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">6,000</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">sem registro no ciclo</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Paula Regina Siqueira</span>
+            <div class="sub" style="margin:4px 0 0 26px">Farmac&ecirc;utica &middot; Grupo Analista de Sa&uacute;de &middot; n&iacute;vel D &rarr; E</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Apta</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo D &rarr; E</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel D</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">197,100</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">53,100 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">21</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">5,100</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo E &rarr; F &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:50.00%;background:oklch(52% 0.16 255)"></i><i style="left:50.00%;width:5.31%;background:oklch(55% 0.18 25)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel D &middot; 144</span><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo D &rarr; E</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">O doutorado em an&aacute;lise nesta comiss&atilde;o, processo 202600005015002, n&atilde;o integra este ciclo. A pontua&ccedil;&atilde;o da titula&ccedil;&atilde;o &eacute; atribu&iacute;da no m&ecirc;s subsequente ao da valida&ccedil;&atilde;o (art. 52).</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>11/2024</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>21</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>4,200<div class="sub">21 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>100h &middot; 9,000<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">8,400</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">doutorado em an&aacute;lise nesta comiss&atilde;o</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="pend" data-pend="des">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Maria da Silva</span>
+            <div class="sub" style="margin:4px 0 0 26px">Assistente T&eacute;cnica de Sa&uacute;de &middot; n&iacute;vel D &rarr; E</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-no">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-warn">Com pend&ecirc;ncia</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo D &rarr; E</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel D</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">194,600</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">50,600 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">19</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">&mdash;</div><div class="m-cap">excedente</div><div class="m-sub">n&atilde;o aplic&aacute;vel enquanto houver pend&ecirc;ncia</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:52.71%;background:oklch(68% 0.15 75)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel D &middot; 144</span><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(68% 0.15 75)"></em>Pontua&ccedil;&atilde;o obtida, aguardando requisito obrigat&oacute;rio</span></div>
+            <div class="callout">A pontua&ccedil;&atilde;o do n&iacute;vel E foi alcan&ccedil;ada, mas a servidora permanece no n&iacute;vel atual enquanto n&atilde;o for cumprida a pontua&ccedil;&atilde;o m&iacute;nima de desempenho (art. 47, § 6&ordm;). O recurso em julgamento nesta comiss&atilde;o, processo 202600005015516, discute o enquadramento do afastamento entre os arts. 4&ordm; e 5&ordm; da Lei n&ordm; 23.241/2025 e pode alterar a apura&ccedil;&atilde;o.</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>11/2024</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>19<br><span class="sub">21 meses corridos desde o in&iacute;cio do ciclo</span></span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>2 meses sem c&ocirc;mputo &middot; 02/2026 e 03/2026 &middot; art. 5&ordm; da Lei n&ordm; 23.241/2025</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>3,800<div class="sub">19 de 21 meses computados &middot; 2 meses descontados em 02/2026 e 03/2026</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>6,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; 4 de 6 meses com pontua&ccedil;&atilde;o</div></td>
+                <td class="no">M&iacute;nimo n&atilde;o cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>70h &middot; 6,300<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">12,000</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">sem registro no ciclo</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Ver processo vinculado</span><span class="lnk">Diligenciar</span><span class="lnk">Registrar verifica&ccedil;&atilde;o</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="pend" data-pend="pts apf">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Fernanda Queiroz Alves</span>
+            <div class="sub" style="margin:4px 0 0 26px">Fisioterapeuta &middot; Grupo Analista de Sa&uacute;de &middot; n&iacute;vel D &rarr; E</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-no">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-no">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-warn">Com pend&ecirc;ncia</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo D &rarr; E</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel D</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">183,740</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">39,740 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">18</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">&mdash;</div><div class="m-cap">excedente</div><div class="m-sub">n&atilde;o aplic&aacute;vel enquanto houver pend&ecirc;ncia</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:41.40%;background:oklch(68% 0.15 75)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel D &middot; 144</span><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(68% 0.15 75)"></em>Pontua&ccedil;&atilde;o obtida, aguardando requisito obrigat&oacute;rio</span></div>
+            <div class="callout">Aperfei&ccedil;oamento abaixo da carga hor&aacute;ria m&iacute;nima de sessenta horas. Sem aceleradores suficientes, a pontua&ccedil;&atilde;o tamb&eacute;m n&atilde;o alcan&ccedil;ou os 48 pontos do pr&oacute;ximo n&iacute;vel.</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>02/2025</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>18</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>3,600<div class="sub">18 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>44h &middot; 3,960<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="no">N&atilde;o cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">5,180</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">sem registro no ciclo</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Diligenciar</span><span class="lnk">Registrar verifica&ccedil;&atilde;o</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="pend" data-pend="pts int">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Juliana Ferreira Castro</span>
+            <div class="sub" style="margin:4px 0 0 26px">Psic&oacute;loga &middot; Grupo Analista de Sa&uacute;de &middot; n&iacute;vel D &rarr; E</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-no">PTS</span><span class="req r-no">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-warn">Com pend&ecirc;ncia</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo D &rarr; E</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel D</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">177,200</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">33,200 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">14</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">&mdash;</div><div class="m-cap">excedente</div><div class="m-sub">n&atilde;o aplic&aacute;vel enquanto houver pend&ecirc;ncia</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:34.58%;background:oklch(68% 0.15 75)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel D &middot; 144</span><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(68% 0.15 75)"></em>Pontua&ccedil;&atilde;o obtida, aguardando requisito obrigat&oacute;rio</span></div>
+            <div class="callout">Licen&ccedil;a para tratamento de sa&uacute;de superior a cento e oitenta dias, que n&atilde;o &eacute; computada como efetivo exerc&iacute;cio (art. 5&ordm; da Lei n&ordm; 23.241/2025) e n&atilde;o comporta pontua&ccedil;&atilde;o de desempenho (art. 15, § 2&ordm;, do Decreto n&ordm; 10.802/2025). O desconto incide sobre os dois requisitos a partir do mesmo registro.</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>12/2024</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>14<br><span class="sub">20 meses corridos desde o in&iacute;cio do ciclo</span></span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>6 meses sem c&ocirc;mputo &middot; 07/2025 a 12/2025 &middot; art. 5&ordm; da Lei n&ordm; 23.241/2025</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>2,800<div class="sub">14 de 20 meses computados &middot; 6 meses descontados em 07/2025 a 12/2025</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto no per&iacute;odo</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>60h &middot; 5,400<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">4,000</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">sem registro no ciclo</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Diligenciar</span><span class="lnk">Registrar verifica&ccedil;&atilde;o</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Patrícia Gomes Ferraz</span>
+            <div class="sub" style="margin:4px 0 0 26px">M&eacute;dica &middot; Grupo M&eacute;dico e Cirurgi&atilde;o-Dentista &middot; n&iacute;vel E &rarr; F</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-ok">Apta</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo E &rarr; F</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel E</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">319,800</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">127,800 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">21</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 12 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 8&ordm;</div></div>
+              <div><div class="m-num">79,800</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo F &rarr; G &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:33.33%;background:oklch(52% 0.16 255)"></i><i style="left:33.33%;width:55.42%;background:oklch(55% 0.18 25)"></i><b style="left:33.3333%"></b><b style="left:66.6667%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel E &middot; 192</span><span>N&iacute;vel F &middot; 240</span><span>N&iacute;vel G &middot; 288</span><span>N&iacute;vel H &middot; 336</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo E &rarr; F</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">A assun&ccedil;&atilde;o inclui designa&ccedil;&otilde;es retroativas computadas na forma do art. 68, IV, al&iacute;nea &quot;a&quot;, o que levou a pontua&ccedil;&atilde;o do ciclo a ultrapassar o equivalente aos dois n&iacute;veis subsequentes e reduziu o interst&iacute;cio a doze meses (art. 47, §§ 8&ordm; e 9&ordm;).</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>11/2024</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>21</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>4,200<div class="sub">21 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">40h &middot; 3,6 pontos</td>
+                <td>90h &middot; 8,100<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">60,000</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">24,000</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">doutorado validado em 18/03/2026</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+      <details class="unit ev" data-ev="apto" data-pend="">
+        <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span style="flex:1">
+            <span class="unit-name"><span class="chev">&rsaquo;</span> Sandra Oliveira Caetano</span>
+            <div class="sub" style="margin:4px 0 0 26px">Biom&eacute;dica &middot; Grupo Analista de Sa&uacute;de &middot; n&iacute;vel F &rarr; G</div>
+            <div style="margin:7px 0 0 26px"><span class="req r-ok">PTS</span><span class="req r-ok">INT</span><span class="req r-ok">EE</span><span class="req r-ok">DES</span><span class="req r-ok">APF</span></div>
+          </span>
+          <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="badge b-info">Acelerador em an&aacute;lise</span><span class="badge b-ok">Apta</span></span>
+        </summary>
+        <div class="unit-body">
+
+          <div class="apur">
+            <div class="m-title">Apura&ccedil;&atilde;o &middot; ciclo F &rarr; G</div>
+            <div class="m-grid">
+              <div><div class="m-num">N&iacute;vel F</div><div class="m-cap">posi&ccedil;&atilde;o atual</div></div>
+              <div><div class="m-num">296,600</div><div class="m-cap">pontua&ccedil;&atilde;o acumulada</div><div class="m-sub">56,600 no ciclo, de 48 necess&aacute;rios</div></div>
+              <div><div class="m-num">22</div><div class="m-cap">meses no n&iacute;vel</div><div class="m-sub">de 18 do interst&iacute;cio m&iacute;nimo &middot; art. 47, § 7&ordm;</div></div>
+              <div><div class="m-num">8,600</div><div class="m-cap">excedente</div><div class="m-sub">aproveitado no ciclo G &rarr; H &middot; art. 47, § 5&ordm;</div></div>
+            </div>
+            <div class="bar"><i style="left:0;width:50.00%;background:oklch(52% 0.16 255)"></i><i style="left:50.00%;width:8.96%;background:oklch(55% 0.18 25)"></i><b style="left:50.0000%"></b></div>
+            <div class="bar-lab"><span>N&iacute;vel F &middot; 240</span><span>N&iacute;vel G &middot; 288</span><span>N&iacute;vel H &middot; 336</span></div>
+            <div class="bar-leg"><span><em style="background:oklch(52% 0.16 255)"></em>Pontua&ccedil;&atilde;o do ciclo F &rarr; G</span><span><em style="background:oklch(55% 0.18 25)"></em>Excedente ao pr&oacute;ximo n&iacute;vel</span></div>
+            <div class="callout">H&aacute; registro de patente em an&aacute;lise nesta comiss&atilde;o, processo 202600005015010, que n&atilde;o integra este ciclo. Por ser requisito acelerador, a an&aacute;lise n&atilde;o impede a valida&ccedil;&atilde;o: concluída favoravelmente, a pontua&ccedil;&atilde;o ser&aacute; atribu&iacute;da no m&ecirc;s subsequente ao da valida&ccedil;&atilde;o (art. 52) e aproveitada no ciclo seguinte (art. 47, § 5&ordm;).</div>
+          </div>
+
+          <div class="sec-label" style="margin:22px 0 2px">Ciclo de evolu&ccedil;&atilde;o</div>
+          <div class="kv"><span>In&iacute;cio &middot; m&ecirc;s de refer&ecirc;ncia</span><span>10/2024</span></div>
+          <div class="kv"><span>&Uacute;ltimo m&ecirc;s de refer&ecirc;ncia apurado</span><span>07/2026</span></div>
+          <div class="kv"><span>M&ecirc;s de inser&ccedil;&atilde;o da pontua&ccedil;&atilde;o</span><span>08/2026</span></div>
+          <div class="kv"><span>Meses de efetivo exerc&iacute;cio no n&iacute;vel</span><span>22</span></div>
+          <div class="kv"><span>Descontos por afastamento no per&iacute;odo</span><span>nenhum</span></div>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos obrigat&oacute;rios</div>
+          <table class="tr3">
+            <tr><th style="width:30%">Requisito</th><th style="width:20%">M&iacute;nimo</th><th style="width:30%">Alcan&ccedil;ado</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+            <tr><td>Efetivo exerc&iacute;cio</td><td class="sub">2,4 pontos</td>
+                <td>4,400<div class="sub">22 meses computados &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Desempenho</td><td class="sub">7,0 pontos</td>
+                <td>9,0<div class="sub">ciclo de avalia&ccedil;&atilde;o 01/2026 a 06/2026 &middot; sem desconto</div></td>
+                <td class="ok">Cumprido</td></tr>
+            <tr><td>Aperfei&ccedil;oamento</td><td class="sub">60h &middot; 5,4 pontos</td>
+                <td>100h &middot; 9,000<div class="sub">teto de 100h por ciclo de evolu&ccedil;&atilde;o</div></td>
+                <td class="ok">Cumprido</td></tr>
+          </table>
+
+          <div class="sec-label" style="margin:22px 0 6px">Requisitos aceleradores</div>
+          <table class="tr3">
+            <tr><td style="width:44%">Assun&ccedil;&atilde;o de responsabilidades</td><td style="width:20%">10,200</td><td class="sub">teto de 144 na carreira</td></tr>
+            <tr><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">Titula&ccedil;&atilde;o acad&ecirc;mica</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)">&mdash;</td><td style="padding:9px 0;border-top:1px solid oklch(93% 0.004 255)" class="sub">sem registro no ciclo</td></tr>
+          </table>
+          <p class="note">Opcionais. N&atilde;o bloqueiam a evolu&ccedil;&atilde;o; antecipam o ciclo quando a pontua&ccedil;&atilde;o total ultrapassa o equivalente aos dois n&iacute;veis subsequentes (art. 47, § 8&ordm;).</p>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="lnk">Validar</span><span class="lnk">Diligenciar</span><span class="lnk">N&atilde;o validar</span></div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="subcard">
+      <div class="sec-head" style="margin-bottom:6px">Lotes encerrados</div>
+      <table style="margin-top:10px">
+        <tr><th style="width:22%">Consolida&ccedil;&atilde;o</th><th style="width:26%">Envio ao titular</th><th style="width:22%">Servidores</th><th style="width:30%">Situa&ccedil;&atilde;o</th></tr>
+        <tr>
+          <td>07/2026<div class="sub">M&ecirc;s de refer&ecirc;ncia 06/2026</div></td>
+          <td>21/07/2026<div class="sub">15&ordm; dia &uacute;til</div></td>
+          <td>174 validados<div class="sub">203 aptos apurados</div></td>
+          <td><span class="badge b-ok">Homologado pelo titular</span><div class="fld"><i>Ato</i> <b>Portaria n&ordm; 1.042/2026 &middot; 31/07/2026</b></div></td>
+        </tr>
+        <tr>
+          <td>06/2026<div class="sub">M&ecirc;s de refer&ecirc;ncia 05/2026</div></td>
+          <td>19/06/2026<div class="sub">15&ordm; dia &uacute;til</div></td>
+          <td>158 validados<div class="sub">181 aptos apurados</div></td>
+          <td><span class="badge b-ok">Homologado pelo titular</span><div class="fld"><i>Ato</i> <b>Portaria n&ordm; 902/2026 &middot; 30/06/2026</b></div></td>
+        </tr>
+      </table>
+    </div>
+
+    <p class="note">A pontua&ccedil;&atilde;o acumulada segue a escala de n&iacute;veis do Anexo I do Decreto n&ordm; 10.802/2025, em que cada n&iacute;vel corresponde a 48 pontos. A comiss&atilde;o verifica o cumprimento dos crit&eacute;rios; a valida&ccedil;&atilde;o da defini&ccedil;&atilde;o desses crit&eacute;rios compete &agrave; CCEF do &oacute;rg&atilde;o de origem (art. 53, <i>caput</i>). &Eacute; vedada a edi&ccedil;&atilde;o de ato de evolu&ccedil;&atilde;o com efeitos funcionais e financeiros retroativos (art. 54).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pain&eacute;is gerenciais</div>
+    <p class="card-sub">Proposta de pain&eacute;is para o acompanhamento da execu&ccedil;&atilde;o da sistem&aacute;tica e da aplica&ccedil;&atilde;o do Sistema de Pontos (art. 61, I) &middot; conte&uacute;do ilustrativo, sem dados</p>
+
+    <div class="sec-head" style="margin:22px 0 4px">Acompanhamento da sistem&aacute;tica</div>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Panorama do &oacute;rg&atilde;o</span>
+        <span class="pnl-tag">Art. 61, I</span>
+      </summary>
+      <div class="pnl-body">
+        Retrato geral da popula&ccedil;&atilde;o abrangida pela comiss&atilde;o.
+        <ul>
+          <li>Servidores no PROMOVE, por quadro pr&oacute;prio e por lota&ccedil;&atilde;o de outros &oacute;rg&atilde;os</li>
+          <li>Distribui&ccedil;&atilde;o por cargo, n&iacute;vel e classe</li>
+          <li>Percentual de servidores aptos &agrave; evolu&ccedil;&atilde;o no ciclo corrente</li>
+          <li>Tempo m&eacute;dio de perman&ecirc;ncia por n&iacute;vel</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Funil dos cinco requisitos</span>
+        <span class="pnl-tag">Art. 61, I</span>
+      </summary>
+      <div class="pnl-body">
+        Identifica&ccedil;&atilde;o do requisito que mais retarda a evolu&ccedil;&atilde;o no &oacute;rg&atilde;o.
+        <ul>
+          <li>Quantidade de servidores que cumprem cada requisito no ciclo</li>
+          <li>Gargalo predominante por unidade administrativa e por cargo</li>
+          <li>Evolu&ccedil;&atilde;o do gargalo ao longo dos &uacute;ltimos doze meses</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Desempenho por unidade</span>
+        <span class="pnl-tag">Arts. 33 e 39</span>
+      </summary>
+      <div class="pnl-body">
+        Base para o julgamento de recursos e para a orienta&ccedil;&atilde;o das chefias.
+        <ul>
+          <li>Distribui&ccedil;&atilde;o das pontua&ccedil;&otilde;es do &uacute;ltimo semestre conclu&iacute;do</li>
+          <li>Percentual de servidores abaixo de 7,0</li>
+          <li>Unidades com avalia&ccedil;&atilde;o em atraso e planos de trabalho pendentes</li>
+          <li>Taxa de recursos por unidade e taxa de reforma da decis&atilde;o da chefia</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Aperfei&ccedil;oamento por instrumento</span>
+        <span class="pnl-tag">Art. 41</span>
+      </summary>
+      <div class="pnl-body">
+        Leitura da oferta e do consumo de capacita&ccedil;&atilde;o no &oacute;rg&atilde;o.
+        <ul>
+          <li>Horas m&eacute;dias por servidor no ciclo</li>
+          <li>Distribui&ccedil;&atilde;o entre rol de a&ccedil;&otilde;es educacionais, PDI, trilha de certifica&ccedil;&atilde;o e valida&ccedil;&atilde;o avulsa</li>
+          <li>Servidores abaixo do m&iacute;nimo de horas aplic&aacute;vel ao seu interst&iacute;cio</li>
+          <li>A&ccedil;&otilde;es educacionais mais recusadas pelas chefias</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Assun&ccedil;&atilde;o por tipo e teto de carreira</span>
+        <span class="pnl-tag">Arts. 42 e 51</span>
+      </summary>
+      <div class="pnl-body">
+        Acompanhamento da pontua&ccedil;&atilde;o de maior dispers&atilde;o entre servidores.
+        <ul>
+          <li>Servidores pontuando em cada tipo, dos incisos I a X</li>
+          <li>Proximidade do teto de carreira de assun&ccedil;&atilde;o (art. 51, &sect; 13)</li>
+          <li>Substitui&ccedil;&otilde;es e supl&ecirc;ncias com transfer&ecirc;ncia de pontua&ccedil;&atilde;o</li>
+          <li>Estoque de an&aacute;lises dos tipos VII a X pendentes na comiss&atilde;o</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Titula&ccedil;&atilde;o acad&ecirc;mica em an&aacute;lise</span>
+        <span class="pnl-tag">Arts. 44 e 45</span>
+      </summary>
+      <div class="pnl-body">
+        Controle do cumprimento do prazo de trinta dias.
+        <ul>
+          <li>Estoque por tipo de titula&ccedil;&atilde;o e por relator</li>
+          <li>Tempo m&eacute;dio de an&aacute;lise comparado ao prazo do art. 45, &sect; 4&ordm;</li>
+          <li>Deferimentos, indeferimentos e principais motivos de recusa</li>
+          <li>&Aacute;reas do conhecimento mais apresentadas por cargo de origem</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="sec-head" style="margin:28px 0 4px">Gest&atilde;o do colegiado</div>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Produtividade da comiss&atilde;o</span>
+        <span class="pnl-tag">Art. 61, IX</span>
+      </summary>
+      <div class="pnl-body">
+        &Uacute;nico painel que mede a pr&oacute;pria comiss&atilde;o e sustenta as sugest&otilde;es de melhoria previstas no art. 61, IX.
+        <ul>
+          <li>Manifesta&ccedil;&otilde;es recebidas e conclu&iacute;das por m&ecirc;s</li>
+          <li>Tempo m&eacute;dio de decis&atilde;o por tipo de manifesta&ccedil;&atilde;o</li>
+          <li>Taxa de cumprimento de prazo e volume de prorroga&ccedil;&otilde;es</li>
+          <li>Distribui&ccedil;&atilde;o de processos por relator e qu&oacute;rum das sess&otilde;es</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="sec-head" style="margin:28px 0 4px">Planejamento e risco</div>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Proje&ccedil;&atilde;o de evolu&ccedil;&otilde;es</span>
+        <span class="pnl-tag">Art. 53</span>
+      </summary>
+      <div class="pnl-body">
+        Subs&iacute;dio ao titular do &oacute;rg&atilde;o e ao planejamento or&ccedil;ament&aacute;rio.
+        <ul>
+          <li>Servidores previstos como aptos em tr&ecirc;s, seis e doze meses</li>
+          <li>Proje&ccedil;&atilde;o por n&iacute;vel e por cargo</li>
+          <li>Volume esperado de atos de concess&atilde;o por m&ecirc;s</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pnl">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="pnl-name"><span class="chev">&rsaquo;</span> Alertas e riscos</span>
+        <span class="pnl-tag">Art. 57, &sect; 4&ordm;</span>
+      </summary>
+      <div class="pnl-body">
+        Pontos que exigem provid&ecirc;ncia imediata da comiss&atilde;o ou do titular.
+        <ul>
+          <li>Manifesta&ccedil;&otilde;es com prazo vencido ou a vencer</li>
+          <li>Servidores com requisito bloqueado h&aacute; mais de um ciclo</li>
+          <li>Unidades sem chefia designada para a verifica&ccedil;&atilde;o do desempenho</li>
+          <li>Membros da comiss&atilde;o afastados h&aacute; mais de trinta dias consecutivos</li>
+        </ul>
+      </div>
+    </details>
+
+    <p class="note">Os pain&eacute;is s&atilde;o uma proposta para valida&ccedil;&atilde;o. Nenhum deles substitui a verifica&ccedil;&atilde;o individual do cumprimento dos requisitos, que permanece no card de valida&ccedil;&atilde;o de evolu&ccedil;&otilde;es funcionais.</p>
+  </div>
+
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title">Linha do tempo</div>
+    <p class="card-sub">Registro cronol&oacute;gico dos atos conclu&iacute;dos pela comiss&atilde;o</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 6px" id="filtros-tl">
+      <button class="chip" aria-pressed="true" data-tl="todos">Todos &middot; 9</button>
+      <button class="chip" aria-pressed="false" data-tl="recursos">Recursos &middot; 2</button>
+      <button class="chip" aria-pressed="false" data-tl="titulacao">Titula&ccedil;&atilde;o acad&ecirc;mica &middot; 2</button>
+      <button class="chip" aria-pressed="false" data-tl="assuncao">Assun&ccedil;&atilde;o de responsabilidades &middot; 1</button>
+      <button class="chip" aria-pressed="false" data-tl="consolidacao">Consolida&ccedil;&otilde;es &middot; 2</button>
+      <button class="chip" aria-pressed="false" data-tl="composicao">Composi&ccedil;&atilde;o &middot; 1</button>
+      <button class="chip" aria-pressed="false" data-tl="cnpq">&Aacute;reas do conhecimento &middot; 1</button>
+    </div>
+
+    <div class="scrollbox" style="padding:0 14px 4px">
+
+      <div class="tl" data-tl="consolidacao">
+        <div class="tl-row">
+          <div class="tl-date">31/07/2026<div class="tl-proto">202600005013128</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Consolida&ccedil;&atilde;o 07/2026 &mdash; relat&oacute;rio encaminhado ao titular</div>
+            <div class="tl-name">174 servidores validados, de 203 aptos apurados &middot; m&ecirc;s de refer&ecirc;ncia 06/2026</div>
+            <div class="tl-tags"><span class="badge b-ok">Enviado no prazo</span><span class="badge b-ok">Homologado pelo titular</span></div>
+            <div class="tl-det">Envio em 21/07/2026, no 15&ordm; dia &uacute;til &middot; Portaria n&ordm; 1.042/2026, de 31/07/2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="recursos">
+        <div class="tl-row">
+          <div class="tl-date">17/07/2026<div class="tl-proto">202600005012884</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Recurso de desempenho &mdash; decis&atilde;o final</div>
+            <div class="tl-name"><span class="lnk">Let&iacute;cia Amorim Rocha</span> &middot; 1&ordm; semestre de 2026</div>
+            <div class="tl-tags"><span class="badge b-ok">Provido parcialmente</span><span class="badge b-info">Decis&atilde;o por maioria &middot; 2 a 1</span></div>
+            <div class="tl-det">Pontua&ccedil;&atilde;o de desempenho ajustada de 7,2 para 7,9 &middot; art. 39</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="titulacao">
+        <div class="tl-row">
+          <div class="tl-date">26/06/2026<div class="tl-proto">202600005012340</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Titula&ccedil;&atilde;o acad&ecirc;mica &mdash; valida&ccedil;&atilde;o</div>
+            <div class="tl-name"><span class="lnk">Let&iacute;cia Amorim Rocha</span> &middot; Mestrado em Administra&ccedil;&atilde;o P&uacute;blica</div>
+            <div class="tl-tags"><span class="badge b-ok">Validada</span><span class="badge b-ok">Utilizada para evolu&ccedil;&atilde;o</span></div>
+            <div class="tl-det">Analisada em 22 dias &middot; +8,0 pontos lan&ccedil;ados em 01/07/2026, na forma do art. 52</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="consolidacao">
+        <div class="tl-row">
+          <div class="tl-date">30/06/2026<div class="tl-proto">202600005012201</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Consolida&ccedil;&atilde;o 06/2026 &mdash; relat&oacute;rio encaminhado ao titular</div>
+            <div class="tl-name">158 servidores validados, de 181 aptos apurados &middot; m&ecirc;s de refer&ecirc;ncia 05/2026</div>
+            <div class="tl-tags"><span class="badge b-ok">Enviado no prazo</span><span class="badge b-ok">Homologado pelo titular</span></div>
+            <div class="tl-det">Envio em 19/06/2026, no 15&ordm; dia &uacute;til &middot; Portaria n&ordm; 902/2026, de 30/06/2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="assuncao">
+        <div class="tl-row">
+          <div class="tl-date">20/06/2026<div class="tl-proto">202600005011978</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Assun&ccedil;&atilde;o de responsabilidades &mdash; valida&ccedil;&atilde;o</div>
+            <div class="tl-name"><span class="lnk">Marcos Vin&iacute;cius Teixeira</span> &middot; Publica&ccedil;&atilde;o de artigo em peri&oacute;dico com ISSN &middot; art. 42, VII</div>
+            <div class="tl-tags"><span class="badge b-ok">Validada</span><span class="badge b-ok">Utilizada para evolu&ccedil;&atilde;o</span></div>
+            <div class="tl-det">Manifesta&ccedil;&atilde;o pr&eacute;via favor&aacute;vel da chefia em 19/06/2026 &middot; +3,0 pontos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="recursos">
+        <div class="tl-row">
+          <div class="tl-date">05/06/2026<div class="tl-proto">202600005011655</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Recurso de a&ccedil;&atilde;o educacional &mdash; decis&atilde;o final</div>
+            <div class="tl-name"><span class="lnk">Maria da Silva</span> &middot; Curso de 10h fora do rol, do PDI e da trilha de certifica&ccedil;&atilde;o</div>
+            <div class="tl-tags"><span class="badge b-crit">Desprovido</span><span class="badge b-info">Decis&atilde;o un&acirc;nime</span></div>
+            <div class="tl-det">Mantida a recusa da chefia &middot; conte&uacute;do sem rela&ccedil;&atilde;o com as atribui&ccedil;&otilde;es do cargo &middot; art. 41, &sect; 5&ordm;</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="titulacao">
+        <div class="tl-row">
+          <div class="tl-date">18/05/2026<div class="tl-proto">202600005011302</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Titula&ccedil;&atilde;o acad&ecirc;mica &mdash; manifesta&ccedil;&atilde;o pr&eacute;via</div>
+            <div class="tl-name"><span class="lnk">Rafael Antunes Moreira</span> &middot; Especializa&ccedil;&atilde;o em Gest&atilde;o de Pol&iacute;ticas P&uacute;blicas</div>
+            <div class="tl-tags"><span class="badge b-ok">Manifesta&ccedil;&atilde;o favor&aacute;vel</span></div>
+            <div class="tl-det">Consulta anterior ao in&iacute;cio do curso &middot; art. 45, &sect; 2&ordm; &middot; n&atilde;o dispensa a comprova&ccedil;&atilde;o dos demais crit&eacute;rios do art. 44</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="cnpq">
+        <div class="tl-row">
+          <div class="tl-date">14/04/2026<div class="tl-proto">202600005010744</div></div>
+          <div style="flex:1">
+            <div class="tl-title">&Aacute;reas do conhecimento &mdash; rela&ccedil;&atilde;o encaminhada ao titular</div>
+            <div class="tl-name">Cargos dos Grupos Ocupacionais Analista de Sa&uacute;de e Assistente de Sa&uacute;de</div>
+            <div class="tl-tags"><span class="badge b-ok">Encaminhada</span><span class="badge b-ok">Ato emitido pelo titular</span></div>
+            <div class="tl-det">Definida com o aux&iacute;lio da GGDP &middot; art. 61, II &middot; Portaria n&ordm; 617/2026, de 24/04/2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl" data-tl="composicao">
+        <div class="tl-row">
+          <div class="tl-date">14/01/2026<div class="tl-proto">202600005010115</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Composi&ccedil;&atilde;o da comiss&atilde;o &mdash; designa&ccedil;&atilde;o dos membros</div>
+            <div class="tl-name">Cinco membros titulares e respectivos suplentes, todos servidores efetivos</div>
+            <div class="tl-tags"><span class="badge b-ok">Publicada</span></div>
+            <div class="tl-det">Portaria n&ordm; 214/2026-SES &middot; Di&aacute;rio Oficial n&ordm; 24.698, de 14/01/2026 &middot; arts. 57 e 63, III</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  function grupo(id, attr, alvoSel, dataAttr) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.chip') : null;
+      if (!b) return;
+      var vals = box.querySelectorAll('.chip');
+      for (var i = 0; i < vals.length; i++) vals[i].setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-pressed', 'true');
+      var v = b.getAttribute(attr);
+      var itens = document.querySelectorAll(alvoSel);
+      for (var j = 0; j < itens.length; j++) {
+        var ok = (v === 'todos') || (itens[j].getAttribute(dataAttr) === v);
+        itens[j].classList.toggle('hide', !ok);
+      }
+    });
+  }
+
+  var ev = 'todos', pd = 'todas';
+  function aplicaEv() {
+    var itens = document.querySelectorAll('.ev');
+    for (var i = 0; i < itens.length; i++) {
+      var it = itens[i];
+      var okEv = (ev === 'todos') || (it.getAttribute('data-ev') === ev);
+      var toks = (it.getAttribute('data-pend') || '').split(' ');
+      var okPd = (ev !== 'pend') || (pd === 'todas') || (toks.indexOf(pd) !== -1);
+      it.classList.toggle('hide', !(okEv && okPd));
+    }
+    var box = document.getElementById('filtros-pend');
+    if (box) box.style.display = (ev === 'pend') ? 'flex' : 'none';
+  }
+  var boxEv = document.getElementById('filtros-ev');
+  if (boxEv) boxEv.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.chip') : null;
+    if (!b) return;
+    var v = boxEv.querySelectorAll('.chip');
+    for (var i = 0; i < v.length; i++) v[i].setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-pressed', 'true');
+    ev = b.getAttribute('data-ev'); pd = 'todas';
+    var bp = document.getElementById('filtros-pend');
+    if (bp) { var w = bp.querySelectorAll('.chip');
+      for (var j = 0; j < w.length; j++) w[j].setAttribute('aria-pressed', w[j].getAttribute('data-pend') === 'todas' ? 'true' : 'false'); }
+    aplicaEv();
+  });
+  var boxPd = document.getElementById('filtros-pend');
+  if (boxPd) boxPd.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.chip') : null;
+    if (!b) return;
+    var v = boxPd.querySelectorAll('.chip');
+    for (var i = 0; i < v.length; i++) v[i].setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-pressed', 'true');
+    pd = b.getAttribute('data-pend');
+    aplicaEv();
+  });
+  grupo('filtros-tl', 'data-tl', '.tl', 'data-tl');
+
+  var ctx = document.getElementById('filtros-ctx');
+  if (ctx) {
+    ctx.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.chip') : null;
+      if (!b) return;
+      var vals = ctx.querySelectorAll('.chip');
+      for (var i = 0; i < vals.length; i++) vals[i].setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-pressed', 'true');
+      var v = b.getAttribute('data-ctx');
+      var notas = document.querySelectorAll('[data-ctx-note]');
+      for (var j = 0; j < notas.length; j++) {
+        notas[j].classList.toggle('hide', notas[j].getAttribute('data-ctx-note') !== v);
+      }
+    });
+  }
+
+  var pz = 'todos', tp = 'todos', bq = '';
+  function aplicaManif() {
+    var linhas = document.querySelectorAll('.mf');
+    for (var i = 0; i < linhas.length; i++) {
+      var l = linhas[i];
+      var okPz = (pz === 'todos') || (l.getAttribute('data-pz') === pz);
+      var okTp = (tp === 'todos') || (l.getAttribute('data-tipo') === tp);
+      var okBq = (bq === '') || (l.getAttribute('data-busca').indexOf(bq) !== -1);
+      l.classList.toggle('hide', !(okPz && okTp && okBq));
+    }
+  }
+
+  var boxPz = document.getElementById('filtros-prazo');
+  if (boxPz) {
+    boxPz.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.chip') : null;
+      if (!b) return;
+      var vals = boxPz.querySelectorAll('.chip');
+      for (var i = 0; i < vals.length; i++) vals[i].setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-pressed', 'true');
+      pz = b.getAttribute('data-pz');
+      aplicaManif();
+    });
+  }
+
+  var selTipo = document.getElementById('f-tipo');
+  if (selTipo) selTipo.addEventListener('change', function () { tp = this.value; aplicaManif(); });
+
+  var inpBusca = document.getElementById('f-busca');
+  if (inpBusca) inpBusca.addEventListener('input', function () {
+    bq = this.value.toLowerCase().trim();
+    aplicaManif();
+  });
+})();
+</script>
+
+</body>
+</html>

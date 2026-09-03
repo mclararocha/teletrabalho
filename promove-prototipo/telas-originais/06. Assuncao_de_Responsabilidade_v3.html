@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{margin:0;background:oklch(97% 0.006 255);font-family:-apple-system,BlinkMacSystemFont,'Public Sans',Helvetica,Arial,sans-serif;color:oklch(22% 0.02 255)}
+  *{box-sizing:border-box}
+  summary::-webkit-details-marker{display:none}
+  summary{position:relative;padding-right:34px !important;cursor:pointer}
+  summary::after{content:"+";position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:18px;font-weight:400;color:oklch(55% 0.01 255)}
+  details[open] summary::after{content:"–"}
+  table{border-collapse:collapse}
+</style>
+</head>
+<body>
+
+<div style="min-height:100vh;padding:56px 24px 96px;display:flex;justify-content:center">
+<div style="width:100%;max-width:760px">
+
+  <!-- 1. TÍTULO -->
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:36px">
+    <div style="width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid oklch(91% 0.006 255);display:flex;align-items:center;justify-content:center;font-size:17px;color:oklch(45% 0.02 255);flex-shrink:0">←</div>
+    <h1 style="margin:0;font-size:32px;font-weight:800;letter-spacing:-0.01em">Assunção de Responsabilidade</h1>
+  </div>
+
+  <!-- 2. FILTRO DE CICLO -->
+  <div style="margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:14px;color:oklch(48% 0.02 255)">Ciclo</span>
+      <select style="font-size:14px;padding:7px 14px;border-radius:8px;border:1px solid oklch(85% 0.006 255);background:#fff;color:oklch(22% 0.02 255)">
+        <option selected>A → B · em andamento · início em 01/02/2025</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 3. CARD DE PONTUAÇÃO (barra) — paleta roxa (categoria Assunção de Responsabilidade), teto de carreira -->
+  <div style="background:oklch(97% 0.03 300);border:1px solid oklch(88% 0.07 300);border-radius:16px;padding:24px 28px;margin-bottom:32px">
+    <div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:14px">
+      <div>
+        <div style="font-size:13px;color:oklch(48% 0.02 255);margin-bottom:4px">Pontos neste ciclo</div>
+        <div style="font-size:32px;font-weight:800">55,18</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px;color:oklch(48% 0.02 255);margin-bottom:4px">Acumulado na carreira</div>
+        <div style="font-size:32px;font-weight:800">55,18 <span style="font-size:16px;font-weight:600;color:oklch(45% 0.02 255)">/ 144</span></div>
+      </div>
+    </div>
+    <div style="height:10px;border-radius:6px;background:oklch(90% 0.006 255);overflow:hidden;margin-bottom:10px">
+      <div style="height:100%;border-radius:6px;background:oklch(60% 0.16 300);width:38.3%"></div>
+    </div>
+    <div style="font-size:12px;color:oklch(48% 0.02 255);padding-top:6px;border-top:1px solid oklch(90% 0.03 300)">
+      Limite de 144 pontos na carreira — Art. 51, § 13, Anexo III, inciso I, do Decreto nº 10.802/2025.
+    </div>
+  </div>
+
+  <!-- 4. PONTUAÇÕES MENSAIS -->
+  <div style="margin-top:8px;margin-bottom:16px;font-size:17px;font-weight:800;border-left:4px solid oklch(55% 0.16 300);padding-left:12px">Pontuações mensais</div>
+  <div style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;overflow:auto;max-height:360px;margin-bottom:32px">
+    <table style="width:100%;font-size:13px">
+      <thead>
+        <tr>
+          <th style="text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);white-space:nowrap;position:sticky;top:0;background:#fff;z-index:2">Mês ref.</th>
+          <th style="text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);white-space:nowrap;position:sticky;top:0;background:#fff;z-index:2">Mês inserção</th>
+          <th style="text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);position:sticky;top:0;background:#fff;z-index:2">Descrição</th>
+          <th style="text-align:right;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);white-space:nowrap;position:sticky;top:0;background:#fff;z-index:2">Pontos</th>
+        </tr>
+      </thead>
+      <tbody id="months"></tbody>
+    </table>
+  </div>
+
+  <!-- 5. MINHAS ASSUNÇÕES DE RESPONSABILIDADES (agrupado por inciso do Art. 42) -->
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px;margin-bottom:16px">
+    <div style="font-size:17px;font-weight:800;border-left:4px solid oklch(55% 0.16 300);padding-left:12px">Minhas assunções de responsabilidades</div>
+    <button style="font-size:13px;font-weight:700;color:#fff;background:oklch(52% 0.16 255);border:none;padding:9px 16px;border-radius:8px;cursor:pointer;white-space:nowrap">+ Incluir responsabilidade</button>
+  </div>
+  <div id="groups" style="display:flex;flex-direction:column;gap:16px;margin-bottom:16px"></div>
+
+  <!-- 6. LEGENDA -->
+  <details style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;padding:16px 20px;margin-bottom:10px">
+    <summary style="font-size:14px;font-weight:700">Legenda dos tipos (Art. 42 e Anexo III)</summary>
+    <div style="margin-top:14px;font-size:13px;color:oklch(45% 0.02 255);display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:12px;color:oklch(58% 0.01 255)">Atuações mensais — pontuação por mês de atuação, conforme os dias trabalhados no mês (Art. 51, inciso I):</div>
+      <div><b>I</b> — Cargo em comissão (Tabela 1)</div>
+      <div><b>II</b> — Função comissionada (Tabela 2)</div>
+      <div><b>III</b> — Função gratificada ou designada (Tabelas 3 e 4)</div>
+      <div><b>IV</b> — Agente de contratação, gestor ou fiscal de contratos ou convênios (Tabela 5)</div>
+      <div><b>V</b> — Conselho, comitê, câmara técnica, comissão ou grupo de trabalho (Tabela 6)</div>
+      <div><b>VI</b> — Lotação ou função prioritária (Tabela 7)</div>
+      <div style="margin-top:6px;padding-top:8px;border-top:1px solid oklch(93% 0.004 255);font-size:12px;color:oklch(58% 0.01 255)">Atuação única — pontuação por evento, creditada no mês seguinte à validação (Art. 43, § 8º):</div>
+      <div><b>VII</b> — Publicação de artigos/pesquisas (Tabela 8) ou livros (Tabela 9)</div>
+      <div><b>VIII</b> — Aprovação em eventos científicos, estadual ou superior (Tabela 10)</div>
+      <div><b>IX</b> — Registro de patente ou de cultivar (Tabela 11)</div>
+      <div><b>X</b> — Estágio pós-doutoral desenvolvido no órgão (Tabela 12)</div>
+    </div>
+  </details>
+  <div style="font-size:11px;color:oklch(58% 0.01 255);margin-bottom:32px">Vedada a acumulação simultânea entre os tipos I, II e III entre si (Art. 51, § 5º). Permitidas até 2 atuações do tipo IV e até 2 do tipo V, tomada a maior pontuação de cada tipo.</div>
+
+  <!-- FREQUÊNCIA, LICENÇAS E AFASTAMENTOS NO CICLO -->
+  <div style="margin-top:8px;margin-bottom:16px;font-size:17px;font-weight:800;border-left:4px solid oklch(55% 0.16 300);padding-left:12px">Frequência, licenças e afastamentos no ciclo de evolução</div>
+  <div style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;overflow:auto;max-height:340px;margin-bottom:32px">
+    <div style="display:table;width:100%;font-size:13px">
+      <div style="display:table-row">
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255)">Mês</div>
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255)">Ocorrência</div>
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255)">Período</div>
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255)">Substituição</div>
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255)">Efeito na pontuação</div>
+      </div>
+      <div id="afast" style="display:table-row-group"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  // ---- helpers ----
+  function badge(r) {
+    return '<span style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">' + r + '</span>';
+  }
+  function fmt(n) { return '+' + n.toFixed(3).replace('.', ','); }
+  function pill(txt, kind) {
+    var m = {
+      ativa: { c: 'oklch(38% 0.11 150)', bg: 'oklch(94% 0.05 150)' },
+      fim:   { c: 'oklch(58% 0.01 255)', bg: 'oklch(94% 0.006 255)' }
+    }[kind];
+    return '<span style="font-size:11px;font-weight:700;color:' + m.c + ';background:' + m.bg + ';padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">' + txt + '</span>';
+  }
+  var TD = 'padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);vertical-align:top';
+
+  // ---- responsabilidades ativas por mês ----
+  var fc11 = { r: 'II', d: 'FCPE-11 · R$ 1.201 a R$ 1.650', p: 0.400 };
+  var fc1  = { r: 'II', d: 'FCPE-1 · acima de R$ 2.250',    p: 0.500 };
+  var ccef = { r: 'V',  d: 'CCEF — Comissão Central de Evolução Funcional', p: 0.333 };
+  var ccefP = { r: 'V', d: 'CCEF — Comissão Central de Evolução Funcional (2 dias · proporcional)', p: 0.0222 };
+  var cII  = { r: 'IV', d: 'Contratos/convênios · Faixa II',  p: 0.444 };
+  var cIII = { r: 'IV', d: 'Contratos/convênios · Faixa III', p: 0.400 };
+  var agIII = { r: 'IV', d: 'Agente de contratação · Faixa III', p: 0.400 };
+  var agII  = { r: 'IV', d: 'Agente de contratação · Faixa II', p: 0.444 };
+  // atuações únicas (VII a X) — Tabelas 8 a 12, creditadas no mês seguinte à validação
+  var artVII  = { r: 'VII',  d: 'Artigo científico indexado com ISSN — Revista de Saúde Pública', p: 3.0 };
+  var evtVIII = { r: 'VIII', d: 'Trabalho aprovado em evento científico nacional', p: 3.0 };
+  var patIX   = { r: 'IX',   d: 'Registro de patente (INPI)', p: 6.0 };
+  var posX    = { r: 'X',    d: 'Estágio pós-doutoral (> 6 e ≤ 12 meses)', p: 8.0 };
+
+  var months = [
+    ['07/2026', '08/2026', [fc1, cIII, posX]],
+    ['06/2026', '07/2026', [fc1, cIII, patIX]],
+    ['05/2026', '06/2026', [fc1, cIII, evtVIII]],
+    ['04/2026', '05/2026', [fc1, cIII, artVII]],
+    ['03/2026', '04/2026', [fc1, cIII]],
+    ['02/2026', '03/2026', [fc1, cIII, ccefP]],
+    ['01/2026', '02/2026', [fc1, ccef, cII], {period:'01 a 06/01/2026', dias:6, affected:['FCPE-1 · acima de R$ 2.250','CCEF — Comissão Central de Evolução Funcional','Contratos/convênios · Faixa II'], note:'Afastamento para Participação em Competição Esportiva · Art. 5º — descontado do titular e transferido ao substituto (Art. 51, §§ 1º e 2º)'}],
+    ['12/2025', '01/2026', [fc1, ccef, cII]],
+    ['11/2025', '12/2025', [fc1, ccef, cII], {period:'01 a 10/11/2025', dias:10, affected:['FCPE-1 · acima de R$ 2.250','CCEF — Comissão Central de Evolução Funcional','Contratos/convênios · Faixa II'], note:'Licença por Motivo de Doença em Pessoa da Família · Art. 5º — descontado do titular (Art. 51, § 1º)'}],
+    ['10/2025', '11/2025', [fc1, ccef, agII]],
+    ['09/2025', '10/2025', [fc1, ccef, agIII]],
+    ['08/2025', '09/2025', [fc1, ccef], {period:'01 a 09/08/2025', dias:9, affected:['FCPE-1 · acima de R$ 2.250'], note:'Licença-Prêmio · Art. 4º — FCPE-1 transferida ao substituto (Art. 51, § 2º)'}],
+    ['07/2025', '08/2025', [fc1, ccef]],
+    ['06/2025', '07/2025', [fc1, ccef], {nota:'Convocação ao Tribunal do Júri · 01 a 07/06/2025 (7 dias) · Art. 4º — sem impacto, conta como efetivo exercício'}],
+    ['05/2025', '06/2025', [fc1, ccef]],
+    ['04/2025', '05/2025', [fc11, ccef]],
+    ['03/2025', '04/2025', [fc11, ccef]],
+    ['02/2025', '03/2025', [fc11, ccef]]
+  ];
+
+  var html = months.map(function (m) {
+    var ref = m[0], ins = m[1], items = m[2], desc = m[3];
+    var total = items.reduce(function (s, i) { return s + i.p; }, 0);
+    var lines = items.map(function (i) {
+      var aff = desc && desc.affected && desc.affected.indexOf(i.d) >= 0;
+      if (aff) {
+        var net = Math.round(i.p * (30 - desc.dias) / 30 * 1000) / 1000;
+        var baseStr = i.p.toFixed(3).replace('.', ',');
+        var netStr = net.toFixed(3).replace('.', ',');
+        total -= (i.p - net);
+        return '<div style="display:flex;justify-content:space-between;gap:8px"><span>' + badge(i.r) + i.d + '</span><span style="font-weight:700;white-space:nowrap">' + fmt(net) + '</span></div>' +
+          '<div style="padding-left:26px;font-size:11px;color:oklch(48% 0.13 30)">' + desc.period + ' · Desconto: ' + baseStr + ' − (' + desc.dias + ' × ' + baseStr + ')/30 = ' + netStr + '</div>';
+      }
+      return '<div style="display:flex;justify-content:space-between;gap:8px"><span>' + badge(i.r) + i.d + '</span><span style="font-weight:700;white-space:nowrap">' + fmt(i.p) + '</span></div>';
+    }).join('');
+    var extra = '';
+    if (desc && desc.note) {
+      extra = '<div style="font-size:11px;color:oklch(58% 0.01 255)">' + desc.note + '</div>';
+    } else if (desc && desc.nota) {
+      extra = '<div style="font-size:11px;color:oklch(58% 0.01 255)">' + desc.nota + '</div>';
+    }
+    var showTotal = items.length > 1 || (desc && desc.affected);
+    var totalRow = showTotal
+      ? '<div style="display:flex;justify-content:space-between;border-top:1px solid oklch(93% 0.004 255);padding-top:6px;margin-top:2px;font-weight:700"><span style="color:oklch(58% 0.01 255)">Total do mês</span><span>' + fmt(total) + '</span></div>'
+      : '';
+    return '<tr>' +
+      '<td style="' + TD + ';white-space:nowrap">' + ref + '</td>' +
+      '<td style="' + TD + ';white-space:nowrap">' + ins + '</td>' +
+      '<td style="' + TD + '"><div style="display:flex;flex-direction:column;gap:5px">' + lines + extra + totalRow + '</div></td>' +
+      '<td style="' + TD + ';text-align:right"></td>' +
+    '</tr>';
+  }).join('');
+
+  // linha do acúmulo retroativo (competência inicial)
+  html += '<tr style="background:oklch(96% 0.006 255)">' +
+    '<td style="' + TD + '">de 01/2020<br>até 01/2025</td>' +
+    '<td style="' + TD + ';white-space:nowrap">03/2025</td>' +
+    '<td style="' + TD + '">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px"><span>' + badge('II') + 'Acúmulo retroativo — função comissionada desde 12/01/2020, período anterior ao início dos pontos</span><span style="font-weight:700;white-space:nowrap">+18,720</span></div>' +
+      '<div style="margin-top:4px;font-size:11px;color:oklch(58% 0.01 255);font-style:italic">Compreende os meses de função comissionada dos 5 anos anteriores ao enquadramento (Art. 68, IV, "a", do Decreto nº 10.802/2025), lançados na competência inicial. Valor apurado pela GGDP.</div>' +
+    '</td>' +
+    '<td style="' + TD + ';text-align:right"></td>' +
+  '</tr>';
+
+  document.getElementById('months').innerHTML = html;
+
+  // ---- card de frequência, licenças e afastamentos ----
+  function afTag(txt, kind) {
+    var m = {
+      impacto:  { c: 'oklch(38% 0.11 150)', bg: 'oklch(94% 0.05 150)' },
+      desconto: { c: 'oklch(45% 0.13 30)',  bg: 'oklch(95% 0.04 30)' },
+      transfer: { c: 'oklch(45% 0.02 255)', bg: 'oklch(94% 0.006 255)' }
+    }[kind];
+    return '<span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;display:inline-block;color:' + m.c + ';background:' + m.bg + '">' + txt + '</span>';
+  }
+  var AFC = 'display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);vertical-align:top;font-size:13px';
+  function afRow(mes, ocor, refLei, periodo, dias, subst, tag, kind) {
+    return '<div style="display:table-row">' +
+      '<div style="' + AFC + ';white-space:nowrap">' + mes + '</div>' +
+      '<div style="' + AFC + '">' + ocor + '<br><span style="color:oklch(58% 0.01 255);font-size:12px">' + refLei + '</span></div>' +
+      '<div style="' + AFC + ';white-space:nowrap">' + periodo + '<br><span style="color:oklch(58% 0.01 255)">' + dias + '</span></div>' +
+      '<div style="' + AFC + '">' + subst + '</div>' +
+      '<div style="' + AFC + '">' + afTag(tag, kind) + '</div>' +
+    '</div>';
+  }
+  document.getElementById('afast').innerHTML =
+    afRow('01/2026', 'Afastamento para Participação em Competição Esportiva', 'Art. 5º, Lei nº 23.241/2025', '01 a 06/01/2026', '6 dias', 'Sim', 'Descontado e transferido ao substituto', 'desconto') +
+    afRow('11/2025', 'Licença por Motivo de Doença em Pessoa da Família', 'Art. 5º, Lei nº 23.241/2025', '01 a 10/11/2025', '10 dias', 'Não', 'Descontado do titular', 'desconto') +
+    afRow('08/2025', 'Licença-Prêmio', 'Art. 4º, Lei nº 23.241/2025', '01 a 09/08/2025', '9 dias', 'Sim', 'Descontado e transferido ao substituto', 'desconto') +
+    afRow('06/2025', 'Convocação ao Tribunal do Júri e Outros Serviços Obrigatórios', 'Art. 4º, Lei nº 23.241/2025', '01 a 07/06/2025', '7 dias', 'Não', 'Sem impacto', 'impacto') +
+    afRow('07/2019', 'Férias — Cargo em comissão (Gerente de Saúde · DAI-1)', 'Art. 4º, Lei nº 23.241/2025', '01 a 15/07/2019', '15 dias', 'Sim', 'Descontado e transferido ao substituto', 'desconto') +
+    afRow('07/2018', 'Férias — Cargo em comissão (Gerente de Saúde · DAI-1)', 'Art. 4º, Lei nº 23.241/2025', '01 a 30/07/2018', '30 dias', 'Sim', 'Descontado e transferido ao substituto', 'desconto');
+
+  // ---- card agrupado por inciso ----
+  function kv(k, v) {
+    return '<div style="margin-bottom:5px;font-size:13px;line-height:1.45"><span style="color:oklch(55% 0.01 255)">' + k + ': </span><span style="color:oklch(30% 0.02 255)">' + v + '</span></div>';
+  }
+  function ato(text, doe) {
+    return kv('Ato normativo', text) + kv('Publicação', doe);
+  }
+  function txt(s, muted) {
+    return '<div style="font-size:13px;color:' + (muted ? 'oklch(58% 0.01 255)' : 'oklch(30% 0.02 255)') + '">' + s + '</div>';
+  }
+  function sec(label, content) {
+    return '<div style="display:flex;gap:14px;padding:12px 0;border-top:1px solid oklch(93% 0.004 255)">' +
+      '<div style="width:118px;flex-shrink:0;font-size:12px;font-weight:600;color:oklch(30% 0.02 255)">' + label + '</div>' +
+      '<div style="flex:1;min-width:0">' + content + '</div></div>';
+  }
+  function histEntry(roman, title, statusText, statusKind, sections, open) {
+    return '<details' + (open ? ' open' : '') + ' style="border-top:1px solid oklch(93% 0.004 255)">' +
+      '<summary style="padding:14px 0;list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center">' +
+        '<span style="font-size:14px;font-weight:600">' + (roman ? badge(roman) : '') + title + '</span>' + pill(statusText, statusKind) +
+      '</summary>' + sections + '</details>';
+  }
+  function subBlock(inner) {
+    return '<div style="background:oklch(97% 0.004 255);border:1px solid oklch(93% 0.004 255);border-radius:8px;padding:10px 12px;margin-bottom:8px">' + inner + '</div>';
+  }
+  function contract(n, objeto, papel, complex, vig, status, atoTxt, doe, suplente) {
+    return subBlock('<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:5px"><span style="font-size:13px;font-weight:600;color:oklch(28% 0.02 255)">' + n + '. ' + objeto + '</span>' + pill(status, status === 'Vigente' ? 'ativa' : 'fim') + '</div>' +
+      kv('Papel', papel) + kv('Complexidade', complex) + kv('Vigência', vig) + ato(atoTxt, doe) + kv('Suplente', suplente || '—'));
+  }
+  function proc(ident, objeto, atuacao, status, sei) {
+    return '<div style="padding:8px 0;border-top:0.5px solid oklch(93% 0.004 255)">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span style="font-size:13px;font-weight:500;color:oklch(28% 0.02 255)">' + ident + ' — ' + objeto + '</span>' + pill(status, status === 'Vigente' ? 'ativa' : 'fim') + '</div>' +
+      '<div style="font-size:11px;color:oklch(58% 0.01 255);margin-top:2px">Atuação: ' + atuacao + ' (designação → homologação) · ' + sei + '</div></div>';
+  }
+  function entry(title, meta, status) {
+    return '<div style="padding:14px 0;border-top:1px solid oklch(93% 0.004 255)">' +
+      '<div style="display:flex;justify-content:space-between;gap:10px"><span style="font-size:14px;font-weight:600">' + title + '</span>' + status + '</div>' +
+      '<p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">' + meta + '</p></div>';
+  }
+
+  var groups = [
+    {
+      label: 'I — Cargo em comissão',
+      body:
+        histEntry('I', 'Gerente de Saúde (DAI-1)', 'Encerrada', 'fim',
+          sec('Designação', ato('Decreto de 05 de fevereiro de 2018', 'Diário Oficial nº 22.987, de 06 de fevereiro de 2018') + kv('Tipologia', 'Cargo em comissão — Gerente de Saúde') + kv('Símbolo', 'DAI-1') + kv('Área de atuação', 'Gerência de Saúde – SEAD') + kv('Data do efetivo exercício', '05/02/2018') + kv('Pontuação', '0,667 ponto/mês (Tabela 1)') + kv('Atribuições', 'Direção e coordenação das atividades da Gerência de Saúde')) +
+          sec('Substituições', subBlock(kv('Motivo', 'Férias do titular') + ato('Portaria nº 210/2018 · 25/06/2018', 'Diário Oficial nº 22.856, de 27 de junho de 2018') + kv('Período', '01/07/2018 a 30/07/2018 (30 dias)') + kv('Substituto', 'Roberto Alves') + kv('Efeito na pontuação', 'Descontado e transferido ao substituto — 0,667 × 30 ÷ 30 = 0,667 (Art. 51, § 2º)')) + subBlock(kv('Motivo', 'Férias do titular') + ato('Portaria nº 198/2019 · 20/06/2019', 'Diário Oficial nº 23.010, de 24 de junho de 2019') + kv('Período', '01/07/2019 a 15/07/2019 (15 dias)') + kv('Substituto', 'Roberto Alves') + kv('Efeito na pontuação', 'Descontado e transferido ao substituto — 0,667 × 15 ÷ 30 = 0,334 (Art. 51, § 2º)'))) +
+          sec('Encerramento', ato('Decreto de 11 de janeiro de 2020', 'Diário Oficial nº 23.202, de 13 de janeiro de 2020')), false)
+    },
+    {
+      label: 'II — Função comissionada',
+      body:
+        histEntry('II', 'FCPE-1 · Função comissionada', 'Ativa', 'ativa',
+          sec('Designação', ato('Portaria nº 431/2025 · 20/04/2025', 'Diário Oficial nº 24.512, de 22 de abril de 2025') + kv('Tipologia', 'Função Comissionada do Poder Executivo – FCPE (FCPE-1)') + kv('Área de atuação', 'Gerência de Saúde – SEAD') + kv('Complexidade', 'Muito alta (Anexo III – FCPE)') + kv('Valor', 'R$ 3.000,00') + kv('Pontuação', '0,500 ponto/mês') + kv('Atribuições', 'Chefia e apoio técnico às atividades de gestão da Gerência de Saúde')) +
+          sec('Substituições', subBlock(kv('Motivo', 'Licença-Prêmio do titular') + ato('Portaria nº 512/2025 · 30/07/2025', 'Diário Oficial nº 24.577, de 31 de julho de 2025') + kv('Período', '01/08/2025 a 09/08/2025 (9 dias)') + kv('Substituto', 'João Ferreira') + kv('Efeito na pontuação', 'Descontado e transferido ao substituto — 0,500 × 9 ÷ 30 = 0,150 (Art. 51, § 2º)')) + subBlock(kv('Motivo', 'Afastamento para Participação em Competição Esportiva') + ato('Portaria nº 12/2026 · 30/12/2025', 'Diário Oficial nº 24.689, de 31 de dezembro de 2025') + kv('Período', '01/01/2026 a 06/01/2026 (6 dias)') + kv('Substituto', 'Carlos Souza') + kv('Efeito na pontuação', 'Descontado e transferido ao substituto — 0,500 × 6 ÷ 30 = 0,100 (Art. 51, § 2º)'))) +
+          sec('Encerramento', txt('Em vigência')), false) +
+        histEntry('II', 'FCPE-11 · Função comissionada', 'Encerrada', 'fim',
+          sec('Designação', ato('Portaria nº 052/2020 · 12/01/2020', 'Diário Oficial nº 23.201, de 13 de janeiro de 2020') + kv('Tipologia', 'Função Comissionada do Poder Executivo – FCPE (FCPE-11)') + kv('Área de atuação', 'Gerência de Saúde – SEAD') + kv('Complexidade', 'Média (Anexo III – FCPE)') + kv('Valor', 'R$ 1.500,00') + kv('Pontuação', '0,400 ponto/mês') + kv('Atribuições', 'Apoio técnico às atividades da Gerência de Saúde')) +
+          sec('Substituições', txt('Nenhuma no período.', true)) +
+          sec('Encerramento', ato('Portaria nº 431/2025 · 20/04/2025 — substituída pela FCPE-1', 'Diário Oficial nº 24.512, de 22 de abril de 2025')), false)
+    },
+    {
+      label: 'IV — Agente de contratação, gestor ou fiscal de contratos ou convênios',
+      body:
+        histEntry('', 'Gestor ou fiscal de contratos ou convênios', 'Ativa', 'ativa',
+          sec('Designação', kv('Tipologia', 'Gestor ou fiscal de contratos ou convênios') + kv('Área de atuação', 'Contratações da Gerência de Saúde – SEAD') + kv('Faixa', 'complexidade × quantidade de contratos (IN SEAD nº 007/2025, Art. 3º, §§ 5º a 7º)')) +
+          sec('Faixas por período', '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="color:oklch(58% 0.01 255);text-align:left"><th style="padding:4px 8px 4px 0;font-weight:400">Mês</th><th style="padding:4px 8px;font-weight:400">Complex. máx.</th><th style="padding:4px 8px;font-weight:400">Qtd.</th><th style="padding:4px 8px;font-weight:400">Faixa</th><th style="padding:4px 0 4px 8px;font-weight:400;text-align:right">Pts/mês</th></tr></thead><tbody>' + [['11/2025','10 (média)','II','0,444'],['12/2025','10 (média)','II','0,444'],['01/2026','10 (média)','II','0,444'],['02/2026','8 (baixa)','III','0,400'],['03/2026','8 (baixa)','III','0,400'],['04/2026','8 (baixa)','III','0,400'],['05/2026','8 (baixa)','III','0,400'],['06/2026','8 (baixa)','III','0,400'],['07/2026','8 (baixa)','III','0,400']].map(function(r){return '<tr style="border-top:1px solid oklch(93% 0.004 255)"><td style="padding:5px 8px 5px 0">'+r[0]+'</td><td style="padding:5px 8px">Média</td><td style="padding:5px 8px">'+r[1]+'</td><td style="padding:5px 8px">'+r[2]+'</td><td style="padding:5px 0 5px 8px;text-align:right">'+r[3]+'</td></tr>';}).join('') + '</tbody></table>') +
+          sec('Contratos e convênios', '<details><summary style="font-size:12px;color:oklch(52% 0.16 255);padding:2px 0;cursor:pointer">Ver os 10 contratos do período</summary><div style="margin-top:8px">' +
+            contract(1, 'Locação de imóvel — unidade administrativa', 'Gestor', 'Média', 'desde 02/11/2025', 'Vigente', 'Portaria nº 955/2025 · 02/11/2025', 'Diário Oficial nº 24.688, de 03 de novembro de 2025', '—') +
+            contract(2, 'Higiene e limpeza — instituição de longa permanência A', 'Fiscal', 'Baixa', '01/11/2025 a 31/01/2026', 'Encerrado', 'Portaria nº 236/2025 · 15/03/2025', 'Diário Oficial nº 24.489, de 17 de março de 2025', '—') +
+            contract(3, 'Higiene e limpeza — instituição de longa permanência B', 'Fiscal', 'Baixa', '01/11/2025 a 31/01/2026', 'Encerrado', 'Portaria nº 369/2025 · 02/04/2025', 'Diário Oficial nº 24.500, de 03 de abril de 2025', '—') +
+            contract(4, 'Aquisição de medicamentos básicos', 'Gestor', 'Baixa', 'desde 01/11/2025', 'Vigente', 'Portaria nº 488/2025 · 19/06/2025', 'Diário Oficial nº 24.551, de 20 de junho de 2025', '—') +
+            contract(5, 'Insumos hospitalares descartáveis', 'Gestor', 'Baixa', 'desde 01/11/2025', 'Vigente', 'Portaria nº 550/2025 · 30/06/2025', 'Diário Oficial nº 24.558, de 01 de julho de 2025', '—') +
+            contract(6, 'Custeio — acolhimento de idosos', 'Gestor', 'Baixa', 'desde 01/11/2025', 'Vigente', 'Portaria nº 551/2025 · 30/06/2025', 'Diário Oficial nº 24.558, de 01 de julho de 2025', '—') +
+            contract(7, 'Equipamentos médico-hospitalares de pronta entrega', 'Gestor', 'Baixa', 'desde 01/11/2025', 'Vigente', 'Portaria nº 552/2025 · 30/06/2025', 'Diário Oficial nº 24.558, de 01 de julho de 2025', '—') +
+            contract(8, 'Serviços laboratoriais terceirizados', 'Fiscal', 'Média', 'desde 01/11/2025', 'Vigente', 'Portaria nº 693/2025 · 05/08/2025', 'Diário Oficial nº 24.582, de 06 de agosto de 2025', '—') +
+            contract(9, 'Calibração de equipamentos hospitalares', 'Fiscal', 'Média', 'desde 01/11/2025', 'Vigente', 'Portaria nº 899/2025 · 20/10/2025', 'Diário Oficial nº 24.678, de 21 de outubro de 2025', '—') +
+            contract(10, 'Manutenção corretiva de equipamentos médicos', 'Fiscal', 'Média', 'desde 02/08/2025', 'Vigente', 'Portaria nº 690/2025 · 02/08/2025', 'Diário Oficial nº 24.580, de 04 de agosto de 2025', 'Marina Lopes · 01/01/2026 a 06/01/2026 (competição esportiva do titular)') +
+          '</div></details>'), false) +
+        histEntry('', 'Agente de contratação', 'Encerrada', 'fim',
+          sec('Designação', kv('Tipologia', 'Agente de contratação (atuação da designação até a homologação do edital)') + kv('Área de atuação', 'Contratações da Gerência de Saúde – SEAD') + kv('Faixa', 'nº de processos no mês (IN SEAD nº 007/2025, Art. 3º, § 4º)')) +
+          sec('Faixas por período', '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="color:oklch(58% 0.01 255);text-align:left"><th style="padding:4px 8px 4px 0;font-weight:400">Mês</th><th style="padding:4px 8px;font-weight:400">Nº de processos</th><th style="padding:4px 8px;font-weight:400">Faixa</th><th style="padding:4px 0 4px 8px;font-weight:400;text-align:right">Pts/mês</th></tr></thead><tbody><tr style="border-top:1px solid oklch(93% 0.004 255)"><td style="padding:5px 8px 5px 0">09/2025</td><td style="padding:5px 8px">5 (faixa 4–6)</td><td style="padding:5px 8px">III</td><td style="padding:5px 0 5px 8px;text-align:right">0,400</td></tr><tr style="border-top:1px solid oklch(93% 0.004 255)"><td style="padding:5px 8px 5px 0">10/2025</td><td style="padding:5px 8px">8 (faixa 7–9)</td><td style="padding:5px 8px">II</td><td style="padding:5px 0 5px 8px;text-align:right">0,444</td></tr></tbody></table>') +
+          sec('Processos', '<details><summary style="font-size:12px;color:oklch(52% 0.16 255);padding:2px 0;cursor:pointer">Ver os processos por mês</summary><div style="margin-top:8px">' +
+            '<div style="font-size:12px;font-weight:600;margin:2px 0 0;color:oklch(28% 0.02 255)">09/2025 — 5 processos · Faixa III</div>' +
+            proc('Pregão Eletrônico nº 45/2025', 'Material de consumo hospitalar', '14 a 29/09/2025', 'Encerrado', 'SEI nº 202600005011001') +
+            proc('Pregão Eletrônico nº 46/2025', 'Medicamentos básicos', '03 a 26/09/2025', 'Encerrado', 'SEI nº 202600005011002') +
+            proc('Pregão Eletrônico nº 47/2025', 'Equipamentos de informática', '08 a 30/09/2025', 'Encerrado', 'SEI nº 202600005011003') +
+            proc('Dispensa nº 88/2025', 'Serviço de manutenção predial', '10 a 22/09/2025', 'Encerrado', 'SEI nº 202600005011004') +
+            proc('Pregão Eletrônico nº 48/2025', 'Material de expediente', '15 a 30/09/2025', 'Encerrado', 'SEI nº 202600005011005') +
+            '<div style="font-size:12px;font-weight:600;margin:14px 0 0;color:oklch(28% 0.02 255)">10/2025 — 8 processos · Faixa II</div>' +
+            proc('Pregão Eletrônico nº 52/2025', 'Insumos laboratoriais', '01 a 20/10/2025', 'Encerrado', 'SEI nº 202600005011006') +
+            proc('Pregão Eletrônico nº 53/2025', 'Gêneros alimentícios', '02 a 24/10/2025', 'Encerrado', 'SEI nº 202600005011007') +
+            proc('Concorrência nº 09/2025', 'Reforma de unidade de saúde', '02 a 31/10/2025', 'Vigente', 'SEI nº 202600005011008') +
+            proc('Pregão Eletrônico nº 54/2025', 'Mobiliário hospitalar', '03 a 28/10/2025', 'Encerrado', 'SEI nº 202600005011009') +
+            proc('Dispensa nº 95/2025', 'Locação de equipamentos', '06 a 20/10/2025', 'Encerrado', 'SEI nº 202600005011010') +
+            proc('Pregão Eletrônico nº 55/2025', 'Serviços de limpeza', '07 a 30/10/2025', 'Encerrado', 'SEI nº 202600005011011') +
+            proc('Pregão Eletrônico nº 56/2025', 'Material odontológico', '13 a 29/10/2025', 'Encerrado', 'SEI nº 202600005011012') +
+            proc('Inexigibilidade nº 12/2025', 'Manutenção de equipamento especializado', '20 a 31/10/2025', 'Encerrado', 'SEI nº 202600005011013') +
+          '</div></details>'), false)
+    },
+    {
+      label: 'V — Conselho, comitê, câmara técnica, comissão ou grupo de trabalho',
+      body:
+        histEntry('V', 'CCEF — Comissão Central de Evolução Funcional', 'Encerrada', 'fim',
+          sec('Designação', ato('Portaria nº 103/2025 · 02/02/2025', 'Diário Oficial nº 24.455, de 03 de fevereiro de 2025') + kv('Tipologia', 'Comissão (Tabela 6)') + kv('Área de atuação', 'Evolução funcional – SES') + kv('Pontuação', '0,333 ponto/mês') + kv('Objeto', 'Validar critérios e acompanhar a execução da evolução funcional dos servidores')) +
+          sec('Suplência', subBlock(kv('Suplente', 'Ana Costa (designada com a comissão)') + ato('Portaria nº 103/2025 · 02/02/2025', 'Diário Oficial nº 24.455, de 03 de fevereiro de 2025') + kv('Efeito na pontuação', 'Pontua pela atuação comprovada dela, sem descontar do titular (Art. 51, § 3º)')) + subBlock(kv('Motivo', 'Afastamento para Participação em Competição Esportiva do titular') + kv('Período', '01/01/2026 a 06/01/2026 (6 dias)') + kv('Suplente', 'Ana Costa') + kv('Efeito na pontuação', 'Titular descontado — 0,333 × 6 ÷ 30 = 0,067; suplente pontua pela atuação comprovada (Art. 51, §§ 1º e 3º)'))) +
+          sec('Encerramento', ato('Portaria nº 890/2026 · 02/02/2026', 'Diário Oficial nº 24.712, de 03 de fevereiro de 2026')), false)
+    },
+    {
+      label: 'VI — Lotação ou função prioritária',
+      body:
+        histEntry('VI', 'Lotação prioritária — Sala de Estabilização', 'Encerrada', 'fim',
+          sec('Designação', ato('Portaria nº 300/2025 · 10/06/2025', 'Diário Oficial nº 24.544, de 11 de junho de 2025') + kv('Tipologia', 'Lotação prioritária') + kv('Área de atuação', 'Sala de Estabilização – SES') + kv('Necessidade do serviço', 'Risco de paralisação ou interrupção de atividades essenciais') + kv('Período', '10/06/2025 a 10/09/2025') + kv('Pontuação', '0,333 ponto/mês (Tabela 7)')) +
+          sec('Encerramento', ato('Portaria nº 620/2025 · 10/09/2025', 'Diário Oficial nº 24.611, de 11 de setembro de 2025')), false) +
+        histEntry('VI', 'Atuação prioritária — Programa Saúde nas Escolas', 'Encerrada', 'fim',
+          sec('Designação', ato('Portaria nº 410/2025 · 05/07/2025', 'Diário Oficial nº 24.561, de 07 de julho de 2025') + kv('Tipologia', 'Atuação prioritária') + kv('Área de atuação', 'Programa Saúde nas Escolas – SEAD') + kv('Necessidade do serviço', 'Execução de programas ou de projetos prioritários de governo') + kv('Período', '05/07/2025 a 05/10/2025') + kv('Pontuação', '0,333 ponto/mês (Tabela 7)')) +
+          sec('Encerramento', ato('Portaria nº 720/2025 · 05/10/2025', 'Diário Oficial nº 24.665, de 07 de outubro de 2025')), false)
+    },
+    {
+      label: 'VII — Publicação de artigos, pesquisas ou livros',
+      body:
+        histEntry('VII', 'Artigo científico indexado — Revista de Saúde Pública', 'Validada', 'ativa',
+          sec('Registro', kv('Tipologia', 'Publicação — artigo científico') + kv('Título', 'Determinantes sociais e acesso à atenção primária em Goiás') + kv('Veículo', 'Revista de Saúde Pública') + kv('Nº do ISSN', '0034-8910') + kv('Indexado', 'Sim') + kv('Data de validação', '15/03/2026') + kv('Mês de inserção', '04/2026 (mês seguinte à validação — Art. 43, § 8º)') + kv('Pontuação', '3,000 pontos (Tabela 8)')), false)
+    },
+    {
+      label: 'VIII — Aprovação em eventos científicos',
+      body:
+        histEntry('VIII', 'Trabalho aprovado em evento científico', 'Validada', 'ativa',
+          sec('Registro', kv('Tipologia', 'Aprovação de trabalho em evento científico') + kv('Título', 'Indicadores de produtividade na atenção primária') + kv('Evento', '15º Congresso Brasileiro de Saúde Coletiva') + kv('Abrangência', 'Nacional (computa-se estadual ou superior — Art. 42, § 13)') + kv('Data de validação', '20/04/2026') + kv('Mês de inserção', '05/2026 (mês seguinte à validação — Art. 43, § 8º)') + kv('Pontuação', '3,000 pontos (Tabela 10)')), false)
+    },
+    {
+      label: 'IX — Registro de patente ou de cultivar',
+      body:
+        histEntry('IX', 'Registro de patente', 'Validada', 'ativa',
+          sec('Registro', kv('Tipologia', 'Registro de patente') + kv('Objeto', 'Dispositivo de apoio para triagem na atenção primária') + kv('Órgão', 'INPI') + kv('Registro', 'BR nº 10 2026 000000') + kv('Data de validação', '18/05/2026') + kv('Mês de inserção', '06/2026 (mês seguinte à validação — Art. 43, § 8º)') + kv('Pontuação', '6,000 pontos (Tabela 11)')), false)
+    },
+    {
+      label: 'X — Estágio pós-doutoral',
+      body:
+        histEntry('X', 'Estágio pós-doutoral', 'Validada', 'ativa',
+          sec('Registro', ato('Edital SEAD nº 05/2024 — programa de estágio pós-doutoral', 'Diário Oficial nº 24.101, de 10 de setembro de 2024') + kv('Tipologia', 'Estágio pós-doutoral desenvolvido no órgão') + kv('Instituição', 'Universidade Federal de Goiás — UFG') + kv('Área', 'Saúde Coletiva') + kv('Duração', '10 meses (> 6 e ≤ 12 meses)') + kv('Data de validação', '22/06/2026') + kv('Mês de inserção', '07/2026 (mês seguinte à validação — Art. 43, § 8º)') + kv('Pontuação', '8,000 pontos (Tabela 12)')), false)
+    }
+  ];
+
+  document.getElementById('groups').innerHTML = groups.map(function (g) {
+    return '<div style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;padding:12px 20px 14px">' +
+      '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:oklch(58% 0.01 255);margin:4px 0 2px">' + g.label + '</div>' +
+      g.body + '</div>';
+  }).join('');
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROMOVE — Tela principal da chefia imediata</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:oklch(97.5% 0.003 255);
+    color:oklch(25% 0.02 255);
+    -webkit-font-smoothing:antialiased;
+  }
+  .card { background:#fff; border:1px solid oklch(91% 0.006 255); border-radius:16px; padding:20px 24px; margin-bottom:20px; }
+  .card-title { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:800; }
+  .card-sub { margin-top:6px; font-size:12.5px; color:oklch(55% 0.02 255); }
+  .sec-label { font-size:13px; font-weight:700; color:oklch(48% 0.02 255); }
+  .kv { display:flex; justify-content:space-between; gap:16px; padding:9px 0; border-top:1px solid oklch(93% 0.004 255); font-size:14px; }
+  .kv > span:first-child { color:oklch(50% 0.02 255); flex-shrink:0; }
+  .kv > span:last-child { text-align:right; color:oklch(35% 0.06 235); font-weight:600; }
+  .badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; white-space:nowrap; height:fit-content; display:inline-block; }
+  .b-ok   { color:oklch(38% 0.11 150); background:oklch(94% 0.05 150); }
+  .b-warn { color:oklch(38% 0.09 75);  background:oklch(95% 0.05 75); }
+  .b-crit { color:#fff;                background:oklch(48% 0.18 25); }
+  .b-neut { color:oklch(50% 0.01 255); background:oklch(94% 0.006 255); }
+  .b-info { color:oklch(42% 0.16 255); background:oklch(95% 0.03 255); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th { text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+       color:oklch(58% 0.01 255); padding:6px 8px 6px 0; }
+  td { padding:12px 8px 12px 0; border-top:1px solid oklch(93% 0.004 255); vertical-align:top; }
+  td:last-child, th:last-child { padding-right:0; text-align:right; }
+  .sub { font-size:11.5px; color:oklch(58% 0.01 255); font-weight:400; }
+  .fld { font-size:11.5px; line-height:1.6; margin-top:3px; }
+  .fld i { font-style:normal; color:oklch(60% 0.01 255); }
+  .fld b { font-weight:600; color:oklch(42% 0.02 255); }
+  .note { font-size:11.5px; color:oklch(58% 0.01 255); line-height:1.6; margin-top:12px; }
+  .lnk { color:oklch(42% 0.16 255); font-weight:700; cursor:pointer; }
+  .lnk::after { content:' \203A'; color:oklch(65% 0.01 255); }
+  details > summary { list-style:none; cursor:pointer; }
+  details > summary::-webkit-details-marker { display:none; }
+  .chev { display:inline-block; transition:transform .15s; color:oklch(65% 0.01 255); font-weight:700; }
+  details[open] > summary .chev { transform:rotate(90deg); }
+  .chip { font-size:12px; font-weight:600; padding:5px 12px; border-radius:20px; cursor:pointer;
+          border:1px solid oklch(90% 0.006 255); background:#fff; color:oklch(45% 0.02 255); font-family:inherit; }
+  .chip[aria-pressed="true"] { background:oklch(95% 0.03 255); border-color:oklch(85% 0.05 255); color:oklch(42% 0.16 255); }
+
+  .metric { background:#fff; border:1px solid oklch(91% 0.006 255); border-radius:14px; padding:16px 18px; }
+  .m-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:oklch(52% 0.02 255); }
+  .m-grid { display:flex; gap:22px; margin-top:12px; flex-wrap:wrap; }
+  .m-num { font-size:24px; font-weight:800; line-height:1; }
+  .m-cap { font-size:11.5px; color:oklch(58% 0.01 255); margin-top:5px; }
+
+  .subcard { border-top:1px solid oklch(93% 0.004 255); padding-top:14px; margin-top:20px; }
+  .sub-head { font-size:16px; font-weight:800; color:oklch(24% 0.02 255);
+              padding-left:11px; border-left:3px solid oklch(52% 0.16 255); }
+  .sec-head { font-size:15px; font-weight:800; color:oklch(26% 0.02 255);
+              padding-left:11px; border-left:3px solid oklch(52% 0.16 255); }
+  .scrollbox { max-height:440px; overflow-y:auto; margin-top:10px;
+               border:1px solid oklch(93% 0.004 255); border-radius:10px; padding:0 14px; }
+  .scrollbox table tr:first-child th { position:sticky; top:0; background:#fff; z-index:2;
+                                       box-shadow:0 1px 0 oklch(91% 0.006 255); }
+  .scrollbox::-webkit-scrollbar { width:10px; }
+  .scrollbox::-webkit-scrollbar-thumb { background:oklch(88% 0.006 255); border-radius:6px; border:3px solid #fff; }
+  .scrollbox td:first-of-type { border-top:none; }
+
+  .unit { border-top:1px solid oklch(93% 0.004 255); padding:14px 0 4px; }
+  .unit-name { font-size:15px; font-weight:800; }
+  .unit-cod { font-size:11.5px; font-weight:400; color:oklch(62% 0.01 255); margin-left:6px; }
+  .unit-body { padding-left:26px; margin-top:10px; }
+
+  .srch { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 4px; }
+  .srch input { font-family:inherit; font-size:12.5px; padding:7px 12px; border-radius:9px;
+                border:1px solid oklch(90% 0.006 255); background:oklch(98.5% 0.002 255);
+                color:oklch(30% 0.02 255); min-width:200px; flex:1; }
+  .srch input::placeholder { color:oklch(66% 0.01 255); }
+  .srch select { font-family:inherit; font-size:12.5px; padding:7px 12px; border-radius:9px;
+                 border:1px solid oklch(90% 0.006 255); background:#fff; color:oklch(30% 0.02 255); }
+
+  .bar { position:relative; height:9px; border-radius:5px; background:oklch(93% 0.004 255); margin:6px 0 4px; max-width:180px; }
+  .bar > i { position:absolute; left:0; top:0; height:100%; border-radius:5px; display:block; }
+  .bar > u { position:absolute; top:-2px; width:2px; height:13px; background:oklch(70% 0.01 255); }
+  .bar-cap { font-size:11px; color:oklch(58% 0.01 255); }
+  .g { background:oklch(52% 0.14 150); }
+  .b { background:oklch(52% 0.16 255); }
+  .a { background:oklch(68% 0.15 75); }
+  .p { background:oklch(55% 0.14 300); }
+  .c { background:oklch(50% 0.09 195); }
+  .stack { display:flex; height:9px; border-radius:5px; overflow:hidden; background:oklch(93% 0.004 255); max-width:180px; margin:6px 0 4px; }
+  .stack > i { display:block; height:100%; }
+  .i1 { background:oklch(68% 0.15 75); }
+  .i2 { background:oklch(52% 0.16 255); }
+  .i3 { background:oklch(52% 0.14 150); }
+  .i4 { background:oklch(55% 0.14 300); }
+  .leg { display:flex; flex-wrap:wrap; gap:14px; font-size:11.5px; color:oklch(52% 0.02 255); margin:14px 0 2px; }
+  .leg span > i { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px; }
+  .ih { font-size:11.5px; color:oklch(45% 0.02 255); line-height:1.6; }
+  .ih b { font-weight:700; color:oklch(30% 0.02 255); }
+
+  .tl-row { display:flex; gap:16px; padding:16px 0; border-top:1px solid oklch(93% 0.004 255); }
+  .tl-date { width:86px; flex-shrink:0; font-size:12px; color:oklch(50% 0.02 255); padding-top:2px; }
+  .tl-proto { font-size:11px; color:oklch(65% 0.01 255); margin-top:3px; }
+  .tl-title { font-size:14.5px; font-weight:700; }
+  .tl-name { font-size:12.5px; color:oklch(45% 0.02 255); margin-top:2px; }
+  .tl-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .tl-det { font-size:12.5px; color:oklch(40% 0.02 255); margin-top:7px; }
+  .hide { display:none !important; }
+</style>
+</head>
+<body>
+
+<div style="min-height:100vh;padding:48px 24px 96px;display:flex;justify-content:center">
+<div style="width:100%;max-width:880px">
+
+  <div style="margin-bottom:24px">
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:oklch(55% 0.02 255);margin-bottom:8px">PROMOVE &middot; Perfil chefia imediata</div>
+    <h1 style="font-size:30px;font-weight:800;letter-spacing:-0.01em;line-height:1.2">Ana Beatriz Rodrigues Lima</h1>
+  </div>
+  <details class="card">
+    <summary class="card-title">
+      <span class="chev">&rsaquo;</span>Superintend&ecirc;ncia Central de Desenvolvimento Estrat&eacute;gico de Pessoal
+    </summary>
+
+    <div class="sec-label" style="margin:20px 0 2px">Unidade administrativa</div>
+    <div class="kv"><span>&Oacute;rg&atilde;o</span><span>Secretaria de Estado da Administra&ccedil;&atilde;o &mdash; SEAD</span></div>
+    <div class="kv"><span>Unidade hierarquicamente superior</span><span>Subsecretaria de Gest&atilde;o e Desenvolvimento de Pessoas</span></div>
+    <div class="kv"><span>Titular da unidade hierarquicamente superior</span><span>Ot&aacute;vio Camargo Bittencourt<br><span class="sub">Chefia imediata da titular</span></span></div>
+    <div class="kv"><span>Ato de cria&ccedil;&atilde;o</span><span>Decreto n&ordm; 10.218, de 16 de fevereiro de 2023 &middot; Anexo I, item 1.16.2</span></div>
+
+    <div class="sec-label" style="margin:22px 0 2px">Titular</div>
+    <div class="kv"><span>Posse</span><span>Decreto de 4 de mar&ccedil;o de 2025 &middot; DOE de 5 de mar&ccedil;o de 2025</span></div>
+    <div class="kv"><span>Efetivo exerc&iacute;cio</span><span>Portaria n&ordm; 128/2025-SEAD, de 10 de mar&ccedil;o de 2025</span></div>
+
+    <div class="sec-label" style="margin:22px 0 2px">Chefias auxiliares</div>
+    <table>
+      <tr><th style="width:46%">Unidade</th><th style="width:34%">Titular</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+      <tr>
+        <td>Coordena&ccedil;&atilde;o de Apoio T&eacute;cnico e Normativo<div class="sub">1.16.2.6</div></td>
+        <td style="color:oklch(45% 0.02 255)">Cl&aacute;udia Neves Barbosa</td>
+        <td><span class="badge b-ok">Provida</span></td>
+      </tr>
+    </table>
+
+    <div class="sec-head" style="margin:30px 0 6px">Unidades subordinadas</div>
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Gerência de Estudos e Impactos de Pessoal — GEIMP<span class="unit-cod">1.16.2.1</span></span>
+        <span class="badge b-ok">Provida</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Titular</span><span>Fernanda Queiroz Alves</span></div>
+        <div class="kv"><span>In&iacute;cio</span><span>10 de março de 2025</span></div>
+        <div class="kv"><span>Manifesta&ccedil;&atilde;o</span><span><span class="badge b-neut">Manifestação com o titular</span></span></div>
+        <div class="sec-label" style="margin:16px 0 2px">Chefias auxiliares</div>
+        <table>
+          <tr><th style="width:46%">Unidade</th><th style="width:34%">Titular</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+          <tr><td>Coordenação de Estudos Demográficos de Pessoal</td><td style="color:oklch(45% 0.02 255)">Bruno Sales Andrade</td><td><span class="badge b-ok">Provida</span></td></tr>
+        </table>
+      </div>
+    </details>
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Gerência de Normas e Critérios de Produtividade — GNCP<span class="unit-cod">1.16.2.2</span></span>
+        <span class="badge b-ok">Provida</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Titular</span><span>Juliana Ferreira Castro</span></div>
+        <div class="kv"><span>In&iacute;cio</span><span>10 de março de 2025</span></div>
+        <div class="kv"><span>Manifesta&ccedil;&atilde;o</span><span><span class="badge b-neut">Manifestação com o titular</span></span></div>
+        <div class="sec-label" style="margin:16px 0 2px">Chefias auxiliares</div>
+        <table>
+          <tr><th style="width:46%">Unidade</th><th style="width:34%">Titular</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+          <tr><td>Coordenação de Critérios de Produtividade</td><td style="color:oklch(45% 0.02 255)">Patrícia Nunes Rangel</td><td><span class="badge b-ok">Provida</span></td></tr>
+        </table>
+      </div>
+    </details>
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Gerência de Perfil e Alocação de Pessoas — GEPAP<span class="unit-cod">1.16.2.3</span></span>
+        <span class="badge b-ok">Provida</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Titular</span><span>Marcos Vinícius Teixeira</span></div>
+        <div class="kv"><span>In&iacute;cio</span><span>2 de abril de 2025</span></div>
+        <div class="kv"><span>Manifesta&ccedil;&atilde;o</span><span><span class="badge b-neut">Manifestação com o titular</span></span></div>
+        <div class="sec-label" style="margin:16px 0 2px">Chefias auxiliares</div>
+        <table>
+          <tr><th style="width:46%">Unidade</th><th style="width:34%">Titular</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+          <tr><td>Coordenação de Alocação e Movimentação</td><td style="color:oklch(45% 0.02 255)">Igor Bastos Carvalho</td><td><span class="badge b-ok">Provida</span></td></tr>
+        </table>
+      </div>
+    </details>
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Gerência de Gestão do Conhecimento e Competências — G2C2<span class="unit-cod">1.16.2.4</span></span>
+        <span class="badge b-warn">Substituição</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Titular</span><span>Renata Borges Pinto</span></div>
+        <div class="kv"><span>In&iacute;cio</span><span>10 de março de 2025</span></div>
+        <div class="kv"><span>Substituta</span><span>Helena Prado Vasconcelos</span></div>
+        <div class="kv"><span>Motivo da substituição</span><span>Licença-maternidade</span></div>
+        <div class="kv"><span>Início da substituição</span><span>3 de agosto de 2026</span></div>
+        <div class="kv"><span>Fim da substituição</span><span>29 de janeiro de 2027</span></div>
+        <div class="kv"><span>Manifesta&ccedil;&atilde;o</span><span><span class="badge b-warn">Manifestação com a substituta</span></span></div>
+        <div class="sec-label" style="margin:16px 0 2px">Chefias auxiliares</div>
+        <table>
+          <tr><th style="width:46%">Unidade</th><th style="width:34%">Titular</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+          <tr><td>Coordenação de Trilhas de Aprendizagem</td><td style="color:oklch(45% 0.02 255)">Simone Bezerra Cunha</td><td><span class="badge b-ok">Provida</span></td></tr>
+        </table>
+      </div>
+    </details>
+    <details class="unit">
+      <summary style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <span class="unit-name"><span class="chev">&rsaquo;</span> Gerência do Controle de Gasto com Pessoal — GEGPC<span class="unit-cod">1.16.2.5</span></span>
+        <span class="badge b-warn">Cargo vago</span>
+      </summary>
+      <div class="unit-body">
+        <div class="kv" style="border-top:none"><span>Titular</span><span>Cargo vago</span></div>
+        <div class="kv"><span>Motivo da vacância</span><span>Exoneração a pedido</span></div>
+        <div class="kv"><span>Início da vacância</span><span>12 de maio de 2026</span></div>
+        <div class="kv"><span>Fim da vacância</span><span>Não determinado</span></div>
+        <div class="kv"><span>Manifesta&ccedil;&atilde;o</span><span><span class="badge b-warn">Manifestação com você · cargo vago</span></span></div>
+        <div class="sec-label" style="margin:16px 0 2px">Chefias auxiliares</div>
+        <table>
+          <tr><th style="width:46%">Unidade</th><th style="width:34%">Titular</th><th style="width:20%">Situa&ccedil;&atilde;o</th></tr>
+          <tr><td>Coordenação de Monitoramento da Folha</td><td style="color:oklch(45% 0.02 255)">Otoniel Ramos Faria</td><td><span class="badge b-ok">Provida</span></td></tr>
+        </table>
+      </div>
+    </details>
+  </details>
+
+  <details class="card" id="card-equipe">
+    <summary class="card-title" style="justify-content:space-between">
+      <span style="display:flex;align-items:center;gap:10px"><span class="chev">&rsaquo;</span>Equipe</span>
+      <span class="sub">18 servidores</span>
+    </summary>
+
+    <div class="subcard" style="border-top:none;margin-top:16px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="sub-head">Chefia imediata</span>
+        <span class="badge b-info">8 servidores</span>
+        <span class="badge b-neut">Manifesta&ccedil;&atilde;o com voc&ecirc;</span>
+      </div>
+      <div class="srch">
+        <input type="search" data-eq="imediata" data-f="nome" placeholder="Buscar por nome">
+        <input type="search" data-eq="imediata" data-f="unid" placeholder="Buscar por unidade administrativa">
+      </div>
+      <table>
+        <tr><th style="width:34%">Servidor</th><th style="width:32%">Cargo efetivo e ciclo de evolu&ccedil;&atilde;o</th><th style="width:16%">V&iacute;nculo</th><th style="width:18%">PROMOVE</th></tr>
+        <tr class="eq-imediata" data-nome="cláudia neves barbosa" data-unid="superintendência (lotação direta)">
+          <td>Cláudia Neves Barbosa
+            <div class="fld"><i>CPF:</i> <b>456.***.***-77</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>5507712</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>Superintendência (lotação direta)</b></div></td>
+          <td>Assessor A-5
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>—</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>—</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Comissionada</td>
+          <td><span class="badge b-neut">N&atilde;o vinculada</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="fernanda queiroz alves" data-unid="geimp · titular">
+          <td><span class="lnk">Fernanda Queiroz Alves</span>
+            <div class="fld"><i>CPF:</i> <b>210.***.***-30</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3345871</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEIMP · titular</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>D → E</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/04/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="juliana ferreira castro" data-unid="gncp · titular">
+          <td><span class="lnk">Juliana Ferreira Castro</span>
+            <div class="fld"><i>CPF:</i> <b>674.***.***-12</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3902165</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GNCP · titular</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>D → E</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/02/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="letícia amorim rocha" data-unid="superintendência (lotação direta) · cedida da ses">
+          <td><span class="lnk">Letícia Amorim Rocha</span>
+            <div class="fld"><i>CPF:</i> <b>321.***.***-88</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>5120944</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>Superintendência (lotação direta) · cedida da SES</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>E → F</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/07/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="marcos vinícius teixeira" data-unid="gepap · titular">
+          <td><span class="lnk">Marcos Vinícius Teixeira</span>
+            <div class="fld"><i>CPF:</i> <b>845.***.***-59</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4471028</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEPAP · titular</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>C → D</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/06/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="maria da silva" data-unid="superintendência (lotação direta)">
+          <td><span class="lnk">Maria da Silva</span>
+            <div class="fld"><i>CPF:</i> <b>123.***.***-45</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4098231</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>Superintendência (lotação direta)</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>D → E</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/05/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="rafael antunes moreira" data-unid="superintendência (lotação direta)">
+          <td><span class="lnk">Rafael Antunes Moreira</span>
+            <div class="fld"><i>CPF:</i> <b>987.***.***-01</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3877450</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>Superintendência (lotação direta)</b></div></td>
+          <td>Assistente de Gestão Administrativa
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>C → D</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/09/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+        <tr class="eq-imediata" data-nome="renata borges pinto" data-unid="g2c2 · titular">
+          <td><span class="lnk">Renata Borges Pinto</span>
+            <div class="fld"><i>CPF:</i> <b>132.***.***-04</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3618720</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>G2C2 · titular</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>E → F</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/01/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="subcard">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="sub-head">Chefia mediata</span>
+        <span class="badge b-info">10 servidores</span>
+      </div>
+      <div class="srch">
+        <input type="search" data-eq="mediata" data-f="nome" placeholder="Buscar por nome">
+        <input type="search" data-eq="mediata" data-f="unid" placeholder="Buscar por unidade administrativa">
+      </div>
+      <div class="unit eq-bloco" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span class="unit-name">Gerência de Estudos e Impactos de Pessoal — GEIMP<span class="unit-cod">1.16.2.1</span></span>
+          <span class="badge b-neut">Manifestação com o titular</span>
+        </div>
+        <div class="fld" style="margin:6px 0 0 0"><i>Titular:</i> <b>Fernanda Queiroz Alves</b></div>
+        <div class="unit-body">
+          <table>
+        <tr><th style="width:34%">Servidor</th><th style="width:32%">Cargo efetivo e ciclo de evolu&ccedil;&atilde;o</th><th style="width:16%">V&iacute;nculo</th><th style="width:18%">PROMOVE</th></tr>
+        <tr class="eq-mediata" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+          <td><span class="lnk">Bruno Carvalho Nogueira</span>
+            <div class="fld"><i>CPF:</i> <b>417.***.***-90</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4210556</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEIMP</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>C → D</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/03/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+        <tr class="eq-mediata" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+          <td><span class="lnk">Simone Batista Ramos</span>
+            <div class="fld"><i>CPF:</i> <b>760.***.***-33</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3559018</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEIMP</b></div></td>
+          <td>Assistente de Gestão Administrativa
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>B → C</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/08/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+          </table>
+        </div>
+      </div>
+      <div class="unit eq-bloco" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span class="unit-name">Gerência de Normas e Critérios de Produtividade — GNCP<span class="unit-cod">1.16.2.2</span></span>
+          <span class="badge b-neut">Manifestação com o titular</span>
+        </div>
+        <div class="fld" style="margin:6px 0 0 0"><i>Titular:</i> <b>Juliana Ferreira Castro</b></div>
+        <div class="unit-body">
+          <table>
+        <tr><th style="width:34%">Servidor</th><th style="width:32%">Cargo efetivo e ciclo de evolu&ccedil;&atilde;o</th><th style="width:16%">V&iacute;nculo</th><th style="width:18%">PROMOVE</th></tr>
+        <tr class="eq-mediata" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+          <td><span class="lnk">Paulo Henrique Marques</span>
+            <div class="fld"><i>CPF:</i> <b>188.***.***-64</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4025779</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GNCP</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>D → E</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/11/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+        <tr class="eq-mediata" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+          <td><span class="lnk">Renan Alcântara Vieira</span>
+            <div class="fld"><i>CPF:</i> <b>539.***.***-18</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4866403</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GNCP</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>B → C</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/05/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+          </table>
+        </div>
+      </div>
+      <div class="unit eq-bloco" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span class="unit-name">Gerência de Perfil e Alocação de Pessoas — GEPAP<span class="unit-cod">1.16.2.3</span></span>
+          <span class="badge b-neut">Manifestação com o titular</span>
+        </div>
+        <div class="fld" style="margin:6px 0 0 0"><i>Titular:</i> <b>Marcos Vinícius Teixeira</b></div>
+        <div class="unit-body">
+          <table>
+        <tr><th style="width:34%">Servidor</th><th style="width:32%">Cargo efetivo e ciclo de evolu&ccedil;&atilde;o</th><th style="width:16%">V&iacute;nculo</th><th style="width:18%">PROMOVE</th></tr>
+        <tr class="eq-mediata" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+          <td><span class="lnk">Ana Paula Duarte</span>
+            <div class="fld"><i>CPF:</i> <b>602.***.***-47</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3744192</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEPAP</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>D → E</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/10/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+        <tr class="eq-mediata" data-nome="diego lopes ferreira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+          <td>Diego Lopes Ferreira
+            <div class="fld"><i>CPF:</i> <b>295.***.***-82</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>9012435</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEPAP</b></div></td>
+          <td>—
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>—</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>—</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Temporário</td>
+          <td><span class="badge b-neut">N&atilde;o vinculado</span></td>
+        </tr>
+          </table>
+        </div>
+      </div>
+      <div class="unit eq-bloco" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span class="unit-name">Gerência de Gestão do Conhecimento e Competências — G2C2<span class="unit-cod">1.16.2.4</span></span>
+          <span class="badge b-warn">Manifestação com a substituta</span>
+        </div>
+        <div class="fld" style="margin:6px 0 0 0"><i>Titular:</i> <b>Renata Borges Pinto</b></div>
+        <div class="fld"><i>Substituta:</i> <b>Helena Prado Vasconcelos</b> &middot; licen&ccedil;a-maternidade at&eacute; 29/01/2027</div>
+        <div class="unit-body">
+          <table>
+        <tr><th style="width:34%">Servidor</th><th style="width:32%">Cargo efetivo e ciclo de evolu&ccedil;&atilde;o</th><th style="width:16%">V&iacute;nculo</th><th style="width:18%">PROMOVE</th></tr>
+        <tr class="eq-mediata" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+          <td><span class="lnk">Thiago Moraes Lacerda</span>
+            <div class="fld"><i>CPF:</i> <b>074.***.***-51</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4318867</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>G2C2</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>C → D</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/03/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+        <tr class="eq-mediata" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+          <td><span class="lnk">Vanessa Correia Lima</span>
+            <div class="fld"><i>CPF:</i> <b>481.***.***-09</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>3990274</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>G2C2</b></div></td>
+          <td>Assistente de Gestão Administrativa
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>B → C</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/05/2026</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+          </table>
+        </div>
+      </div>
+      <div class="unit eq-bloco" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <span class="unit-name">Gerência do Controle de Gasto com Pessoal — GEGPC<span class="unit-cod">1.16.2.5</span></span>
+          <span class="badge b-warn">Manifestação com você · cargo vago</span>
+        </div>
+        <div class="fld" style="margin:6px 0 0 0"><i>Titular:</i> <b>Cargo vago desde 12 de maio de 2026</b></div>
+        <div class="unit-body">
+          <table>
+        <tr><th style="width:34%">Servidor</th><th style="width:32%">Cargo efetivo e ciclo de evolu&ccedil;&atilde;o</th><th style="width:16%">V&iacute;nculo</th><th style="width:18%">PROMOVE</th></tr>
+        <tr class="eq-mediata" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+          <td><span class="lnk">Camila Rezende Braga</span>
+            <div class="fld"><i>CPF:</i> <b>903.***.***-71</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4990137</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEGPC</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>C → D</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/12/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculada</span></td>
+        </tr>
+        <tr class="eq-mediata" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+          <td><span class="lnk">Eduardo Pires Fontoura</span>
+            <div class="fld"><i>CPF:</i> <b>558.***.***-26</b></div>
+            <div class="fld"><i>V&iacute;nculo:</i> <b>4783350</b></div>
+            <div class="fld"><i>Lota&ccedil;&atilde;o:</i> <b>GEGPC</b></div></td>
+          <td>Analista de Gestão Governamental
+            <div class="fld"><i>Ciclo de evolu&ccedil;&atilde;o:</i> <b>D → E</b></div>
+            <div class="fld"><i>In&iacute;cio do ciclo:</i> <b>01/12/2025</b></div></td>
+          <td style="color:oklch(45% 0.02 255)">Efetivo</td>
+          <td><span class="badge b-ok">Vinculado</span></td>
+        </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">
+      A tag de manifesta&ccedil;&atilde;o indica a quem cabe o ato pr&eacute;vio da chefia sobre cada servidor. Na G2C2 a compet&ecirc;ncia est&aacute;
+      com a substituta designada; na GEGPC, vaga a ger&ecirc;ncia, a compet&ecirc;ncia recai sobre a titular da Superintend&ecirc;ncia.
+      A servidora comissionada sem v&iacute;nculo efetivo e o servidor tempor&aacute;rio n&atilde;o integram o PROMOVE.
+    </p>
+  </details>
+
+  <div class="card">
+    <div class="card-title">Manifesta&ccedil;&otilde;es</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 4px" id="filtros-man">
+      <button class="chip" aria-pressed="true" data-req="todos">Todos &middot; 9</button>
+      <button class="chip" aria-pressed="false" data-req="aperfeicoamento">Aperfei&ccedil;oamento &middot; 5</button>
+      <button class="chip" aria-pressed="false" data-req="titulacao">Titula&ccedil;&atilde;o acad&ecirc;mica &middot; 2</button>
+      <button class="chip" aria-pressed="false" data-req="assuncao">Assun&ccedil;&atilde;o de responsabilidades &middot; 2</button>
+    </div>
+
+    <div class="scrollbox"><table>
+      <tr><th style="width:13%">Protocolo</th><th style="width:29%">Tipo</th><th style="width:17%">Nome</th><th style="width:12%">Solicita&ccedil;&atilde;o</th><th style="width:10%">Prazo</th><th style="width:19%">Situa&ccedil;&atilde;o</th></tr>
+      <tr class="man" data-req="aperfeicoamento">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00412-7</td>
+        <td style="font-weight:600">Aperfeiçoamento — validação de ação educacional<div class="sub" style="font-weight:400;margin-top:3px">Curso de 40h · fora do Rol, do PDI e da Trilha de Certificação</div></td>
+        <td><span class="lnk">Juliana Ferreira Castro</span></td>
+        <td style="color:oklch(50% 0.02 255)">07/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">14/10/2026</td>
+        <td><span class="badge b-warn">Aguardando manifestação da chefia</span><div class="sub" style="margin-top:5px">Vence hoje</div></td>
+      </tr>
+      <tr class="man" data-req="titulacao">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00398-1</td>
+        <td style="font-weight:600">Titulação acadêmica — manifestação prévia<div class="sub" style="font-weight:400;margin-top:3px">Mestrado em Administração Pública</div></td>
+        <td><span class="lnk">Marcos Vinícius Teixeira</span></td>
+        <td style="color:oklch(50% 0.02 255)">10/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">19/10/2026</td>
+        <td><span class="badge b-warn">Aguardando manifestação da chefia</span><div class="sub" style="margin-top:5px">3 dias úteis</div></td>
+      </tr>
+      <tr class="man" data-req="assuncao">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00401-5</td>
+        <td style="font-weight:600">Assunção de responsabilidades — manifestação prévia<div class="sub" style="font-weight:400;margin-top:3px">Artigo científico publicado em periódico com ISSN · Art. 42, VII</div></td>
+        <td><span class="lnk">Fernanda Queiroz Alves</span></td>
+        <td style="color:oklch(50% 0.02 255)">09/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">20/10/2026</td>
+        <td><span class="badge b-warn">Aguardando manifestação da chefia</span><div class="sub" style="margin-top:5px">4 dias úteis</div></td>
+      </tr>
+      <tr class="man" data-req="aperfeicoamento">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00420-2</td>
+        <td style="font-weight:600">Aperfeiçoamento — validação de ação educacional<div class="sub" style="font-weight:400;margin-top:3px">Curso de 8h · Rol de Ações Educacionais</div></td>
+        <td><span class="lnk">Camila Rezende Braga</span></td>
+        <td style="color:oklch(50% 0.02 255)">13/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">20/10/2026</td>
+        <td><span class="badge b-warn">Aguardando manifestação da chefia</span><div class="sub" style="margin-top:5px">4 dias úteis · cargo vago na GEGPC</div></td>
+      </tr>
+      <tr class="man" data-req="aperfeicoamento">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00355-9</td>
+        <td style="font-weight:600">Aperfeiçoamento — análise de reconsideração<div class="sub" style="font-weight:400;margin-top:3px">Negativa de validação de ação educacional de 10h</div></td>
+        <td><span class="lnk">Maria da Silva</span></td>
+        <td style="color:oklch(50% 0.02 255)">14/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">19/10/2026</td>
+        <td><span class="badge b-warn">Reconsideração em análise</span><div class="sub" style="margin-top:5px">3 dias úteis</div></td>
+      </tr>
+      <tr class="man" data-req="titulacao">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00427-6</td>
+        <td style="font-weight:600">Titulação acadêmica — manifestação prévia<div class="sub" style="font-weight:400;margin-top:3px">Especialização em Gestão do Conhecimento · 420h</div></td>
+        <td><span class="lnk">Thiago Moraes Lacerda</span></td>
+        <td style="color:oklch(50% 0.02 255)">15/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">22/10/2026</td>
+        <td><span class="badge b-neut">Aguardando diligência</span><div class="sub" style="margin-top:5px">Prazo suspenso</div></td>
+      </tr>
+      <tr class="man" data-req="assuncao">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00431-4</td>
+        <td style="font-weight:600">Assunção de responsabilidades — manifestação prévia<div class="sub" style="font-weight:400;margin-top:3px">Instrutoria em ação educacional interna · Art. 42, X</div></td>
+        <td><span class="lnk">Ana Paula Duarte</span></td>
+        <td style="color:oklch(50% 0.02 255)">16/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">23/10/2026</td>
+        <td><span class="badge b-neut">Em análise prévia</span><div class="sub" style="margin-top:5px">7 dias úteis</div></td>
+      </tr>
+      <tr class="man" data-req="aperfeicoamento">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00435-8</td>
+        <td style="font-weight:600">Aperfeiçoamento — validação de ação educacional<div class="sub" style="font-weight:400;margin-top:3px">Curso de 16h · Trilha de Certificação</div></td>
+        <td><span class="lnk">Renan Alcântara Vieira</span></td>
+        <td style="color:oklch(50% 0.02 255)">17/10/2026</td>
+        <td style="color:oklch(50% 0.02 255)">—</td>
+        <td><span class="badge b-neut">Cadastrado pelo servidor</span><div class="sub" style="margin-top:5px">Aguardando envio</div></td>
+      </tr>
+      <tr class="man" data-req="aperfeicoamento">
+        <td style="color:oklch(45% 0.02 255);white-space:nowrap">2026/00388-3</td>
+        <td style="font-weight:600">Aperfeiçoamento — elaboração do plano de desenvolvimento individual<div class="sub" style="font-weight:400;margin-top:3px">Art. 41, § 1º, do Decreto nº 10.802/2025</div></td>
+        <td><span class="lnk">Eduardo Pires Fontoura</span></td>
+        <td style="color:oklch(50% 0.02 255)">—</td>
+        <td style="color:oklch(50% 0.02 255)">—</td>
+        <td><span class="badge b-neut">Aguardando manifestação da chefia</span><div class="sub" style="margin-top:5px">Sem prazo fixo</div></td>
+      </tr>
+    </table></div>
+
+    <p class="note">
+      S&oacute; figuram aqui as manifesta&ccedil;&otilde;es em aberto. Quando o ato da chefia &eacute; praticado, a linha migra para a Linha do tempo
+      e passa a acompanhar os desdobramentos na Comiss&atilde;o Setorial de Evolu&ccedil;&atilde;o Funcional e na GGDP. O desempenho no exerc&iacute;cio
+      das atribui&ccedil;&otilde;es n&atilde;o gera manifesta&ccedil;&atilde;o na fase de transi&ccedil;&atilde;o, em que a pontua&ccedil;&atilde;o &eacute; creditada mensalmente.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Acompanhamento</div>
+    <p class="card-sub">Data de refer&ecirc;ncia: 14 de outubro de 2026</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:16px 0 4px">
+      <div class="metric"><div class="m-title">Equipe</div><div class="m-grid">
+        <div><div class="m-num">8</div><div class="m-cap">Chefia imediata</div></div>
+        <div><div class="m-num">10</div><div class="m-cap">Chefia mediata</div></div>
+        <div><div class="m-num">16</div><div class="m-cap">No PROMOVE</div></div>
+      </div></div>
+      <div class="metric"><div class="m-title">Manifesta&ccedil;&otilde;es</div><div class="m-grid">
+        <div><div class="m-num" style="color:oklch(52% 0.14 75)">9</div><div class="m-cap">Em aberto</div></div>
+        <div><div class="m-num" style="color:oklch(52% 0.14 75)">1</div><div class="m-cap">Vence hoje</div></div>
+        <div><div class="m-num">0</div><div class="m-cap">Vencidas</div></div>
+      </div></div>
+      <div class="metric"><div class="m-title">Reconsidera&ccedil;&otilde;es</div><div class="m-grid">
+        <div><div class="m-num" style="color:oklch(52% 0.14 75)">1</div><div class="m-cap">Em an&aacute;lise</div></div>
+        <div><div class="m-num">0</div><div class="m-cap">Em atraso</div></div>
+      </div></div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 0" id="filtros-acomp">
+      <button class="chip" aria-pressed="true" data-pan="global">Vis&atilde;o global</button>
+      <button class="chip" aria-pressed="false" data-pan="ee">Efetivo exerc&iacute;cio</button>
+      <button class="chip" aria-pressed="false" data-pan="des">Desempenho</button>
+      <button class="chip" aria-pressed="false" data-pan="ape">Aperfei&ccedil;oamento</button>
+      <button class="chip" aria-pressed="false" data-pan="ass">Assun&ccedil;&atilde;o de responsabilidades</button>
+      <button class="chip" aria-pressed="false" data-pan="tit">Titula&ccedil;&atilde;o acad&ecirc;mica</button>
+    </div>
+    <div class="srch">
+      <input type="search" id="ac-nome" placeholder="Buscar por servidor">
+      <select id="ac-unid"><option value="">Todas as unidades</option>
+        <option value="superintend&ecirc;ncia central de desenvolvimento estrat&eacute;gico de pessoal">Superintend&ecirc;ncia Central de Desenvolvimento Estrat&eacute;gico de Pessoal</option>
+        <option value="gerência de estudos e impactos de pessoal — geimp">Gerência de Estudos e Impactos de Pessoal — GEIMP</option>
+        <option value="gerência de normas e critérios de produtividade — gncp">Gerência de Normas e Critérios de Produtividade — GNCP</option>
+        <option value="gerência de perfil e alocação de pessoas — gepap">Gerência de Perfil e Alocação de Pessoas — GEPAP</option>
+        <option value="gerência de gestão do conhecimento e competências — g2c2">Gerência de Gestão do Conhecimento e Competências — G2C2</option>
+        <option value="gerência do controle de gasto com pessoal — gegpc">Gerência do Controle de Gasto com Pessoal — GEGPC</option>
+      </select>
+    </div>
+
+    <div class="pan" data-pan="global">
+      <div class="scrollbox"><table>
+      <tr><th style="width:24%">Servidor</th><th style="width:15%">Ciclo de evolu&ccedil;&atilde;o</th><th style="width:12%">Tempo no ciclo</th><th style="width:13%">Desempenho</th><th style="width:12%">Aperfei&ccedil;.</th><th style="width:12%">Assun&ccedil;&atilde;o</th><th style="width:12%">Titula&ccedil;&atilde;o</th></tr>
+      <tr class="ac" data-nome="fernanda queiroz alves" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Fernanda Queiroz Alves</span><div class="sub" style="margin-top:3px">GEIMP</div></td>
+        <td>D → E<div class="sub" style="margin-top:3px">desde 01/04/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">6 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">24h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">4,2</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="juliana ferreira castro" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Juliana Ferreira Castro</span><div class="sub" style="margin-top:3px">GNCP</div></td>
+        <td>D → E<div class="sub" style="margin-top:3px">desde 01/02/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">8 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">16h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">2,1</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="letícia amorim rocha" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Letícia Amorim Rocha</span><div class="sub" style="margin-top:3px">Superintendência</div></td>
+        <td>E → F<div class="sub" style="margin-top:3px">desde 01/07/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">3 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">8h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">0,0</td>
+        <td><span class="badge b-info">Registrada</span></td>
+      </tr>
+      <tr class="ac" data-nome="marcos vinícius teixeira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Marcos Vinícius Teixeira</span><div class="sub" style="margin-top:3px">GEPAP</div></td>
+        <td>C → D<div class="sub" style="margin-top:3px">desde 01/06/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">4 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">32h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">6,0</td>
+        <td><span class="badge b-info">Registrada</span></td>
+      </tr>
+      <tr class="ac" data-nome="maria da silva" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Maria da Silva</span><div class="sub" style="margin-top:3px">Superintendência</div></td>
+        <td>D → E<div class="sub" style="margin-top:3px">desde 01/05/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">17 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">20h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">16,324</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="rafael antunes moreira" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Rafael Antunes Moreira</span><div class="sub" style="margin-top:3px">Superintendência</div></td>
+        <td>C → D<div class="sub" style="margin-top:3px">desde 01/09/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">12 meses</td>
+        <td style="font-weight:600">7,5<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">60h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">8,4</td>
+        <td><span class="badge b-info">Registrada</span></td>
+      </tr>
+      <tr class="ac" data-nome="renata borges pinto" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Renata Borges Pinto</span><div class="sub" style="margin-top:3px">G2C2</div></td>
+        <td>E → F<div class="sub" style="margin-top:3px">desde 01/01/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">9 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">12h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">1,4</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Bruno Carvalho Nogueira</span><div class="sub" style="margin-top:3px">GEIMP</div></td>
+        <td>C → D<div class="sub" style="margin-top:3px">desde 01/03/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">7 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">44h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">0,0</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Simone Batista Ramos</span><div class="sub" style="margin-top:3px">GEIMP</div></td>
+        <td>B → C<div class="sub" style="margin-top:3px">desde 01/08/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">14 meses</td>
+        <td style="font-weight:600">8,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">60h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">2,8</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Paulo Henrique Marques</span><div class="sub" style="margin-top:3px">GNCP</div></td>
+        <td>D → E<div class="sub" style="margin-top:3px">desde 01/11/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">11 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">36h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">3,5</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Renan Alcântara Vieira</span><div class="sub" style="margin-top:3px">GNCP</div></td>
+        <td>B → C<div class="sub" style="margin-top:3px">desde 01/05/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">5 meses</td>
+        <td><span class="sub">Sem ciclo conclu&iacute;do</span></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">4h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">0,0</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Ana Paula Duarte</span><div class="sub" style="margin-top:3px">GEPAP</div></td>
+        <td>D → E<div class="sub" style="margin-top:3px">desde 01/10/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">12 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">40h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">24,6</td>
+        <td><span class="badge b-info">Registrada</span></td>
+      </tr>
+      <tr class="ac" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Thiago Moraes Lacerda</span><div class="sub" style="margin-top:3px">G2C2</div></td>
+        <td>C → D<div class="sub" style="margin-top:3px">desde 01/03/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">7 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">28h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">0,0</td>
+        <td><span class="badge b-info">Registrada</span></td>
+      </tr>
+      <tr class="ac" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Vanessa Correia Lima</span><div class="sub" style="margin-top:3px">G2C2</div></td>
+        <td>B → C<div class="sub" style="margin-top:3px">desde 01/05/2026</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">5 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">16h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">0,0</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Camila Rezende Braga</span><div class="sub" style="margin-top:3px">GEGPC</div></td>
+        <td>C → D<div class="sub" style="margin-top:3px">desde 01/12/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">10 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">8h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">1,4</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+      <tr class="ac" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Eduardo Pires Fontoura</span><div class="sub" style="margin-top:3px">GEGPC</div></td>
+        <td>D → E<div class="sub" style="margin-top:3px">desde 01/12/2025</div></td>
+        <td style="color:oklch(35% 0.06 235);font-weight:600">10 meses</td>
+        <td style="font-weight:600">9,0<div class="sub" style="font-weight:400;margin-top:3px">&uacute;ltimo ciclo conclu&iacute;do</div></td>
+        <td style="color:oklch(45% 0.13 75);font-weight:600">0h</td>
+        <td style="text-align:left;color:oklch(40% 0.12 300);font-weight:600">3,5</td>
+        <td><span class="sub">—</span></td>
+      </tr>
+    </table></div>
+      <p class="note">Os valores s&atilde;o acumulados dentro do ciclo de evolu&ccedil;&atilde;o de cada servidor, que tem in&iacute;cio pr&oacute;prio. N&atilde;o s&atilde;o exibidos m&iacute;nimos nem percentuais de cumprimento porque o interst&iacute;cio aplic&aacute;vel &eacute; resultado apurado ao fim do ciclo, na forma dos arts. 47, &sect;&sect; 7&ordm; a 9&ordm;, do Decreto n&ordm; 10.802/2025, e n&atilde;o um par&acirc;metro conhecido de antem&atilde;o.</p>
+    </div>
+
+    <div class="pan hide" data-pan="ee">
+      <div class="scrollbox"><table>
+      <tr><th style="width:23%">Servidor</th><th style="width:20%">Ciclo de evolu&ccedil;&atilde;o</th><th style="width:18%">Tempo computado</th><th style="width:11%">Pontos</th><th style="width:28%;text-align:left">Afastamentos no ciclo</th></tr>
+      <tr class="ac" data-nome="fernanda queiroz alves" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Fernanda Queiroz Alves</span></td>
+        <td>D → E<div class="sub" style="margin-top:3px">in&iacute;cio em 01/04/2026</div></td>
+        <td><b style="font-size:15px">6</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,2</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="juliana ferreira castro" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Juliana Ferreira Castro</span></td>
+        <td>D → E<div class="sub" style="margin-top:3px">in&iacute;cio em 01/02/2026</div></td>
+        <td><b style="font-size:15px">8</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,6</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="letícia amorim rocha" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Letícia Amorim Rocha</span></td>
+        <td>E → F<div class="sub" style="margin-top:3px">in&iacute;cio em 01/07/2026</div></td>
+        <td><b style="font-size:15px">3</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">0,6</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="marcos vinícius teixeira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Marcos Vinícius Teixeira</span></td>
+        <td>C → D<div class="sub" style="margin-top:3px">in&iacute;cio em 01/06/2026</div></td>
+        <td><b style="font-size:15px">4</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">0,8</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="maria da silva" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Maria da Silva</span></td>
+        <td>D → E<div class="sub" style="margin-top:3px">in&iacute;cio em 01/05/2025</div></td>
+        <td><b style="font-size:15px">17</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">3,4</td>
+        <td style="text-align:left"><div class="fld" style="margin-top:0"><b>Licença para tratamento de saúde · 12 dias · 02/2026</b></div><div class="sub" style="margin-top:3px">Art. 4º, VI — conta</div></td>
+      </tr>
+      <tr class="ac" data-nome="rafael antunes moreira" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Rafael Antunes Moreira</span></td>
+        <td>C → D<div class="sub" style="margin-top:3px">in&iacute;cio em 01/09/2025</div></td>
+        <td><b style="font-size:15px">12</b> <span class="sub">meses de efetivo exerc&iacute;cio</span><div class="sub" style="color:oklch(48% 0.13 75);margin-top:4px">13 meses corridos &middot; 1 n&atilde;o computado</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">2,4</td>
+        <td style="text-align:left"><div class="fld" style="margin-top:0"><b>Afastamento para treinamento ou capacitação · 30 dias · 04/2026</b></div><div class="sub" style="margin-top:3px">Art. 5º, X — não conta</div></td>
+      </tr>
+      <tr class="ac" data-nome="renata borges pinto" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Renata Borges Pinto</span></td>
+        <td>E → F<div class="sub" style="margin-top:3px">in&iacute;cio em 01/01/2026</div></td>
+        <td><b style="font-size:15px">9</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,8</td>
+        <td style="text-align:left"><div class="fld" style="margin-top:0"><b>Licença-maternidade · desde 03/08/2026</b></div><div class="sub" style="margin-top:3px">Art. 4º, IX — conta</div></td>
+      </tr>
+      <tr class="ac" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Bruno Carvalho Nogueira</span></td>
+        <td>C → D<div class="sub" style="margin-top:3px">in&iacute;cio em 01/03/2026</div></td>
+        <td><b style="font-size:15px">7</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,4</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Simone Batista Ramos</span></td>
+        <td>B → C<div class="sub" style="margin-top:3px">in&iacute;cio em 01/08/2025</div></td>
+        <td><b style="font-size:15px">14</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">2,8</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Paulo Henrique Marques</span></td>
+        <td>D → E<div class="sub" style="margin-top:3px">in&iacute;cio em 01/11/2025</div></td>
+        <td><b style="font-size:15px">11</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">2,2</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Renan Alcântara Vieira</span></td>
+        <td>B → C<div class="sub" style="margin-top:3px">in&iacute;cio em 01/05/2026</div></td>
+        <td><b style="font-size:15px">5</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,0</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Ana Paula Duarte</span></td>
+        <td>D → E<div class="sub" style="margin-top:3px">in&iacute;cio em 01/10/2025</div></td>
+        <td><b style="font-size:15px">12</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">2,4</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Thiago Moraes Lacerda</span></td>
+        <td>C → D<div class="sub" style="margin-top:3px">in&iacute;cio em 01/03/2026</div></td>
+        <td><b style="font-size:15px">7</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,4</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Vanessa Correia Lima</span></td>
+        <td>B → C<div class="sub" style="margin-top:3px">in&iacute;cio em 01/05/2026</div></td>
+        <td><b style="font-size:15px">5</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">1,0</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Camila Rezende Braga</span></td>
+        <td>C → D<div class="sub" style="margin-top:3px">in&iacute;cio em 01/12/2025</div></td>
+        <td><b style="font-size:15px">10</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">2,0</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Eduardo Pires Fontoura</span></td>
+        <td>D → E<div class="sub" style="margin-top:3px">in&iacute;cio em 01/12/2025</div></td>
+        <td><b style="font-size:15px">10</b> <span class="sub">meses de efetivo exerc&iacute;cio</span></td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.11 150)">2,0</td>
+        <td style="text-align:left"><span class="sub">Nenhum registro no ciclo</span></td>
+      </tr>
+    </table></div>
+      <p class="note">Pontua&ccedil;&atilde;o de 0,2 ponto por m&ecirc;s de efetivo exerc&iacute;cio, contada desde o in&iacute;cio do ciclo de evolu&ccedil;&atilde;o de cada servidor. O interst&iacute;cio m&iacute;nimo exigido n&atilde;o &eacute; exibido porque s&oacute; se define ao fim do ciclo: s&atilde;o 18 meses na regra geral, 15 meses para quem tem direito &agrave; aposentadoria especial e 12 meses quando os aceleradores superam o equivalente a 2 n&iacute;veis, na forma dos arts. 47, &sect;&sect; 7&ordm; a 9&ordm;, do Decreto n&ordm; 10.802/2025. A classifica&ccedil;&atilde;o dos afastamentos segue a Lei n&ordm; 23.241/2025: as hip&oacute;teses do art. 4&ordm; contam como efetivo exerc&iacute;cio, sem limite de tempo, e as do art. 5&ordm; n&atilde;o contam.</p>
+    </div>
+
+    <div class="pan hide" data-pan="des">
+      <div class="scrollbox"><table>
+      <tr><th style="width:21%">Servidor</th><th style="width:39%">&Uacute;ltimo ciclo de avalia&ccedil;&atilde;o conclu&iacute;do</th><th style="width:40%;text-align:left">Ciclo de avalia&ccedil;&atilde;o vigente</th></tr>
+      <tr class="ac" data-nome="fernanda queiroz alves" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Fernanda Queiroz Alves</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o D → E</div></td>
+        <td><div class="sub">01/04/2026 a 30/09/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/10/2026 a 31/03/2027</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">0,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">0 meses lan&ccedil;ados de 1,5</div><div class="sub" style="margin-top:6px">Aguardando o primeiro lançamento do ciclo</div></td>
+      </tr>
+      <tr class="ac" data-nome="juliana ferreira castro" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Juliana Ferreira Castro</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o D → E</div></td>
+        <td><div class="sub">01/02/2026 a 31/07/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/08/2026 a 31/01/2027</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">3,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">2 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="letícia amorim rocha" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Letícia Amorim Rocha</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o E → F</div></td>
+        <td><div class="sub">01/01/2026 a 30/06/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span><div class="sub" style="margin-top:6px">Ciclo cumprido na unidade de origem &middot; SES</div></td>
+        <td style="text-align:left"><div class="sub">01/07/2026 a 31/12/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">4,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">3 meses lan&ccedil;ados de 1,5</div><div class="sub" style="margin-top:6px">Ciclo aberto por movimentação em 01/07/2026</div></td>
+      </tr>
+      <tr class="ac" data-nome="marcos vinícius teixeira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Marcos Vinícius Teixeira</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o C → D</div></td>
+        <td><div class="sub">01/12/2025 a 31/05/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/06/2026 a 30/11/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">6,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">4 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="maria da silva" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Maria da Silva</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o D → E</div></td>
+        <td><div class="sub">01/11/2025 a 30/04/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span><div class="sub" style="margin-top:6px">12 dias de licença para tratamento de saúde em 02/2026 &middot; art. 6º, sem impacto</div></td>
+        <td style="text-align:left"><div class="sub">01/05/2026 a 31/10/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">7,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">5 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="rafael antunes moreira" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Rafael Antunes Moreira</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o C → D</div></td>
+        <td><div class="sub">01/12/2025 a 31/05/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">7,5 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span><div class="sub" style="margin-top:6px">Afastamento para capacitação em 04/2026 &middot; art. 15, § 2º, sem avaliação nem pontuação no mês</div></td>
+        <td style="text-align:left"><div class="sub">01/06/2026 a 30/11/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">6,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">4 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="renata borges pinto" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Renata Borges Pinto</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o E → F</div></td>
+        <td><div class="sub">01/01/2026 a 30/06/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/07/2026 a 31/12/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">1,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">1 m&ecirc;s lan&ccedil;ado de 1,5</div><div class="sub" style="margin-top:6px">Em licença-maternidade desde 03/08/2026 &middot; art. 15, § 2º, sem avaliação no período</div></td>
+      </tr>
+      <tr class="ac" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Bruno Carvalho Nogueira</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o C → D</div></td>
+        <td><div class="sub">01/03/2026 a 31/08/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/09/2026 a 28/02/2027</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">1,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">1 m&ecirc;s lan&ccedil;ado de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Simone Batista Ramos</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o B → C</div></td>
+        <td><div class="sub">01/03/2026 a 31/08/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">8,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span><div class="sub" style="margin-top:6px">20 dias de licença em 05/2026 &middot; art. 6º &middot; 1,5 &minus; (20 &times; 1,5) / 30 = 0,5 no mês</div></td>
+        <td style="text-align:left"><div class="sub">01/09/2026 a 28/02/2027</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">1,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">1 m&ecirc;s lan&ccedil;ado de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Paulo Henrique Marques</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o D → E</div></td>
+        <td><div class="sub">01/02/2026 a 31/07/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/08/2026 a 31/01/2027</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">3,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">2 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Renan Alcântara Vieira</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o B → C</div></td>
+        <td><span class="sub">Nenhum ciclo de avalia&ccedil;&atilde;o conclu&iacute;do at&eacute; a data de refer&ecirc;ncia</span></td>
+        <td style="text-align:left"><div class="sub">01/05/2026 a 31/10/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">7,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">5 meses lan&ccedil;ados de 1,5</div><div class="sub" style="margin-top:6px">Primeiro ciclo de avaliação do servidor</div></td>
+      </tr>
+      <tr class="ac" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Ana Paula Duarte</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o D → E</div></td>
+        <td><div class="sub">01/01/2026 a 30/06/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/07/2026 a 31/12/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">4,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">3 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Thiago Moraes Lacerda</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o C → D</div></td>
+        <td><div class="sub">01/03/2026 a 31/08/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/09/2026 a 28/02/2027</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">1,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">1 m&ecirc;s lan&ccedil;ado de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Vanessa Correia Lima</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o B → C</div></td>
+        <td><div class="sub">01/11/2025 a 30/04/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/05/2026 a 31/10/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">7,5 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">5 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Camila Rezende Braga</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o C → D</div></td>
+        <td><div class="sub">01/12/2025 a 31/05/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/06/2026 a 30/11/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">6,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">4 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+      <tr class="ac" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Eduardo Pires Fontoura</span><div class="sub" style="margin-top:3px">Ciclo de evolu&ccedil;&atilde;o D → E</div></td>
+        <td><div class="sub">01/12/2025 a 31/05/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">9,0 <span class="sub" style="font-weight:400">pontos</span></div><span class="badge b-ok">M&iacute;nimo cumprido</span></td>
+        <td style="text-align:left"><div class="sub">01/06/2026 a 30/11/2026</div><div style="font-size:15px;font-weight:700;margin:5px 0 3px">6,0 <span class="sub" style="font-weight:400">pontos</span></div><div class="sub">4 meses lan&ccedil;ados de 1,5</div></td>
+      </tr>
+    </table></div>
+      <p class="note">Os ciclos de avalia&ccedil;&atilde;o n&atilde;o s&atilde;o coincidentes entre os servidores: acompanham o efetivo exerc&iacute;cio e as movimenta&ccedil;&otilde;es, de modo que cada um tem in&iacute;cio e fim pr&oacute;prios. Na fase de transi&ccedil;&atilde;o, a pontua&ccedil;&atilde;o &eacute; creditada mensalmente &agrave; raz&atilde;o de 1,5 ponto por m&ecirc;s de refer&ecirc;ncia fechado, com desconto das aus&ecirc;ncias, e n&atilde;o h&aacute; pagamento &uacute;nico ao fim do ciclo. O impacto dos afastamentos segue as tr&ecirc;s categorias do art. 15 do Decreto n&ordm; 10.802/2025: at&eacute; 15 dias consecutivos do art. 6&ordm; n&atilde;o h&aacute; impacto; acima disso o m&ecirc;s &eacute; descontado proporcionalmente, pela f&oacute;rmula 1,5 &minus; (N &times; 1,5) / 30; e as hip&oacute;teses dos arts. 7&ordm; e 5&ordm; n&atilde;o comportam avalia&ccedil;&atilde;o nem pontua&ccedil;&atilde;o. A verifica&ccedil;&atilde;o do m&iacute;nimo de 7,0 recai sempre sobre o &uacute;ltimo ciclo conclu&iacute;do.</p>
+    </div>
+
+    <div class="pan hide" data-pan="ape">
+      <div class="leg">
+        <span><i class="i1"></i>I &middot; Rol de A&ccedil;&otilde;es Educacionais</span>
+        <span><i class="i2"></i>II &middot; Plano de desenvolvimento individual</span>
+        <span><i class="i3"></i>III &middot; Trilha de Certifica&ccedil;&atilde;o</span>
+        <span><i class="i4"></i>IV &middot; A&ccedil;&atilde;o avulsa</span>
+      </div>
+      <div class="scrollbox"><table>
+      <tr><th style="width:21%">Servidor</th><th style="width:26%">Horas por instrumento</th><th style="width:22%">Distribui&ccedil;&atilde;o</th><th style="width:10%">Total</th><th style="width:9%">Pontos</th><th style="width:12%">PDI</th></tr>
+      <tr class="ac" data-nome="fernanda queiroz alves" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Fernanda Queiroz Alves</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td><div class="ih"><b>I</b> 8h &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <b>III</b> 16h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:13.33%"></i><i class="i3" style="width:26.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">24h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">2,16</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="juliana ferreira castro" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Juliana Ferreira Castro</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td><div class="ih"><span style="color:oklch(72% 0.01 255)">I &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <b>IV</b> 16h</div></td>
+        <td><div class="stack"><i class="i4" style="width:26.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">16h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">1,44</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="letícia amorim rocha" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Letícia Amorim Rocha</span><div class="sub" style="margin-top:3px">Ciclo E → F</div></td>
+        <td><div class="ih"><b>I</b> 8h &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:13.33%"></i></div></td>
+        <td style="text-align:left;font-weight:700">8h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">0,72</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="marcos vinícius teixeira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Marcos Vinícius Teixeira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td><div class="ih"><b>I</b> 16h &nbsp; <b>II</b> 8h &nbsp; <b>III</b> 8h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:26.67%"></i><i class="i2" style="width:13.33%"></i><i class="i3" style="width:13.33%"></i></div></td>
+        <td style="text-align:left;font-weight:700">32h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">2,88</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 11/02/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="maria da silva" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Maria da Silva</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td><div class="ih"><b>I</b> 4h &nbsp; <b>II</b> 12h &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <b>IV</b> 4h</div></td>
+        <td><div class="stack"><i class="i1" style="width:6.67%"></i><i class="i2" style="width:20.00%"></i><i class="i4" style="width:6.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">20h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">1,8</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 16/07/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="rafael antunes moreira" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Rafael Antunes Moreira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td><div class="ih"><b>I</b> 20h &nbsp; <b>II</b> 16h &nbsp; <b>III</b> 24h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:33.33%"></i><i class="i2" style="width:26.67%"></i><i class="i3" style="width:40.00%"></i></div></td>
+        <td style="text-align:left;font-weight:700">60h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">5,4</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 09/01/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="renata borges pinto" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Renata Borges Pinto</span><div class="sub" style="margin-top:3px">Ciclo E → F</div></td>
+        <td><div class="ih"><b>I</b> 12h &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:20.00%"></i></div></td>
+        <td style="text-align:left;font-weight:700">12h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">1,08</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Bruno Carvalho Nogueira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td><div class="ih"><b>I</b> 12h &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <b>III</b> 32h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:20.00%"></i><i class="i3" style="width:53.33%"></i></div></td>
+        <td style="text-align:left;font-weight:700">44h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">3,96</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Simone Batista Ramos</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td><div class="ih"><b>I</b> 24h &nbsp; <b>II</b> 20h &nbsp; <b>III</b> 16h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:40.00%"></i><i class="i2" style="width:33.33%"></i><i class="i3" style="width:26.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">60h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">5,4</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 18/03/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Paulo Henrique Marques</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td><div class="ih"><b>I</b> 8h &nbsp; <b>II</b> 20h &nbsp; <b>III</b> 8h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:13.33%"></i><i class="i2" style="width:33.33%"></i><i class="i3" style="width:13.33%"></i></div></td>
+        <td style="text-align:left;font-weight:700">36h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">3,24</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 04/03/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Renan Alcântara Vieira</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td><div class="ih"><span style="color:oklch(72% 0.01 255)">I &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <b>III</b> 4h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i3" style="width:6.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">4h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">0,36</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Ana Paula Duarte</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td><div class="ih"><b>I</b> 16h &nbsp; <b>II</b> 8h &nbsp; <b>III</b> 16h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:26.67%"></i><i class="i2" style="width:13.33%"></i><i class="i3" style="width:26.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">40h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">3,6</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 05/12/2025</span></td>
+      </tr>
+      <tr class="ac" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Thiago Moraes Lacerda</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td><div class="ih"><b>I</b> 8h &nbsp; <b>II</b> 16h &nbsp; <b>III</b> 4h &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:13.33%"></i><i class="i2" style="width:26.67%"></i><i class="i3" style="width:6.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">28h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">2,52</td>
+        <td style="text-align:left"><span class="sub">Vigente desde 22/05/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Vanessa Correia Lima</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td><div class="ih"><b>I</b> 16h &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:26.67%"></i></div></td>
+        <td style="text-align:left;font-weight:700">16h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">1,44</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Camila Rezende Braga</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td><div class="ih"><b>I</b> 8h &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"><i class="i1" style="width:13.33%"></i></div></td>
+        <td style="text-align:left;font-weight:700">8h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">0,72</td>
+        <td style="text-align:left"><span class="sub">Sem PDI no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Eduardo Pires Fontoura</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td><div class="ih"><span style="color:oklch(72% 0.01 255)">I &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">II &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">III &mdash;</span> &nbsp; <span style="color:oklch(72% 0.01 255)">IV &mdash;</span></div></td>
+        <td><div class="stack"></div></td>
+        <td style="text-align:left;font-weight:700">0h</td>
+        <td style="text-align:left;font-weight:700;color:oklch(45% 0.13 75)">0,0</td>
+        <td style="text-align:left"><span class="badge b-warn">Pendente</span></td>
+      </tr>
+    </table></div>
+      <p class="note">Pontua&ccedil;&atilde;o de 0,09 ponto por hora validada. Os quatro instrumentos s&atilde;o cumulativos e um mesmo servidor pode acumular horas em todos eles: o Rol de A&ccedil;&otilde;es Educacionais (I), o plano de desenvolvimento individual (II), a Trilha de Certifica&ccedil;&atilde;o (III) e a a&ccedil;&atilde;o avulsa (IV), esta &uacute;ltima a &uacute;nica que depende de valida&ccedil;&atilde;o da chefia imediata, na forma do art. 41, IV, do Decreto n&ordm; 10.802/2025. A carga hor&aacute;ria m&iacute;nima n&atilde;o &eacute; exibida porque acompanha o interst&iacute;cio: s&atilde;o 60 horas na regra geral e 40 horas quando o interst&iacute;cio cai para 12 meses, na forma do art. 47, &sect; 9&ordm; &mdash; ambos apurados apenas ao fim do ciclo.</p>
+    </div>
+
+    <div class="pan hide" data-pan="ass">
+      <div class="scrollbox"><table>
+      <tr><th style="width:23%">Servidor</th><th style="width:14%">Pontos no ciclo</th><th style="width:26%">Acumulado na carreira</th><th style="width:16%">Incisos do art. 42</th><th style="width:21%">Manifesta&ccedil;&atilde;o pr&eacute;via</th></tr>
+      <tr class="ac" data-nome="fernanda queiroz alves" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Fernanda Queiroz Alves</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">4,2</td>
+        <td><div class="bar"><i class="p" style="width:12.9%"></i></div><div class="bar-cap">18,6 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">VII</td>
+        <td><span class="badge b-warn">Exigida</span></td>
+      </tr>
+      <tr class="ac" data-nome="juliana ferreira castro" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Juliana Ferreira Castro</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">2,1</td>
+        <td><div class="bar"><i class="p" style="width:6.5%"></i></div><div class="bar-cap">9,4 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">IV</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="letícia amorim rocha" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Letícia Amorim Rocha</span><div class="sub" style="margin-top:3px">Ciclo E → F</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">0,0</td>
+        <td><div class="bar"><i class="p" style="width:8.9%"></i></div><div class="bar-cap">12,8 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="marcos vinícius teixeira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Marcos Vinícius Teixeira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">6,0</td>
+        <td><div class="bar"><i class="p" style="width:15.6%"></i></div><div class="bar-cap">22,4 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">VII</td>
+        <td><span class="badge b-warn">Exigida</span></td>
+      </tr>
+      <tr class="ac" data-nome="maria da silva" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Maria da Silva</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">16,324</td>
+        <td><div class="bar"><i class="p" style="width:45.2%"></i></div><div class="bar-cap">65,024 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">IV e V</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="rafael antunes moreira" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Rafael Antunes Moreira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">8,4</td>
+        <td><div class="bar"><i class="p" style="width:21.0%"></i></div><div class="bar-cap">30,2 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">I</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="renata borges pinto" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Renata Borges Pinto</span><div class="sub" style="margin-top:3px">Ciclo E → F</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">1,4</td>
+        <td><div class="bar"><i class="p" style="width:5.0%"></i></div><div class="bar-cap">7,2 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">V</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Bruno Carvalho Nogueira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">0,0</td>
+        <td><div class="bar"><i class="p" style="width:2.5%"></i></div><div class="bar-cap">3,6 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Simone Batista Ramos</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">2,8</td>
+        <td><div class="bar"><i class="p" style="width:7.6%"></i></div><div class="bar-cap">11,0 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">IV</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Paulo Henrique Marques</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">3,5</td>
+        <td><div class="bar"><i class="p" style="width:10.3%"></i></div><div class="bar-cap">14,9 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">IV</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Renan Alcântara Vieira</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">0,0</td>
+        <td><div class="bar"><i class="p" style="width:0.0%"></i></div><div class="bar-cap">0,0 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Ana Paula Duarte</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">24,6</td>
+        <td><div class="bar"><i class="p" style="width:68.3%"></i></div><div class="bar-cap">98,4 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">IV, V e VII</td>
+        <td><span class="badge b-warn">Exigida</span></td>
+      </tr>
+      <tr class="ac" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Thiago Moraes Lacerda</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">0,0</td>
+        <td><div class="bar"><i class="p" style="width:3.8%"></i></div><div class="bar-cap">5,4 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Vanessa Correia Lima</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">0,0</td>
+        <td><div class="bar"><i class="p" style="width:1.2%"></i></div><div class="bar-cap">1,8 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Camila Rezende Braga</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">1,4</td>
+        <td><div class="bar"><i class="p" style="width:4.4%"></i></div><div class="bar-cap">6,3 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">V</td>
+        <td><span class="sub">Apurada pela GGDP</span></td>
+      </tr>
+      <tr class="ac" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Eduardo Pires Fontoura</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="text-align:left;font-weight:700;color:oklch(40% 0.12 300)">3,5</td>
+        <td><div class="bar"><i class="p" style="width:11.2%"></i></div><div class="bar-cap">16,1 de 144 pontos &middot; teto da carreira</div></td>
+        <td style="color:oklch(45% 0.02 255)">VIII</td>
+        <td><span class="badge b-warn">Exigida</span></td>
+      </tr>
+    </table></div>
+      <p class="note">Os tipos VII a X do art. 42 do Decreto n&ordm; 10.802/2025 dependem de manifesta&ccedil;&atilde;o pr&eacute;via da chefia imediata; os demais s&atilde;o apurados diretamente pela GGDP. Nos tipos IV e V, titular e substituto pontuam de forma independente, na forma do &sect; 3&ordm;. A manifesta&ccedil;&atilde;o da chefia &eacute; pr&eacute;via e n&atilde;o vincula a Comiss&atilde;o Setorial de Evolu&ccedil;&atilde;o Funcional.</p>
+    </div>
+
+    <div class="pan hide" data-pan="tit">
+      <div class="scrollbox"><table>
+      <tr><th style="width:23%">Servidor</th><th style="width:32%">Titula&ccedil;&atilde;o</th><th style="width:13%">Pontos</th><th style="width:32%">Situa&ccedil;&atilde;o</th></tr>
+      <tr class="ac" data-nome="fernanda queiroz alves" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Fernanda Queiroz Alves</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="juliana ferreira castro" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Juliana Ferreira Castro</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="letícia amorim rocha" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Letícia Amorim Rocha</span><div class="sub" style="margin-top:3px">Ciclo E → F</div></td>
+        <td style="color:oklch(45% 0.02 255)">Mestrado em Administração Pública</td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.08 195)">8,0</td>
+        <td><span class="badge b-ok">Utilizado para evolução · CSEF em 26/06/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="marcos vinícius teixeira" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Marcos Vinícius Teixeira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="color:oklch(45% 0.02 255)">Mestrado em Administração Pública</td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.08 195)">—</td>
+        <td><span class="badge b-warn">Aguardando manifestação da chefia</span></td>
+      </tr>
+      <tr class="ac" data-nome="maria da silva" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Maria da Silva</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="rafael antunes moreira" data-unid="superintendência central de desenvolvimento estratégico de pessoal">
+        <td><span class="lnk">Rafael Antunes Moreira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="color:oklch(45% 0.02 255)">Especialização em Gestão de Políticas Públicas</td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.08 195)">6,0</td>
+        <td><span class="badge b-ok">Utilizado para evolução · CSEF em 15/09/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="renata borges pinto" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Renata Borges Pinto</span><div class="sub" style="margin-top:3px">Ciclo E → F</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="bruno carvalho nogueira" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Bruno Carvalho Nogueira</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="simone batista ramos" data-unid="gerência de estudos e impactos de pessoal — geimp">
+        <td><span class="lnk">Simone Batista Ramos</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="paulo henrique marques" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Paulo Henrique Marques</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="renan alcântara vieira" data-unid="gerência de normas e critérios de produtividade — gncp">
+        <td><span class="lnk">Renan Alcântara Vieira</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="ana paula duarte" data-unid="gerência de perfil e alocação de pessoas — gepap">
+        <td><span class="lnk">Ana Paula Duarte</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="color:oklch(45% 0.02 255)">Doutorado em Políticas Públicas</td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.08 195)">12,0</td>
+        <td><span class="badge b-ok">Utilizado para evolução · CSEF em 11/05/2026</span></td>
+      </tr>
+      <tr class="ac" data-nome="thiago moraes lacerda" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Thiago Moraes Lacerda</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="color:oklch(45% 0.02 255)">Especialização em Gestão do Conhecimento</td>
+        <td style="text-align:left;font-weight:700;color:oklch(38% 0.08 195)">—</td>
+        <td><span class="badge b-warn">Aguardando diligência</span></td>
+      </tr>
+      <tr class="ac" data-nome="vanessa correia lima" data-unid="gerência de gestão do conhecimento e competências — g2c2">
+        <td><span class="lnk">Vanessa Correia Lima</span><div class="sub" style="margin-top:3px">Ciclo B → C</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="camila rezende braga" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Camila Rezende Braga</span><div class="sub" style="margin-top:3px">Ciclo C → D</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+      <tr class="ac" data-nome="eduardo pires fontoura" data-unid="gerência do controle de gasto com pessoal — gegpc">
+        <td><span class="lnk">Eduardo Pires Fontoura</span><div class="sub" style="margin-top:3px">Ciclo D → E</div></td>
+        <td style="color:oklch(45% 0.02 255)">—</td>
+        <td><span class="sub">—</span></td>
+        <td><span class="badge b-neut">Sem registro no ciclo</span></td>
+      </tr>
+    </table></div>
+      <p class="note">A titula&ccedil;&atilde;o acad&ecirc;mica exige manifesta&ccedil;&atilde;o pr&eacute;via da chefia, na forma do art. 64, X, do Decreto n&ordm; 10.802/2025, e valida&ccedil;&atilde;o da Comiss&atilde;o Setorial de Evolu&ccedil;&atilde;o Funcional. Os pontos s&atilde;o creditados no primeiro dia do m&ecirc;s seguinte ao da valida&ccedil;&atilde;o.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title">Linha do tempo</div>
+    <p class="card-sub">Manifesta&ccedil;&otilde;es conclu&iacute;das &middot; registro cronol&oacute;gico dos atos da chefia e de seus desdobramentos</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 6px" id="filtros-tl">
+      <button class="chip" aria-pressed="true" data-tl="todos">Todos &middot; 9</button>
+      <button class="chip" aria-pressed="false" data-tl="aperfeicoamento">Aperfei&ccedil;oamento &middot; 5</button>
+      <button class="chip" aria-pressed="false" data-tl="titulacao">Titula&ccedil;&atilde;o acad&ecirc;mica &middot; 2</button>
+      <button class="chip" aria-pressed="false" data-tl="assuncao">Assun&ccedil;&atilde;o de responsabilidades &middot; 2</button>
+    </div>
+
+    <div class="scrollbox" style="padding:0 14px 4px">
+      <div class="tl" data-tl="aperfeicoamento">
+        <div class="tl-row">
+          <div class="tl-date">08/10/2026<div class="tl-proto">2026/00408-3</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Aperfeiçoamento — validação de ação educacional</div>
+            <div class="tl-name"><span class="lnk">Vanessa Correia Lima</span> &middot; Curso de 16h · Rol de Ações Educacionais</div>
+            <div class="tl-tags"><span class="badge b-ok">Validação deferida</span><span class="badge b-info">Em validação pela comissão</span></div>
+            <div class="tl-det">Encaminhado à CSEF em 09/10/2026</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="aperfeicoamento">
+        <div class="tl-row">
+          <div class="tl-date">12/09/2026<div class="tl-proto">2026/00355-9</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Aperfeiçoamento — validação de ação educacional</div>
+            <div class="tl-name"><span class="lnk">Maria da Silva</span> &middot; Curso de 10h · fora do Rol, do PDI e da Trilha de Certificação</div>
+            <div class="tl-tags"><span class="badge b-crit">Validação negada</span><span class="badge b-crit">Análise prévia recusada</span></div>
+            <div class="tl-det">Reconsideração protocolada em 14/10/2026 · em análise</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="titulacao">
+        <div class="tl-row">
+          <div class="tl-date">28/08/2026<div class="tl-proto">2026/00301-2</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Titulação acadêmica — manifestação prévia</div>
+            <div class="tl-name"><span class="lnk">Rafael Antunes Moreira</span> &middot; Especialização em Gestão de Políticas Públicas · 400h</div>
+            <div class="tl-tags"><span class="badge b-ok">Manifestação favorável</span><span class="badge b-ok">Utilizado para evolução</span></div>
+            <div class="tl-det">Validada pela CSEF em 15/09/2026 · +6,0 pontos</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="aperfeicoamento">
+        <div class="tl-row">
+          <div class="tl-date">14/08/2026<div class="tl-proto">2026/00288-5</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Aperfeiçoamento — validação de ação educacional</div>
+            <div class="tl-name"><span class="lnk">Camila Rezende Braga</span> &middot; Curso de 16h · Rol de Ações Educacionais</div>
+            <div class="tl-tags"><span class="badge b-ok">Validação deferida</span><span class="badge b-ok">Utilizado para evolução</span></div>
+            <div class="tl-det">16h computadas no ciclo · +1,44 pontos</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="assuncao">
+        <div class="tl-row">
+          <div class="tl-date">30/07/2026<div class="tl-proto">2026/00254-1</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Assunção de responsabilidades — manifestação prévia</div>
+            <div class="tl-name"><span class="lnk">Eduardo Pires Fontoura</span> &middot; Aprovação de artigo científico em evento · Art. 42, VIII</div>
+            <div class="tl-tags"><span class="badge b-ok">Manifestação favorável</span><span class="badge b-ok">Utilizado para evolução</span></div>
+            <div class="tl-det">Validada pela CSEF em 20/08/2026 · +3,5 pontos</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="aperfeicoamento">
+        <div class="tl-row">
+          <div class="tl-date">16/07/2026<div class="tl-proto">2026/00247-8</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Aperfeiçoamento — elaboração do plano de desenvolvimento individual</div>
+            <div class="tl-name"><span class="lnk">Maria da Silva</span> &middot; Elaborado durante o feedback obrigatório</div>
+            <div class="tl-tags"><span class="badge b-ok">PDI elaborado</span><span class="badge b-ok">Análise prévia aprovada</span></div>
+            <div class="tl-det">Vigente para o ciclo de evolução D → E</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="aperfeicoamento">
+        <div class="tl-row">
+          <div class="tl-date">02/07/2026<div class="tl-proto">2026/00219-4</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Aperfeiçoamento — validação de ação educacional</div>
+            <div class="tl-name"><span class="lnk">Fernanda Queiroz Alves</span> &middot; Curso de 24h · Trilha de Certificação</div>
+            <div class="tl-tags"><span class="badge b-ok">Validação deferida</span><span class="badge b-ok">Utilizado para evolução</span></div>
+            <div class="tl-det">24h computadas no ciclo · +2,16 pontos</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="assuncao">
+        <div class="tl-row">
+          <div class="tl-date">19/06/2026<div class="tl-proto">2026/00196-0</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Assunção de responsabilidades — manifestação prévia</div>
+            <div class="tl-name"><span class="lnk">Marcos Vinícius Teixeira</span> &middot; Publicação de artigo em periódico com ISSN · Art. 42, VII</div>
+            <div class="tl-tags"><span class="badge b-crit">Manifestação desfavorável</span><span class="badge b-warn">Utilizado para evolução</span></div>
+            <div class="tl-det">CSEF divergiu e validou em 09/07/2026 · +6,0 pontos</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl" data-tl="titulacao">
+        <div class="tl-row">
+          <div class="tl-date">05/06/2026<div class="tl-proto">2026/00171-6</div></div>
+          <div style="flex:1">
+            <div class="tl-title">Titulação acadêmica — manifestação prévia</div>
+            <div class="tl-name"><span class="lnk">Letícia Amorim Rocha</span> &middot; Mestrado em Administração Pública</div>
+            <div class="tl-tags"><span class="badge b-ok">Manifestação favorável</span><span class="badge b-ok">Utilizado para evolução</span></div>
+            <div class="tl-det">Validada pela CSEF em 26/06/2026 · +8,0 pontos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">
+      A linha do tempo re&uacute;ne as manifesta&ccedil;&otilde;es cujo ato da chefia j&aacute; foi praticado. O primeiro selo registra a decis&atilde;o da chefia;
+      o segundo acompanha a situa&ccedil;&atilde;o do documento, que continua evoluindo na Comiss&atilde;o Setorial de Evolu&ccedil;&atilde;o Funcional e na GGDP
+      mesmo depois de conclu&iacute;da a atua&ccedil;&atilde;o da chefia. O tempo m&iacute;nimo de efetivo exerc&iacute;cio n&atilde;o figura neste registro por n&atilde;o
+      comportar ato da chefia.
+    </p>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  function grupo(sel, attr, alvo) {
+    var chips = document.querySelectorAll(sel + ' .chip');
+    var itens = document.querySelectorAll(alvo);
+    chips.forEach(function (c) {
+      c.addEventListener('click', function () {
+        chips.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+        c.setAttribute('aria-pressed', 'true');
+        var v = c.getAttribute(attr);
+        itens.forEach(function (r) {
+          r.classList.toggle('hide', !(v === 'todos' || r.getAttribute(attr) === v));
+        });
+      });
+    });
+  }
+  grupo('#filtros-man', 'data-req', '.man');
+  grupo('#filtros-tl', 'data-tl', '.tl');
+
+  var chipsA = document.querySelectorAll('#filtros-acomp .chip');
+  var pans = document.querySelectorAll('.pan');
+  chipsA.forEach(function (c) {
+    c.addEventListener('click', function () {
+      chipsA.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+      c.setAttribute('aria-pressed', 'true');
+      var v = c.getAttribute('data-pan');
+      pans.forEach(function (p) { p.classList.toggle('hide', p.getAttribute('data-pan') !== v); });
+    });
+  });
+
+  function filtraAcomp() {
+    var n = (document.getElementById('ac-nome').value || '').toLowerCase().trim();
+    var u = (document.getElementById('ac-unid').value || '').toLowerCase().trim();
+    document.querySelectorAll('.ac').forEach(function (r) {
+      var okn = !n || (r.getAttribute('data-nome') || '').indexOf(n) > -1;
+      var oku = !u || (r.getAttribute('data-unid') || '') === u;
+      r.classList.toggle('hide', !(okn && oku));
+    });
+  }
+  document.getElementById('ac-nome').addEventListener('input', filtraAcomp);
+  document.getElementById('ac-unid').addEventListener('change', filtraAcomp);
+
+  document.querySelectorAll('.srch input[data-eq]').forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      var esc = inp.getAttribute('data-eq');
+      var campos = document.querySelectorAll('.srch input[data-eq="' + esc + '"]');
+      var vn = '', vu = '';
+      campos.forEach(function (x) {
+        if (x.getAttribute('data-f') === 'nome') vn = x.value.toLowerCase().trim();
+        else vu = x.value.toLowerCase().trim();
+      });
+      document.querySelectorAll('.eq-' + esc).forEach(function (r) {
+        var okn = !vn || (r.getAttribute('data-nome') || '').indexOf(vn) > -1;
+        var oku = !vu || (r.getAttribute('data-unid') || '').indexOf(vu) > -1;
+        r.classList.toggle('hide', !(okn && oku));
+      });
+      if (esc === 'mediata') {
+        document.querySelectorAll('.eq-bloco').forEach(function (b) {
+          var vis = b.querySelectorAll('.eq-mediata:not(.hide)').length;
+          b.classList.toggle('hide', vis === 0);
+        });
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

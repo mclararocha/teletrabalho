@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{margin:0;background:oklch(97% 0.006 255);font-family:-apple-system,BlinkMacSystemFont,'Public Sans',Helvetica,Arial,sans-serif;color:oklch(22% 0.02 255)}
+  *{box-sizing:border-box}
+  summary::-webkit-details-marker{display:none}
+  summary{position:relative;padding-right:34px !important}
+  summary::after{content:"+";position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:18px;font-weight:400;color:oklch(55% 0.01 255)}
+  details[open] summary::after{content:"–"}
+  details[open] summary{border-bottom:1px solid oklch(93% 0.004 255)}
+</style>
+</head>
+<body>
+
+<div style="min-height:100vh;padding:56px 24px 96px;display:flex;justify-content:center">
+<div style="width:100%;max-width:760px">
+
+  <!-- 1. TÍTULO -->
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:36px">
+    <div style="width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid oklch(91% 0.006 255);display:flex;align-items:center;justify-content:center;font-size:17px;color:oklch(45% 0.02 255);flex-shrink:0">←</div>
+    <h1 style="margin:0;font-size:32px;font-weight:800;letter-spacing:-0.01em">Aperfeiçoamento</h1>
+  </div>
+
+  <!-- 2. FILTRO DE CICLO -->
+  <div style="margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:14px;color:oklch(48% 0.02 255)">Ciclo</span>
+      <select style="font-size:14px;padding:7px 14px;border-radius:8px;border:1px solid oklch(85% 0.006 255);background:#fff;color:oklch(22% 0.02 255)">
+        <option selected>E → F · em andamento · início em 01/02/2025</option>
+        <option>D → E · concluído · 01/02/2023 a 31/01/2025</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 3. CARD DE PONTUAÇÃO (barra), tamanho proporcional ao da tela de TEE, paleta âmbar (categoria Aperfeiçoamento) -->
+  <div style="background:oklch(97% 0.04 75);border:1px solid oklch(87% 0.08 75);border-radius:16px;padding:24px 28px;margin-bottom:32px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:700;color:oklch(48% 0.13 75);text-transform:uppercase;letter-spacing:0.05em">Ciclo E → F</div>
+      <div style="font-size:12px;font-weight:700;color:#fff;background:oklch(48% 0.18 25);padding:4px 12px;border-radius:20px">Mínimo não cumprido</div>
+    </div>
+    <div style="font-size:32px;font-weight:800;margin-bottom:14px">1,8 <span style="font-size:16px;font-weight:600;color:oklch(45% 0.02 255)">pontos</span></div>
+    <div style="position:relative;height:10px;border-radius:6px;background:oklch(90% 0.006 255);margin:18px 0 8px">
+      <div style="height:100%;border-radius:6px;background:oklch(68% 0.15 75);width:20%"></div>
+      <div style="position:absolute;left:20%;top:-18px;transform:translateX(-100%);font-size:12px;font-weight:700;color:oklch(48% 0.13 75)">1,8</div>
+      <div style="position:absolute;left:60%;top:-4px;width:2px;height:18px;background:#fff"></div>
+    </div>
+    <div style="position:relative;font-size:12px;color:oklch(45% 0.02 255);height:16px;margin-bottom:10px">
+      <span style="position:absolute;left:0">0h</span>
+      <span style="position:absolute;left:60%;transform:translateX(-50%)">mín. 60h</span>
+      <span style="position:absolute;right:0">100h</span>
+    </div>
+    <div style="font-size:12px;color:oklch(48% 0.02 255);padding-top:6px;border-top:1px solid oklch(90% 0.04 75)">
+      20h validadas · 20 × 0,09 = 1,8 pontos · faltam 40h para o mínimo do ciclo
+    </div>
+    <div style="font-size:11px;color:oklch(58% 0.01 255);margin-top:4px">
+      Limite máximo de horas do ciclo: 100h
+    </div>
+  </div>
+
+  <!-- BUSCA DE CURSOS (catálogo + histórico de pontuações) -->
+  <div style="position:relative;margin-bottom:24px">
+    <div style="position:relative">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;color:oklch(60% 0.01 255);pointer-events:none">🔍</span>
+      <input id="course-search-input" type="text" placeholder="Buscar ação educacional" style="width:100%;font-size:14px;padding:11px 14px 11px 38px;border-radius:10px;border:1px solid oklch(85% 0.006 255);background:#fff;color:oklch(22% 0.02 255)" autocomplete="off">
+    </div>
+    <div id="course-search-results" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08);max-height:320px;overflow:auto;z-index:20"></div>
+  </div>
+
+  <!-- 4. PONTUAÇÕES MENSAIS -->
+  <div id="pont-mensais-heading" style="margin-top:8px;margin-bottom:16px;font-size:17px;font-weight:800;color:oklch(22% 0.02 255);border-left:4px solid oklch(68% 0.15 75);padding-left:12px">Pontuações mensais</div>
+  <div id="pont-mensais-card" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;overflow:auto;max-height:340px;margin-bottom:8px">
+    <div style="display:table;width:100%;border-collapse:collapse;font-size:13px">
+      <div style="display:table-row;position:sticky;top:0;background:#fff">
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);white-space:nowrap">Mês ref.</div>
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);white-space:nowrap">Mês inserção</div>
+        <div style="display:table-cell;text-align:left;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255)">Ação educacional</div>
+        <div style="display:table-cell;text-align:right;font-weight:700;color:oklch(58% 0.01 255);padding:12px 14px 10px;border-bottom:1px solid oklch(91% 0.006 255);white-space:nowrap">Pontuação</div>
+      </div>
+
+      <div id="row-pont-clean-code" style="display:table-row">
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">04/2026</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">05/2026</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255)"><span title="Ação avulsa · validado manualmente pela chefia" style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">IV</span>Curso — Clean Code e Arquitetura de Software <span style="color:oklch(58% 0.01 255)">· 20h · Alura</span></div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);text-align:right;font-weight:700">+1,80</div>
+      </div>
+
+      <div id="row-pont-diversidade-empatia" style="display:table-row">
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">02/2026</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">03/2026</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255)"><span title="PDI · validação automática pelo sistema" style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">II</span>Diversidade e Empatia na Gestão de Pessoas <span style="color:oklch(58% 0.01 255)">· 16h · Escola de Governo</span></div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);text-align:right;font-weight:700">+1,44</div>
+      </div>
+
+      <div id="row-pont-fundamentos-governanca" style="display:table-row">
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">01/2026</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">02/2026</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255)"><span title="Trilha de Certificação · Certificação em Contratações Públicas" style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">III</span>Básico de Licitações e Contratos <span style="color:oklch(58% 0.01 255)">· 20h · Escola de Governo</span></div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);text-align:right;font-weight:700">+1,80</div>
+      </div>
+
+      <div id="row-pont-sislog" style="display:table-row">
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">09/2025</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">10/2025</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255)"><span title="Trilha de Certificação · Certificação em Contratações Públicas" style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">III</span>Sislog <span style="color:oklch(58% 0.01 255)">· 20h · Escola de Governo</span></div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);text-align:right;font-weight:700">+1,80</div>
+      </div>
+
+      <div id="row-pont-comunicacao-assertiva" style="display:table-row">
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">06/2025</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);white-space:nowrap">07/2025</div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255)"><span title="Rol de Ações Educacionais · validação automática pelo sistema" style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">I</span>Excel Básico <span style="color:oklch(58% 0.01 255)">· 20h · Escola de Governo</span></div>
+        <div style="display:table-cell;padding:12px 14px;border-bottom:1px solid oklch(93% 0.004 255);text-align:right;font-weight:700">+1,80</div>
+      </div>
+
+      <div id="row-pont-lgpd" style="display:table-row">
+        <div style="display:table-cell;padding:12px 14px;white-space:nowrap">04/2025</div>
+        <div style="display:table-cell;padding:12px 14px;white-space:nowrap">05/2025</div>
+        <div style="display:table-cell;padding:12px 14px"><span title="Rol de Ações Educacionais · validação automática pelo sistema" style="font-size:10px;font-weight:700;color:oklch(55% 0.01 255);background:oklch(94% 0.006 255);padding:2px 6px;border-radius:5px;margin-right:6px">I</span>Introdução ao Uso de Dados <span style="color:oklch(58% 0.01 255)">· 12h · Escola de Governo</span></div>
+        <div style="display:table-cell;padding:12px 14px;text-align:right;font-weight:700">+1,08</div>
+      </div>
+
+    </div>
+  </div>
+  <div style="font-size:11px;color:oklch(58% 0.01 255);margin-bottom:32px">I – Rol de Ações Educacionais · II – PDI · III – Trilha de Certificação · IV – avulsa</div>
+
+  <!-- 5. PLANO DE DESENVOLVIMENTO INDIVIDUAL - PDI (instrumento II) -->
+  <div style="margin-top:8px;margin-bottom:16px;font-size:17px;font-weight:800;color:oklch(22% 0.02 255);border-left:4px solid oklch(68% 0.15 75);padding-left:12px">Plano de Desenvolvimento Individual — PDI</div>
+  <div id="pdi-card" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;padding:20px 22px;margin-bottom:8px">
+
+    <div style="padding:12px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span id="row-pdi-comunicacao-assertiva" style="font-size:14px;font-weight:600">Comunicação Assertiva no Serviço Público</span>
+        <span style="font-size:11px;font-weight:700;color:#fff;background:oklch(60% 0.14 75);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Em andamento</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">16h · Escola de Governo · registrado no PDI em 12/02/2026 · Chefia: [nome] · Prazo sugerido: ago/2026</p>
+    </div>
+
+    <div style="padding:12px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span id="row-pdi-certificacao-gestao-pessoas" style="font-size:14px;font-weight:600">Gestão, Mediação e Resolução de Conflitos</span>
+        <span style="font-size:11px;font-weight:700;color:#fff;background:oklch(58% 0.01 255);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Pendente</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">20h · Escola de Governo · registrado no PDI em 12/02/2026 · Prazo sugerido: dez/2026</p>
+    </div>
+
+    <div style="padding:12px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span id="row-pdi-diretrizes-captacao-recursos" style="font-size:14px;font-weight:600">Diversidade e Empatia na Gestão de Pessoas</span>
+        <span style="font-size:11px;font-weight:700;color:oklch(38% 0.11 150);background:oklch(94% 0.05 150);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Concluída</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">16h · Escola de Governo · registrado no PDI em 12/02/2026 · validada em 14/03/2026</p>
+    </div>
+
+    <div style="padding:12px 0">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span id="row-pdi-certificacao-contratacoes" style="font-size:14px;font-weight:600">Certificação em Contratações Públicas</span>
+        <span style="font-size:11px;font-weight:700;color:#fff;background:oklch(60% 0.14 75);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Em andamento</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">280h · Escola de Governo · registrado no PDI em 12/02/2026 · solicitada pela chefia · Prazo sugerido: dez/2026</p>
+    </div>
+
+  </div>
+  <div style="font-size:11px;color:oklch(58% 0.01 255);margin-bottom:32px">O PDI é elaborado conjuntamente entre servidor e chefia durante o feedback obrigatório (Art. 41, II e §1º, Decreto 10.802/2025) · Última atualização: 15/05/2026</div>
+
+  <!-- 6. TRILHA DE CAPACITAÇÃO (instrumento I) -->
+  <div id="cap-card-heading" style="margin-top:8px;margin-bottom:16px;font-size:17px;font-weight:800;color:oklch(22% 0.02 255);border-left:4px solid oklch(68% 0.15 75);padding-left:12px">Rol de Ações Educacionais</div>
+  <div style="background:oklch(96% 0.025 255);border:1px solid oklch(87% 0.05 255);border-radius:10px;padding:12px 16px;margin-bottom:16px">
+    <div style="font-size:15px;font-weight:800;color:oklch(22% 0.02 255)">Analista de Gestão Governamental — Desenvolvimento de Sistemas</div>
+    <div style="font-size:12px;font-weight:600;color:oklch(52% 0.16 255);margin-top:2px">Secretaria de Estado da Administração</div>
+  </div>
+
+  <details id="cap-nivel-basico" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:14px;margin-bottom:10px;overflow:hidden">
+    <summary style="list-style:none;cursor:pointer;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <span style="font-size:14px;font-weight:600">Nível básico</span>
+      <span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">3 ações</span>
+    </summary>
+    <div style="padding:0 20px 14px">
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-introducao-ao-uso-de-dados" style="font-size:14px;font-weight:600">Introdução ao Uso de Dados</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(38% 0.11 150);background:oklch(94% 0.05 150);padding:3px 10px;border-radius:20px;white-space:nowrap">Concluída</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">12h · 1,08 pts</p>
+      </div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-excel-basico" style="font-size:14px;font-weight:600">Excel Básico</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(38% 0.11 150);background:oklch(94% 0.05 150);padding:3px 10px;border-radius:20px;white-space:nowrap">Concluída</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">20h · 1,80 pts</p>
+      </div>
+      <div style="padding:8px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-introducao-a-analise-de-dados" style="font-size:14px;font-weight:600">Introdução à Análise de Dados</span>
+          <span style="font-size:11px;font-weight:700;color:#fff;background:oklch(60% 0.14 75);padding:3px 10px;border-radius:20px;white-space:nowrap">Em andamento</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">12h · 1,08 pts</p>
+      </div>
+    </div>
+  </details>
+
+  <details id="cap-nivel-intermediario" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:14px;margin-bottom:10px;overflow:hidden">
+    <summary style="list-style:none;cursor:pointer;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <span style="font-size:14px;font-weight:600">Nível intermediário</span>
+      <span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">5 ações</span>
+    </summary>
+    <div style="padding:0 20px 14px">
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-excel-avancado" style="font-size:14px;font-weight:600">Excel Avançado</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">20h · 1,80 pts</p>
+      </div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-power-bi-para-analise-de-dados-basico" style="font-size:14px;font-weight:600">Power BI para Análise de Dados — Básico</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">20h · 1,80 pts</p>
+      </div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-sql-para-analise-de-dados" style="font-size:14px;font-weight:600">SQL para Análise de Dados</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">16h · 1,44 pts</p>
+      </div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-linguagem-r-para-analise-de-dados" style="font-size:14px;font-weight:600">Linguagem R para Análise de Dados</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">16h · 1,44 pts</p>
+      </div>
+      <div style="padding:8px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-construindo-produtos-e-historias-com-dad" style="font-size:14px;font-weight:600">Construindo Produtos e Histórias com Dados</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">12h · 1,08 pts</p>
+      </div>
+    </div>
+  </details>
+
+  <details id="cap-nivel-avancado" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:14px;margin-bottom:8px;overflow:hidden">
+    <summary style="list-style:none;cursor:pointer;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <span style="font-size:14px;font-weight:600">Nível avançado</span>
+      <span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">2 ações</span>
+    </summary>
+    <div style="padding:0 20px 14px">
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-python-para-analise-de-dados" style="font-size:14px;font-weight:600">Python para Análise de Dados</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">24h · 2,16 pts</p>
+      </div>
+      <div style="padding:8px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span id="row-cap-metodos-estatisticos-para-a-analise-de-d" style="font-size:14px;font-weight:600">Métodos Estatísticos para a Análise de Dados</span>
+          <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap">Pendente</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:12px;color:oklch(58% 0.01 255)">20h · 1,80 pts</p>
+      </div>
+    </div>
+  </details>
+
+  <div style="font-size:11px;color:oklch(58% 0.01 255);margin-bottom:32px">Rol mapeado para o cargo · Art. 41, I, Decreto 10.802/2025</div>
+
+  <!-- 7. TRILHA DE CERTIFICAÇÃO (instrumento III) — acordeão -->
+  <div style="margin-top:8px;margin-bottom:16px;font-size:17px;font-weight:800;color:oklch(22% 0.02 255);border-left:4px solid oklch(68% 0.15 75);padding-left:12px">Trilha de Certificação</div>
+
+
+  <details id="cert-contratacoes" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:14px;margin-bottom:8px;overflow:hidden">
+    <summary style="list-style:none;cursor:pointer;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <span style="font-size:14px;font-weight:600">Certificação em Contratações Públicas</span>
+      <span style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">280h · 40h concluídas</span>
+        <span style="font-size:11px;font-weight:700;color:#fff;background:oklch(60% 0.14 75);padding:3px 10px;border-radius:20px;white-space:nowrap">Em andamento</span>
+      </span>
+    </summary>
+    <div style="padding:0 20px 16px">
+      <div style="font-size:11px;font-weight:700;color:oklch(48% 0.13 75);text-transform:uppercase;letter-spacing:0.04em;margin:6px 0 6px">Cursos básicos (pré-requisito para as 3 formações)</div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255);display:flex;justify-content:space-between;gap:10px"><span id="row-cert-sislog" style="font-size:13px">Sislog</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">20h</span><span style="font-size:10px;font-weight:700;color:oklch(38% 0.11 150);background:oklch(94% 0.05 150);padding:2px 8px;border-radius:12px;white-space:nowrap">Concluída</span></span></div>
+      <div style="padding:8px 0 14px;display:flex;justify-content:space-between;gap:10px"><span id="row-cert-basico-de-licitacoes-e-contratos" style="font-size:13px">Básico de Licitações e Contratos</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">20h</span><span style="font-size:10px;font-weight:700;color:oklch(38% 0.11 150);background:oklch(94% 0.05 150);padding:2px 8px;border-radius:12px;white-space:nowrap">Concluída</span></span></div>
+
+      <div style="font-size:11px;font-weight:700;color:oklch(52% 0.16 255);text-transform:uppercase;letter-spacing:0.04em;margin:6px 0 6px">Formação Planejamento da Contratação · 56h</div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255);display:flex;justify-content:space-between;gap:10px"><span id="row-cert-equipe-de-planejamento-de-contratacao" style="font-size:13px">Equipe de Planejamento de Contratação</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">20h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255);display:flex;justify-content:space-between;gap:10px"><span id="row-cert-estudos-tecnicos-preliminares" style="font-size:13px">Estudos Técnicos Preliminares</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">12h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+      <div style="padding:8px 0 14px;display:flex;justify-content:space-between;gap:10px"><span id="row-cert-termo-de-referencia" style="font-size:13px">Termo de Referência</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">12h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+
+      <div style="font-size:11px;font-weight:700;color:oklch(52% 0.16 255);text-transform:uppercase;letter-spacing:0.04em;margin:6px 0 6px">Formação Seleção de Fornecedor · 108h</div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255);display:flex;justify-content:space-between;gap:10px"><span id="row-cert-agente-de-contratacao" style="font-size:13px">Agente de Contratação</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">20h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255);display:flex;justify-content:space-between;gap:10px"><span id="row-cert-pregao" style="font-size:13px">Pregão</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">24h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+      <div style="padding:8px 0 14px;display:flex;justify-content:space-between;gap:10px"><span id="row-cert-concorrencia" style="font-size:13px">Concorrência</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">24h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+
+      <div style="font-size:11px;font-weight:700;color:oklch(52% 0.16 255);text-transform:uppercase;letter-spacing:0.04em;margin:6px 0 6px">Formação Gestão de Contratos · 56h</div>
+      <div style="padding:8px 0;border-bottom:1px solid oklch(93% 0.004 255);display:flex;justify-content:space-between;gap:10px"><span id="row-cert-gestao-e-fiscalizacao-de-contratos" style="font-size:13px">Gestão e Fiscalização de Contratos</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">20h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+      <div style="padding:8px 0;display:flex;justify-content:space-between;gap:10px"><span id="row-cert-contratos-publicos-alteracao-vigencia-e-" style="font-size:13px">Contratos Públicos: Alteração, Vigência e Equilíbrio Econômico-Financeiro</span><span style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12px;color:oklch(58% 0.01 255);white-space:nowrap">24h</span><span style="font-size:10px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:2px 8px;border-radius:12px;white-space:nowrap">Pendente</span></span></div>
+    </div>
+  </details>
+
+
+  <div style="font-size:11px;color:oklch(58% 0.01 255);margin-bottom:32px">Certificação profissional (mín. 180h) · Art. 41, III, Decreto 10.802/2025</div>
+
+  <!-- 8. AÇÕES EDUCACIONAIS PRÓPRIAS / AVULSAS (instrumento IV) -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:16px;gap:10px">
+    <div style="font-size:17px;font-weight:800;color:oklch(22% 0.02 255);border-left:4px solid oklch(68% 0.15 75);padding-left:12px">Minhas ações educacionais</div>
+    <button id="btn-toggle-include" style="font-size:13px;font-weight:700;color:#fff;background:oklch(52% 0.16 255);border:none;padding:9px 16px;border-radius:8px;cursor:pointer;white-space:nowrap">+ Incluir ação educacional</button>
+  </div>
+
+  <!-- Painel de inclusão (oculto até o clique no botão acima) -->
+  <div id="include-panel" style="display:none;background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;gap:16px;margin-bottom:14px;font-size:13px">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="radio" name="include-mode" value="mapped" checked> Selecionar do rol já mapeado
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="radio" name="include-mode" value="new"> Solicitar inclusão de novo curso
+      </label>
+    </div>
+
+    <div id="include-mode-mapped">
+      <p style="margin:0 0 8px;font-size:12px;color:oklch(58% 0.01 255)">Cursos já disponíveis no Rol de Ações Educacionais ou na Trilha de Certificação do seu cargo.</p>
+      <select id="include-select-course" style="width:100%;font-size:14px;padding:9px 12px;border-radius:8px;border:1px solid oklch(85% 0.006 255);background:#fff;color:oklch(22% 0.02 255);margin-bottom:12px"></select>
+    </div>
+
+    <div id="include-mode-new" style="display:none">
+      <p style="margin:0 0 8px;font-size:12px;color:oklch(58% 0.01 255)">Curso não encontrado no rol mapeado — será tratado como ação avulsa (Art. 41, IV).</p>
+      <input id="include-new-name" type="text" placeholder="Nome da ação educacional" style="width:100%;font-size:14px;padding:9px 12px;border-radius:8px;border:1px solid oklch(85% 0.006 255);margin-bottom:8px">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="include-new-institution" type="text" placeholder="Instituição" style="flex:2;font-size:14px;padding:9px 12px;border-radius:8px;border:1px solid oklch(85% 0.006 255)">
+        <input id="include-new-hours" type="text" placeholder="Carga horária" style="flex:1;font-size:14px;padding:9px 12px;border-radius:8px;border:1px solid oklch(85% 0.006 255)">
+      </div>
+      <input id="include-new-date" type="text" placeholder="Data de conclusão (dd/mm/aaaa)" style="width:100%;font-size:14px;padding:9px 12px;border-radius:8px;border:1px solid oklch(85% 0.006 255);margin-bottom:12px">
+      <div style="font-size:12px;color:oklch(58% 0.01 255);margin-bottom:12px">📎 Anexar certificado</div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button id="btn-cancel-include" style="font-size:13px;font-weight:600;color:oklch(48% 0.02 255);background:transparent;border:1px solid oklch(85% 0.006 255);padding:9px 16px;border-radius:8px;cursor:pointer">Cancelar</button>
+      <button id="btn-confirm-include" style="font-size:13px;font-weight:700;color:#fff;background:oklch(52% 0.16 255);border:none;padding:9px 16px;border-radius:8px;cursor:pointer">Adicionar à lista</button>
+    </div>
+  </div>
+
+  <div id="own-actions-list" style="background:#fff;border:1px solid oklch(91% 0.006 255);border-radius:16px;overflow:auto;max-height:340px;padding:4px 20px;margin-bottom:8px">
+
+    <div id="row-own-excel-intermediario" class="own-action-row" style="padding:14px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span style="font-size:14px;font-weight:600">Curso — Clean Code e Arquitetura de Software</span>
+        <span style="font-size:11px;font-weight:700;color:oklch(38% 0.11 150);background:oklch(94% 0.05 150);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Validada</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">20h · Alura · validada por [chefia] em 22/05/2026</p>
+    </div>
+
+    <div id="row-own-webinar-ia" class="own-action-row" style="padding:14px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span style="font-size:14px;font-weight:600">Curso — Segurança da Informação Aplicada a Sistemas Governamentais</span>
+        <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Aguardando validação da chefia</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">12h · DIO — Digital Innovation One · certificado enviado em 10/07/2026 · prazo de manifestação da chefia: até 5 dias úteis</p>
+    </div>
+
+    <div id="row-own-power-bi-fundamentos" class="own-action-row" style="padding:14px 0;border-bottom:1px solid oklch(93% 0.004 255)">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span style="font-size:14px;font-weight:600">Curso — Introdução ao Marketing Digital</span>
+        <span style="font-size:11px;font-weight:700;color:#fff;background:oklch(48% 0.18 25);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Recusada</span>
+      </div>
+      <p style="margin:5px 0 0 0;font-size:12px;color:oklch(58% 0.01 255)">12h · FGV Online · Motivo: conteúdo sem relação com as atribuições do cargo efetivo/comissionado ou com a unidade de lotação · ciente em 02/07/2026 · prazo para recurso: até 07/07/2026</p>
+      <button class="btn-row-action" data-action="recurso" style="margin-top:8px;font-size:12px;font-weight:700;color:oklch(52% 0.16 255);background:oklch(96% 0.03 255);border:none;padding:6px 12px;border-radius:6px;cursor:pointer">Solicitar recurso</button>
+    </div>
+
+    <div id="row-own-design-thinking" class="own-action-row" style="padding:14px 0">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <span style="font-size:14px;font-weight:600">Curso — DevSecOps na Administração Pública</span>
+        <span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Pendente</span>
+      </div>
+      <p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">10h · Coursera · incluída em 20/07/2026 · ainda não enviada para a chefia</p>
+      <button class="btn-row-action" data-action="validar" style="margin-top:8px;font-size:12px;font-weight:700;color:oklch(52% 0.16 255);background:oklch(96% 0.03 255);border:none;padding:6px 12px;border-radius:6px;cursor:pointer">Solicitar validação da chefia</button>
+    </div>
+
+  </div>
+  <div style="font-size:11px;color:oklch(58% 0.01 255);margin-bottom:32px">O servidor decide quando enviar cada ação para validação da chefia. Ações fora do Rol de Ações Educacionais, do PDI ou da Trilha de Certificação seguem o instrumento de validação pela chefia (Art. 41, IV, Decreto 10.802/2025), com possibilidade de recurso em até 3 dias úteis após a ciência do resultado (Art. 41, §§4º a 6º)</div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  var CAP = 'Rol de Ações Educacionais';
+  var badgeStyle = {
+    'Concluída':   { c: 'oklch(38% 0.11 150)', bg: 'oklch(94% 0.05 150)' },
+    'Em andamento':{ c: '#fff',                bg: 'oklch(60% 0.14 75)'  },
+    'Pendente':    { c: 'oklch(58% 0.01 255)', bg: 'oklch(94% 0.006 255)'},
+    'Validado':    { c: 'oklch(38% 0.11 150)', bg: 'oklch(94% 0.05 150)' },
+    'Validada':    { c: 'oklch(38% 0.11 150)', bg: 'oklch(94% 0.05 150)' },
+    'Recusada':    { c: '#fff',                bg: 'oklch(48% 0.18 25)' },
+    'Em recurso':  { c: '#fff',                bg: 'oklch(60% 0.14 75)' },
+    'Aguardando validação da chefia': { c: 'oklch(58% 0.01 255)', bg: 'oklch(94% 0.006 255)' }
+  };
+
+  // Índice: catálogo (Rol de Ações Educacionais + Trilha de Certificação) + histórico (Pontuações mensais)
+  var INDEX = window.INDEX = [
+    // Plano de Desenvolvimento Individual — PDI
+    { name: 'Comunicação Assertiva no Serviço Público', source: 'PDI', status: 'Em andamento', detail: '16h', target: 'pdi-card', row: 'row-pdi-comunicacao-assertiva' },
+    { name: 'Gestão, Mediação e Resolução de Conflitos', source: 'PDI', status: 'Pendente', detail: '20h', target: 'pdi-card', row: 'row-pdi-certificacao-gestao-pessoas' },
+    { name: 'Diversidade e Empatia na Gestão de Pessoas', source: 'PDI', status: 'Concluída', detail: '16h', target: 'pdi-card', row: 'row-pdi-diretrizes-captacao-recursos' },
+    { name: 'Certificação em Contratações Públicas', source: 'PDI', status: 'Em andamento', detail: '280h', target: 'pdi-card', row: 'row-pdi-certificacao-contratacoes' },
+    // Rol de Ações Educacionais
+    { name: 'Introdução ao Uso de Dados', source: CAP, status: 'Concluída', detail: '12h · 1,08 pts', target: 'cap-nivel-basico', row: 'row-cap-introducao-ao-uso-de-dados' },
+    { name: 'Excel Básico', source: CAP, status: 'Concluída', detail: '20h · 1,80 pts', target: 'cap-nivel-basico', row: 'row-cap-excel-basico' },
+    { name: 'Introdução à Análise de Dados', source: CAP, status: 'Em andamento', detail: '12h · 1,08 pts', target: 'cap-nivel-basico', row: 'row-cap-introducao-a-analise-de-dados' },
+    { name: 'Excel Avançado', source: CAP, status: 'Pendente', detail: '20h · 1,80 pts', target: 'cap-nivel-intermediario', row: 'row-cap-excel-avancado' },
+    { name: 'Power BI para Análise de Dados — Básico', source: CAP, status: 'Pendente', detail: '20h · 1,80 pts', target: 'cap-nivel-intermediario', row: 'row-cap-power-bi-para-analise-de-dados-basico' },
+    { name: 'SQL para Análise de Dados', source: CAP, status: 'Pendente', detail: '16h · 1,44 pts', target: 'cap-nivel-intermediario', row: 'row-cap-sql-para-analise-de-dados' },
+    { name: 'Linguagem R para Análise de Dados', source: CAP, status: 'Pendente', detail: '16h · 1,44 pts', target: 'cap-nivel-intermediario', row: 'row-cap-linguagem-r-para-analise-de-dados' },
+    { name: 'Construindo Produtos e Histórias com Dados', source: CAP, status: 'Pendente', detail: '12h · 1,08 pts', target: 'cap-nivel-intermediario', row: 'row-cap-construindo-produtos-e-historias-com-dad' },
+    { name: 'Python para Análise de Dados', source: CAP, status: 'Pendente', detail: '24h · 2,16 pts', target: 'cap-nivel-avancado', row: 'row-cap-python-para-analise-de-dados' },
+    { name: 'Métodos Estatísticos para a Análise de Dados', source: CAP, status: 'Pendente', detail: '20h · 1,80 pts', target: 'cap-nivel-avancado', row: 'row-cap-metodos-estatisticos-para-a-analise-de-d' },
+
+    // Trilha de Certificação — LiderAção
+
+    // Governança e Gestão de Projetos
+
+    // Gestão de Pessoas
+
+    // Contratações Públicas
+    { name: 'Sislog', source: 'Certificação em Contratações Públicas', status: 'Concluída', detail: '20h', target: 'cert-contratacoes', row: 'row-cert-sislog' },
+    { name: 'Básico de Licitações e Contratos', source: 'Certificação em Contratações Públicas', status: 'Concluída', detail: '20h', target: 'cert-contratacoes', row: 'row-cert-basico-de-licitacoes-e-contratos' },
+    { name: 'Equipe de Planejamento de Contratação', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '20h', target: 'cert-contratacoes', row: 'row-cert-equipe-de-planejamento-de-contratacao' },
+    { name: 'Estudos Técnicos Preliminares', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '12h', target: 'cert-contratacoes', row: 'row-cert-estudos-tecnicos-preliminares' },
+    { name: 'Termo de Referência', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '12h', target: 'cert-contratacoes', row: 'row-cert-termo-de-referencia' },
+    { name: 'Agente de Contratação', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '20h', target: 'cert-contratacoes', row: 'row-cert-agente-de-contratacao' },
+    { name: 'Pregão', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '24h', target: 'cert-contratacoes', row: 'row-cert-pregao' },
+    { name: 'Concorrência', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '24h', target: 'cert-contratacoes', row: 'row-cert-concorrencia' },
+    { name: 'Gestão e Fiscalização de Contratos', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '20h', target: 'cert-contratacoes', row: 'row-cert-gestao-e-fiscalizacao-de-contratos' },
+    { name: 'Contratos Públicos: Alteração, Vigência e Equilíbrio Econômico-Financeiro', source: 'Certificação em Contratações Públicas', status: 'Pendente', detail: '24h', target: 'cert-contratacoes', row: 'row-cert-contratos-publicos-alteracao-vigencia-e-' },
+
+    // Compliance
+
+    // Histórico — Pontuações mensais (já validadas em ciclos/meses anteriores)
+    { name: 'Curso — Clean Code e Arquitetura de Software', source: 'Pontuações mensais · 04/2026', status: 'Validado', detail: '20h · +1,80 pts', target: 'pont-mensais-card', row: 'row-pont-clean-code' },
+    { name: 'Diversidade e Empatia na Gestão de Pessoas', source: 'Pontuações mensais · 02/2026', status: 'Validado', detail: '16h · +1,44 pts', target: 'pont-mensais-card', row: 'row-pont-diversidade-empatia' },
+    { name: 'Básico de Licitações e Contratos', source: 'Pontuações mensais · 01/2026', status: 'Validado', detail: '20h · +1,80 pts', target: 'pont-mensais-card', row: 'row-pont-fundamentos-governanca' },
+    { name: 'Sislog', source: 'Pontuações mensais · 09/2025', status: 'Validado', detail: '20h · +1,80 pts', target: 'pont-mensais-card', row: 'row-pont-sislog' },
+    { name: 'Excel Básico', source: 'Pontuações mensais · 06/2025', status: 'Validado', detail: '20h · +1,80 pts', target: 'pont-mensais-card', row: 'row-pont-comunicacao-assertiva' },
+    { name: 'Introdução ao Uso de Dados', source: 'Pontuações mensais · 04/2025', status: 'Validado', detail: '12h · +1,08 pts', target: 'pont-mensais-card', row: 'row-pont-lgpd' }
+  ];
+
+  var input = document.getElementById('course-search-input');
+  var results = document.getElementById('course-search-results');
+
+  function badgeHTML(status) {
+    var s = badgeStyle[status] || badgeStyle['Pendente'];
+    return '<span style="font-size:10px;font-weight:700;color:' + s.c + ';background:' + s.bg + ';padding:2px 8px;border-radius:12px;white-space:nowrap;flex-shrink:0">' + status + '</span>';
+  }
+
+  function getOwnActionsIndex() {
+    var container = document.getElementById('own-actions-list');
+    if (!container) return [];
+    return Array.prototype.map.call(container.querySelectorAll('.own-action-row'), function (row) {
+      var nameEl = row.querySelector('span[style*="font-weight:600"]');
+      var badgeEl = row.querySelector('span[style*="border-radius:20px"]');
+      var detailEl = row.querySelector('p');
+      return {
+        name: nameEl ? nameEl.textContent.trim() : '',
+        source: 'Minhas ações educacionais',
+        status: badgeEl ? badgeEl.textContent.trim() : 'Pendente',
+        detail: detailEl ? detailEl.textContent.trim() : '',
+        target: 'own-actions-list',
+        row: row.id
+      };
+    }).filter(function (item) { return item.name && item.row; });
+  }
+
+  function render(query) {
+    var q = query.trim().toLowerCase();
+    if (!q) { results.style.display = 'none'; results.innerHTML = ''; return; }
+    var fullIndex = INDEX.concat(getOwnActionsIndex());
+    var matches = fullIndex.filter(function (item) { return item.name.toLowerCase().indexOf(q) !== -1; });
+
+    if (matches.length === 0) {
+      results.innerHTML = '<div style="padding:16px 18px;font-size:12px;color:oklch(58% 0.01 255)">Nenhum curso encontrado no rol mapeado para este cargo. Pode ser um caso para <b>Minhas ações educacionais</b> (Art. 41, IV, Decreto 10.802/2025).</div>';
+      results.style.display = 'block';
+      return;
+    }
+
+    var html = matches.slice(0, 12).map(function (item) {
+      return '<div class="search-result-row" data-target="' + item.target + '" data-row="' + item.row + '" style="padding:12px 18px;border-bottom:1px solid oklch(93% 0.004 255);cursor:pointer">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">' +
+        '<span style="font-size:13px;font-weight:600">' + item.name + '</span>' +
+        badgeHTML(item.status) +
+        '</div>' +
+        '<div style="font-size:11px;color:oklch(58% 0.01 255);margin-top:3px">' + item.source + ' · ' + item.detail + '</div>' +
+      '</div>';
+    }).join('');
+    results.innerHTML = html;
+    results.style.display = 'block';
+
+    Array.prototype.forEach.call(results.querySelectorAll('.search-result-row'), function (row) {
+      row.addEventListener('mouseenter', function () { row.style.background = 'oklch(97% 0.006 255)'; });
+      row.addEventListener('mouseleave', function () { row.style.background = ''; });
+      row.addEventListener('click', function () {
+        var targetId = row.getAttribute('data-target');
+        var rowId = row.getAttribute('data-row');
+        var container = document.getElementById(targetId);
+        if (container && container.tagName === 'DETAILS') { container.open = true; }
+
+        var el = (rowId && document.getElementById(rowId)) || container;
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        var originalBg = el.style.backgroundColor;
+        var originalRadius = el.style.borderRadius;
+        var originalTransition = el.style.transition;
+        el.style.transition = 'background-color 0.25s ease';
+        el.style.borderRadius = '6px';
+        el.style.backgroundColor = 'oklch(90% 0.09 75)';
+        setTimeout(function () {
+          el.style.backgroundColor = originalBg;
+          setTimeout(function () {
+            el.style.borderRadius = originalRadius;
+            el.style.transition = originalTransition;
+          }, 300);
+        }, 3000);
+
+        results.style.display = 'none';
+        input.value = item_name_of(row);
+      });
+    });
+
+    function item_name_of(row) {
+      var el = row.querySelector('span');
+      return el ? el.textContent : '';
+    }
+  }
+
+  input.addEventListener('input', function () { render(input.value); });
+  input.addEventListener('focus', function () { if (input.value.trim()) render(input.value); });
+  document.addEventListener('click', function (e) {
+    if (!results.contains(e.target) && e.target !== input) { results.style.display = 'none'; }
+  });
+})();
+
+(function () {
+  var toggleBtn = document.getElementById('btn-toggle-include');
+  var panel = document.getElementById('include-panel');
+  var cancelBtn = document.getElementById('btn-cancel-include');
+  var confirmBtn = document.getElementById('btn-confirm-include');
+  var modeRadios = document.getElementsByName('include-mode');
+  var mappedBlock = document.getElementById('include-mode-mapped');
+  var newBlock = document.getElementById('include-mode-new');
+  var select = document.getElementById('include-select-course');
+  var list = document.getElementById('own-actions-list');
+
+  // Popula o select "rol já mapeado" reaproveitando o mesmo índice da busca (catálogo, sem o histórico)
+  if (typeof window.INDEX !== 'undefined' && select) {
+    var seen = {};
+    window.INDEX.forEach(function (item) {
+      if (item.source.indexOf('Pontuações mensais') === 0) return;
+      var key = item.name + '|' + item.source;
+      if (seen[key]) return;
+      seen[key] = true;
+      var opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = item.name + ' — ' + item.source + (item.detail ? ' (' + item.detail + ')' : '');
+      opt.setAttribute('data-name', item.name);
+      opt.setAttribute('data-detail', item.detail || '');
+      select.appendChild(opt);
+    });
+  }
+
+  function togglePanel(show) {
+    panel.style.display = show ? 'block' : 'none';
+    toggleBtn.textContent = show ? '– Fechar' : '+ Incluir ação educacional';
+  }
+
+  toggleBtn.addEventListener('click', function () {
+    togglePanel(panel.style.display === 'none');
+  });
+  cancelBtn.addEventListener('click', function () { togglePanel(false); });
+
+  Array.prototype.forEach.call(modeRadios, function (radio) {
+    radio.addEventListener('change', function () {
+      var mapped = radio.value === 'mapped' && radio.checked;
+      if (radio.checked) {
+        mappedBlock.style.display = radio.value === 'mapped' ? 'block' : 'none';
+        newBlock.style.display = radio.value === 'new' ? 'block' : 'none';
+      }
+    });
+  });
+
+  var ownRowCounter = 0;
+  function addRow(name, detail) {
+    var row = document.createElement('div');
+    row.className = 'own-action-row';
+    row.id = 'row-own-new-' + (++ownRowCounter);
+    row.style.cssText = 'padding:14px 0;border-bottom:1px solid oklch(93% 0.004 255)';
+    row.innerHTML =
+      '<div style="display:flex;justify-content:space-between;gap:10px">' +
+        '<span style="font-size:14px;font-weight:600">' + name + '</span>' +
+        '<span style="font-size:11px;font-weight:700;color:oklch(58% 0.01 255);background:oklch(94% 0.006 255);padding:3px 10px;border-radius:20px;white-space:nowrap;height:fit-content">Pendente</span>' +
+      '</div>' +
+      '<p style="margin:5px 0 0;font-size:12px;color:oklch(58% 0.01 255)">' + (detail || 'incluída agora') + ' · ainda não enviada para a chefia</p>' +
+      '<button class="btn-row-action" data-action="validar" style="margin-top:8px;font-size:12px;font-weight:700;color:oklch(52% 0.16 255);background:oklch(96% 0.03 255);border:none;padding:6px 12px;border-radius:6px;cursor:pointer">Solicitar validação da chefia</button>';
+    list.insertBefore(row, list.firstChild);
+  }
+
+  confirmBtn.addEventListener('click', function () {
+    var mode = document.querySelector('input[name="include-mode"]:checked').value;
+    if (mode === 'mapped') {
+      var opt = select.options[select.selectedIndex];
+      if (!opt) return;
+      addRow(opt.getAttribute('data-name'), opt.getAttribute('data-detail'));
+    } else {
+      var name = document.getElementById('include-new-name').value.trim();
+      var institution = document.getElementById('include-new-institution').value.trim();
+      var hours = document.getElementById('include-new-hours').value.trim();
+      if (!name) { return; }
+      var detail = [hours, institution].filter(Boolean).join(' · ');
+      addRow(name || 'Nova ação educacional', detail);
+      document.getElementById('include-new-name').value = '';
+      document.getElementById('include-new-institution').value = '';
+      document.getElementById('include-new-hours').value = '';
+      document.getElementById('include-new-date').value = '';
+    }
+    togglePanel(false);
+  });
+
+  // Botões de ação por linha: "Solicitar validação da chefia" e "Solicitar recurso"
+  list.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.btn-row-action') : null;
+    if (!btn) return;
+    var row = btn.closest('.own-action-row');
+    var badge = row.querySelector('span[style*="border-radius:20px"]');
+    if (btn.getAttribute('data-action') === 'validar') {
+      badge.textContent = 'Aguardando validação da chefia';
+      badge.style.color = 'oklch(58% 0.01 255)';
+      badge.style.background = 'oklch(94% 0.006 255)';
+      var p = row.querySelector('p');
+      p.textContent = p.textContent.replace('ainda não enviada para a chefia', 'enviada para a chefia — prazo de manifestação: até 5 dias úteis');
+      btn.remove();
+    } else if (btn.getAttribute('data-action') === 'recurso') {
+      badge.textContent = 'Em recurso';
+      badge.style.color = '#fff';
+      badge.style.background = 'oklch(60% 0.14 75)';
+      btn.textContent = 'Recurso em análise';
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      btn.style.cursor = 'default';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
