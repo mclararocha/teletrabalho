@@ -44,6 +44,25 @@ servível diretamente pelo GitHub Pages.
 Única exceção: a tela do painel central carrega o Chart.js por CDN. Nenhuma outra
 biblioteca deve ser introduzida sem combinar antes.
 
+## Persistência local (localStorage)
+
+A regra original deste arquivo proibia `localStorage` porque o protótipo, na fase
+inicial, era puramente visual — cada tela um retrato estático, sem estado entre
+navegações. A partir da Experiência por Perfis (seletor de perfil + sidebar), o
+protótipo passa a simular sessão e um mini banco de dados de demonstração no
+navegador, e isso exige persistência entre as telas. Não há back-end nem banco de
+dados real: `localStorage` é o substituto de ambos só para efeito de demonstração.
+
+Uso permitido:
+
+- Perfil ativo selecionado no seletor de perfis, para persistir a escolha ao navegar
+  entre telas.
+- Outro estado de demonstração explicitamente pedido em uma tarefa.
+
+Continua valendo: não usar `localStorage` para nada que não tenha sido pedido, e
+manter os dados simulados consistentes com a persona única (ver "Consistência dos
+dados de exemplo").
+
 ## Estrutura
 
 ```
@@ -125,6 +144,5 @@ as das Tabelas 4 e 5 do Anexo II, e o InCp é da **atividade**, não da entrega.
 - Não refatorar telas que não estão na tarefa.
 - Não trocar a paleta, a tipografia ou o espaçamento por conta própria.
 - Não acrescentar campo, botão ou regra que não tenha sido pedido.
-- Não usar `localStorage` nem qualquer armazenamento do navegador.
 - Não gerar dados de exemplo novos sem conferir os já existentes.
 - Não commitar a minuta nem análises do texto dela.
