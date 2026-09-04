@@ -135,6 +135,49 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   normativo da nota (não tem artigo correspondente): serve só para a chefia ter
   noção de carga de trabalho ao cadastrar, não é usado na nota da atividade nem na
   Calculadora.
+- Cada entrega e cada atividade já salva em `promove_mapeamento` tem botões
+  discretos "✏️ Editar" / "🗑️ Excluir" (`.item-acoes`, dentro do `.acc-b` da
+  atividade ou do `.section-title` da entrega — nunca dentro do `<button class="acc-h">`,
+  para não aninhar `<button>`). Editar recarrega os dados do item no mesmo
+  formulário de inclusão (`abrirFormEntrega`/`preencherFormAtividade`) para
+  ajuste e novo "Salvar"; excluir usa `window.confirm()` e regrava a lista
+  inteira via `PromoveStore.salvarMapeamento`. `rascunhoAtivo()` bloqueia abrir
+  uma nova entrega/edição por cima de um rascunho já em aberto, para não
+  descartar silenciosamente o que ainda não foi salvo.
+- O rodapé da tela 01 não envia a nenhuma instância central automatizada: são
+  três ações independentes — "💾 Salvar Mapeamento" (persiste em
+  `promove_mapeamento`), "📤 Enviar para Chefia Superior" (botão visual,
+  simulado, sem lógica) e "📄 Exportar PDF" (`window.print()`, ver "Impressão e
+  exportação em PDF" abaixo). Não citam CIAT nem qualquer instância central de
+  validação — decisão de negócio e de design da gestão do projeto, não
+  extraída de norma; onde o protótipo antes citava "CIAT", o texto agora fala
+  em "homologação do mapeamento" ou "aprovação pela chefia", como rótulo
+  genérico e não como novo dispositivo normativo.
+
+## Tema claro/escuro
+
+`assets/js/navigation.js` guarda a escolha em `localStorage["promove_tema"]`
+(`"claro"` ou `"escuro"`) e aplica `data-tema="escuro"` em `<html>` antes da
+primeira pintura da página (a função roda assim que o script carrega, ainda no
+`<head>`), para não haver flash de tema errado. O botão `.tema-toggle`
+("🌙 Tema escuro" / "☀️ Tema claro") fica no topo da sidebar, acima do rótulo
+do perfil, e é renderizado por `renderizarSidebar()` — não duplique esse botão
+em HTML de tela.
+
+`assets/css/promove.css` define os tokens de `:root[data-tema="escuro"]`
+(fundo, texto, bordas e as variações `-bg`/`-line` de cada cor de destaque),
+separados dos tokens `--nav-*` da sidebar, que já eram sempre escuros antes
+dessa tarefa e continuam sendo independentemente do tema do conteúdo.
+
+## Impressão e exportação em PDF
+
+`assets/css/promove.css` tem uma seção `@media print` que oculta a sidebar, o
+`.nav-top`, o alternador de tema e os botões de ação (mantendo visíveis os
+cabeçalhos de acordeão `.acc-h`/`.ent-h`, restilizados como texto estático em
+vez de botão, porque carregam o nome da entrega/atividade — conteúdo real, não
+apenas interação) e formata o conteúdo em A4 com fundo branco. Qualquer tela
+pode oferecer "Exportar PDF" chamando `window.print()`; o navegador usa essas
+regras automaticamente, sem JS adicional de paginação.
 
 ## Estrutura
 
