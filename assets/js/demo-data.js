@@ -41,7 +41,7 @@ var DEMO_DATA = (function () {
     tela01: {
       unidade: "Gerência de Saúde", orgao: "SEAD", titular: "João Ferreira",
       status: "Em elaboração",
-      ultimaValidacaoCiat: "14/08/2026",
+      ultimaHomologacao: "14/08/2026",
       revisao: "Iniciada em 20/10/2026 por João Ferreira",
       metricas: { entregasMapeadas: 6, atividades: 21, elegiveis: 14, semJustificativa: 2 },
       entregas: [
@@ -68,7 +68,7 @@ var DEMO_DATA = (function () {
             { nome: "Análise da documentação das entidades proponentes", statusChip: "Sem justificativa", chipClasse: "amber",
               nivelComplexidade: "Baixa", incp: "0,7", tempoPresencial: 4, unidadeTempo: "horas por unidade",
               qtdReferencia: 9, unidadeQtd: "processos",
-              justificativaPlaceholder: "Obrigatória para envio ao CIAT" },
+              justificativaPlaceholder: "Obrigatória para a homologação do mapeamento" },
             { nome: "Emissão de despacho de instrução", statusChip: "Elegível", chipClasse: "green",
               nivelComplexidade: "Média", incp: "0,8", tempoPresencial: 4, unidadeTempo: "horas por unidade",
               qtdReferencia: 9, unidadeQtd: "despachos",
@@ -95,7 +95,7 @@ var DEMO_DATA = (function () {
       ],
       requisitos: [
         { texto: "Unidade autorizada pelo titular da Pasta", detalhe: "Portaria nº 412, de 15/08/2026", status: "Atendido" },
-        { texto: "Unidade com mapeamento validado pelo CIAT", status: "Atendido" },
+        { texto: "Unidade com mapeamento homologado", status: "Atendido" },
         { texto: "Atividades elegíveis à execução remota", status: "Atendido" },
         { texto: "Ausência de penalidade disciplinar nos últimos 2 anos", detalhe: "Consulta ao RHNet em 08/10/2026", status: "Atendido" },
         { texto: "Ausência de desligamento anterior por não atingimento de metas", status: "Atendido" },
@@ -313,16 +313,16 @@ var DEMO_DATA = (function () {
       unidades: [
         { nome: "Gerência de Saúde", statusChip: "Apta", chipClasse: "green",
           autorizada: "Sim, pela Portaria nº 412/2026", situacaoMapeamento: "Em revisão desde 20/10/2026",
-          ultimaValidacaoCiat: "14/08/2026", servidoresRegime: 38, requerimentosAguardandoVaga: 12, titular: "João Ferreira" },
+          ultimaHomologacao: "14/08/2026", servidoresRegime: 38, requerimentosAguardandoVaga: 12, titular: "João Ferreira" },
         { nome: "Gerência de Normas e Critérios de Produtividade", statusChip: "Apta", chipClasse: "green",
           autorizada: "Sim, pela Portaria nº 412/2026", situacaoMapeamento: "Validado",
-          ultimaValidacaoCiat: "02/09/2026", servidoresRegime: 22, requerimentosAguardandoVaga: 5, titular: "Ana Fonseca" },
+          ultimaHomologacao: "02/09/2026", servidoresRegime: 22, requerimentosAguardandoVaga: 5, titular: "Ana Fonseca" },
         { nome: "Gerência de Contratos", statusChip: "Não apta", chipClasse: "amber",
-          autorizada: "Sim, pela Portaria nº 412/2026", situacaoMapeamento: "Aguardando validação do CIAT desde 12/10/2026",
-          ultimaValidacaoCiat: "Sem validação anterior", servidoresRegime: 0, requerimentosAguardandoVaga: 9, titular: "Eduardo Moreira" },
+          autorizada: "Sim, pela Portaria nº 412/2026", situacaoMapeamento: "Aguardando homologação do mapeamento desde 12/10/2026",
+          ultimaHomologacao: "Sem validação anterior", servidoresRegime: 0, requerimentosAguardandoVaga: 9, titular: "Eduardo Moreira" },
         { nome: "Gerência de Atendimento ao Cidadão", statusChip: "Não autorizada", chipClasse: "gray",
           autorizada: "Não, unidade fora do rol da Portaria nº 412/2026", situacaoMapeamento: "Sem mapeamento cadastrado",
-          ultimaValidacaoCiat: "Sem validação anterior", servidoresRegime: 0, requerimentosAguardandoVaga: 16, titular: "Ricardo Santos" }
+          ultimaHomologacao: "Sem validação anterior", servidoresRegime: 0, requerimentosAguardandoVaga: 16, titular: "Ricardo Santos" }
       ],
       ordemPrioridade: {
         requerimentosAptos: 17, vagasRemanescentes: 14, comCriterioPreferencia: 6,
@@ -410,7 +410,7 @@ var DEMO_DATA = (function () {
           { nome: "Agência Goiana de Regulação · AGR", prazo: "01/09/2026", atrasoDias: 61, etapa: "Capacitação das chefias" },
           { nome: "Instituto Mauro Borges · IMB", prazo: "01/10/2026", atrasoDias: 31, etapa: "Mapeamento das unidades" }
         ],
-        mapeamentosAguardandoCiat: 11,
+        mapeamentosAguardandoHomologacao: 11,
         avaliacoesForaPrazo: 3,
         mapeamentoForaValidade: 2,
         designacoesExcepcionais: 6
