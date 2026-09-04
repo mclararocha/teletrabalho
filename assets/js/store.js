@@ -9,6 +9,7 @@ var PromoveStore = (function () {
   "use strict";
 
   var CHAVE_DADOS = "promove_dados";
+  var CHAVE_MAPEAMENTO = "promove_mapeamento";
 
   function carregarDemo() {
     try {
@@ -20,6 +21,7 @@ var PromoveStore = (function () {
   function limpar() {
     try {
       window.localStorage.removeItem(CHAVE_DADOS);
+      window.localStorage.removeItem(CHAVE_MAPEAMENTO);
     } catch (e) {}
     window.location.reload();
   }
@@ -37,5 +39,26 @@ var PromoveStore = (function () {
     return dados() ? "demo" : "limpo";
   }
 
-  return { carregarDemo: carregarDemo, limpar: limpar, dados: dados, modoAtivo: modoAtivo };
+  /* Mapeamento próprio da unidade, criado pela chefia na tela 01 —
+     independente do cenário de demonstração, guardado em chave separada
+     para não fazer as outras telas acharem que há um cenário completo. */
+  function salvarMapeamento(entregas) {
+    try {
+      window.localStorage.setItem(CHAVE_MAPEAMENTO, JSON.stringify(entregas));
+    } catch (e) {}
+  }
+
+  function mapeamentoUsuario() {
+    try {
+      var v = window.localStorage.getItem(CHAVE_MAPEAMENTO);
+      return v ? JSON.parse(v) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  return {
+    carregarDemo: carregarDemo, limpar: limpar, dados: dados, modoAtivo: modoAtivo,
+    salvarMapeamento: salvarMapeamento, mapeamentoUsuario: mapeamentoUsuario
+  };
 })();

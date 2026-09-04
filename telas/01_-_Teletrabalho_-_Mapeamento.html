@@ -14,7 +14,7 @@
 <style>
 .ent-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .ent-lbl{font-size:12.5px;color:var(--muted)}
-.ent-head select,.kv input[type=text],.kv select{width:auto}
+.ent-head select,.kv input[type=text],.kv input[type=number],.kv select{width:auto}
 
 .foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .foot .warn{font-size:12.5px;color:var(--amber)}
@@ -47,8 +47,10 @@
 
   <div id="tela01-entregas"></div>
 
+  <div id="tela01-rascunho"></div>
+
   <div class="foot">
-    <button>Acrescentar entrega</button>
+    <button id="tela01-btn-nova-entrega" data-acao="abrir-entrega">Acrescentar entrega</button>
     <span style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <span class="warn" id="tela01-warn"></span>
       <button>Enviar ao CIAT para validação</button>
@@ -67,13 +69,244 @@ document.addEventListener('click', function (e) {
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var dados = PromoveStore.dados();
+  var mapeamento = PromoveStore.mapeamentoUsuario();
   var entregasEl = $("tela01-entregas");
+  var rascunhoEl = $("tela01-rascunho");
   var TIPO_ATIVIDADE = '<select><option>Selecionar</option><option>Estruturante</option><option>Finalística</option></select>';
   var IMPACTO = '<select><option>Selecionar</option><option>Baixo</option><option>Médio</option><option>Alto</option></select>';
   var DIFICULDADE = '<select><option>Selecionar</option><option>Baixa</option><option>Média</option><option>Alta</option></select>';
   var ELEGIVEL = '<select><option>Selecionar</option><option>Sim</option><option>Não</option></select>';
   var TIPO_ENTREGA = '<select><option>Selecionar</option><option>Demanda processual</option><option>Demanda de rotina</option>' +
     '<option>Demanda de projeto</option><option>Demanda pontual</option></select>';
+
+  /* Tabela de complexidade — mesma do Anexo II usada na Calculadora (tela 10). */
+  var COMPLEX = {
+    "Baixo|Baixa": ["Muito baixa", 0.6], "Baixo|Média": ["Baixa", 0.7], "Baixo|Alta": ["Média", 0.8],
+    "Médio|Baixa": ["Baixa", 0.7], "Médio|Média": ["Média", 0.8], "Médio|Alta": ["Alta", 0.9],
+    "Alto|Baixa": ["Média", 0.8], "Alto|Média": ["Alta", 0.9], "Alto|Alta": ["Muito alta", 1.0]
+  };
+  /* Ocorrências médias por mês de cada periodicidade, só para a estimativa de esforço abaixo —
+     não é um cálculo normativo (nota/InCp/InPr/InQt), por isso não cita artigo. */
+  var PERIODICIDADE_MES = { "Diário": 22, "Semanal": 52 / 12, "Mensal": 1, "Bimestral": 0.5, "Anual": 1 / 12 };
+
+  function n1(x) { return x.toFixed(1).replace(".", ","); }
+
+  function calcComplexidade(impacto, dificuldade) {
+    var par = COMPLEX[impacto + "|" + dificuldade];
+    return par ? { nivel: par[0], incp: par[1] } : null;
+  }
+
+  function calcEsforcoMes(tempoValor, tempoUnidade, qtdValor, periodicidade) {
+    if (!tempoValor || !qtdValor || !PERIODICIDADE_MES[periodicidade]) return null;
+    var horas = tempoUnidade === "minutos" ? tempoValor / 60 : tempoValor;
+    return horas * qtdValor * PERIODICIDADE_MES[periodicidade];
+  }
+
+  /* ---------- exibição somente leitura (demo ou mapeamento já salvo pelo usuário) ---------- */
+
+  function renderAtividadeSalva(a, aberta) {
+    var chipClasse = a.elegivel === "Sim" ? "green" : "gray";
+    var chipTexto = a.elegivel === "Sim" ? "Elegível" : "Não elegível";
+    var esforco = (a.esforcoMes || a.esforcoMes === 0) ? "≈ " + n1(a.esforcoMes) + " horas/mês (estimativa)" : "Não apurado";
+    return '<div class="acc' + (aberta ? '' : ' col') + '"><button class="acc-h"><div class="acc-h-in">' +
+      '<span class="acc-name"><span class="chev">▾</span>' + a.nome + '</span>' +
+      '<span class="chip chip-' + chipClasse + '">' + chipTexto + '</span></div></button>' +
+      '<div class="acc-b">' +
+      '<div class="kv"><span class="k">Tipo de atividade:</span><span class="v">' + a.tipo + '</span></div>' +
+      '<div class="kv"><span class="k">Impacto:</span><span class="v">' + a.impacto + '</span></div>' +
+      '<div class="kv"><span class="k">Dificuldade:</span><span class="v">' + a.dificuldade + '</span></div>' +
+      '<div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">' + a.nivelComplexidade + (a.incp !== null ? ' · InCp ' + n1(a.incp) : '') + '</span></div>' +
+      '<div class="kv"><span class="k">Tempo de execução no presencial:</span><span class="v">' + (a.tempoValor !== null ? a.tempoValor + ' ' + a.tempoUnidade + ' por unidade' : 'Não informado') + '</span></div>' +
+      '<div class="kv"><span class="k">Quantidade de referência:</span><span class="v">' + (a.qtdValor !== null ? a.qtdValor : 'Não informado') + '</span> <span class="calc">' + a.qtdPeriodicidade + '</span></div>' +
+      '<div class="kv"><span class="k">Esforço estimado:</span><span class="calc">' + esforco + '</span></div>' +
+      '<div class="kv"><span class="k">Justificativa técnica:</span>' + (a.justificativa ? '<span class="v">' + a.justificativa + '</span>' : '<span class="calc">Não informada</span>') + '</div>' +
+      '</div></div>';
+  }
+
+  function renderEntregaSalva(ent, primeiroDaLista) {
+    var atividadesHtml = ent.atividades.length
+      ? ent.atividades.map(function (a, i) { return renderAtividadeSalva(a, primeiroDaLista && i === 0); }).join("")
+      : '<div class="vazio">Nenhuma atividade cadastrada nesta entrega.</div>';
+    return '<div class="section">' +
+      '<div class="section-title">Entrega · ' + ent.nome + '</div>' +
+      '<div class="ent-head"><span class="ent-lbl">Tipo de entrega:</span> <span class="v">' + ent.tipo + '</span></div>' +
+      '<div class="card">' + atividadesHtml + '</div></div>';
+  }
+
+  /* ---------- rascunho de nova entrega (em memória, só vira dado após "Salvar entrega") ---------- */
+
+  var rascunho = null;
+  var incluindoAtividade = false;
+
+  var ACOES = {
+    "abrir-entrega": function () {
+      rascunho = { atividades: [] };
+      incluindoAtividade = false;
+      var btn = $("tela01-btn-nova-entrega");
+      if (btn) btn.hidden = true;
+      abrirFormEntrega();
+    },
+    "abrir-atividade": function () {
+      incluindoAtividade = true;
+      renderAtividadesRascunho();
+    },
+    "salvar-atividade": function () {
+      var nome = $("na-nome").value.trim();
+      if (!nome) { $("na-nome").focus(); return; }
+      var impacto = $("na-impacto").value, dificuldade = $("na-dificuldade").value;
+      var c = calcComplexidade(impacto, dificuldade);
+      var tempoValor = parseFloat($("na-tempo-valor").value);
+      var tempoUnidade = $("na-tempo-unidade").value;
+      var qtdValor = parseFloat($("na-qtd-valor").value);
+      var qtdPeriodicidade = $("na-qtd-periodicidade").value;
+      rascunho.atividades.push({
+        nome: nome,
+        tipo: $("na-tipo").value || "Não informado",
+        impacto: impacto || "Não informado",
+        dificuldade: dificuldade || "Não informado",
+        nivelComplexidade: c ? c.nivel : "Não apurado",
+        incp: c ? c.incp : null,
+        tempoValor: isNaN(tempoValor) ? null : tempoValor,
+        tempoUnidade: tempoUnidade,
+        qtdValor: isNaN(qtdValor) ? null : qtdValor,
+        qtdPeriodicidade: qtdPeriodicidade || "Não informada",
+        esforcoMes: calcEsforcoMes(tempoValor, tempoUnidade, qtdValor, qtdPeriodicidade),
+        elegivel: $("na-elegivel").value === "Sim" ? "Sim" : "Não",
+        justificativa: $("na-justificativa").value.trim()
+      });
+      incluindoAtividade = false;
+      renderAtividadesRascunho();
+    },
+    "salvar-entrega": function () {
+      var nome = $("ne-nome").value.trim();
+      if (!nome) { $("ne-nome").focus(); return; }
+      var entrega = { nome: nome, tipo: $("ne-tipo").value || "Não informado", atividades: rascunho.atividades };
+      var atual = PromoveStore.mapeamentoUsuario() || [];
+      atual.push(entrega);
+      PromoveStore.salvarMapeamento(atual);
+      window.location.reload();
+    }
+  };
+
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-acao]");
+    if (el && ACOES[el.getAttribute("data-acao")]) ACOES[el.getAttribute("data-acao")]();
+  });
+
+  function atividadeFormHtml() {
+    return '<div class="card card-pad" style="margin-top:14px">' +
+      '<div class="kv"><span class="k">Nome da atividade:</span><input type="text" id="na-nome"></div>' +
+      '<div class="kv"><span class="k">Tipo de atividade:</span>' +
+        '<select id="na-tipo"><option>Selecionar</option><option>Estruturante</option><option>Finalística</option></select></div>' +
+      '<div class="kv"><span class="k">Impacto:</span>' +
+        '<select id="na-impacto"><option>Selecionar</option><option>Baixo</option><option>Médio</option><option>Alto</option></select></div>' +
+      '<div class="kv"><span class="k">Dificuldade:</span>' +
+        '<select id="na-dificuldade"><option>Selecionar</option><option>Baixa</option><option>Média</option><option>Alta</option></select></div>' +
+      '<div class="kv"><span class="k">Nível de complexidade:</span><span class="calc" id="na-complexidade">Selecione impacto e dificuldade</span></div>' +
+      '<div class="kv"><span class="k">Tempo de execução no presencial:</span>' +
+        '<input type="number" id="na-tempo-valor" min="0" step="1" size="5">' +
+        '<select id="na-tempo-unidade"><option value="minutos">minutos</option><option value="horas">horas</option></select>' +
+        '<span class="calc">por unidade produzida</span></div>' +
+      '<div class="kv"><span class="k">Quantidade de referência:</span>' +
+        '<input type="number" id="na-qtd-valor" min="0" step="1" size="5">' +
+        '<select id="na-qtd-periodicidade"><option>Selecionar</option><option>Diário</option><option>Semanal</option>' +
+        '<option>Mensal</option><option>Bimestral</option><option>Anual</option></select></div>' +
+      '<div class="kv"><span class="k">Esforço estimado:</span><span class="calc" id="na-esforco">Preencha tempo e quantidade</span></div>' +
+      '<div class="kv"><span class="k">Elegível ao teletrabalho:</span>' +
+        '<select id="na-elegivel"><option>Selecionar</option><option>Sim</option><option>Não</option></select></div>' +
+      '<div class="kv"><span class="k">Justificativa técnica:</span><input type="text" id="na-justificativa" size="40"></div>' +
+      '<div class="btn-row"><button class="sm" data-acao="salvar-atividade">Salvar atividade</button></div>' +
+      '</div>';
+  }
+
+  function wireAtividadeForm() {
+    var impactoEl = $("na-impacto"), dificuldadeEl = $("na-dificuldade"), complexidadeEl = $("na-complexidade");
+    var tempoValorEl = $("na-tempo-valor"), tempoUnidadeEl = $("na-tempo-unidade");
+    var qtdValorEl = $("na-qtd-valor"), qtdPeriodicidadeEl = $("na-qtd-periodicidade");
+    var esforcoEl = $("na-esforco");
+
+    function atualizaComplexidade() {
+      var c = calcComplexidade(impactoEl.value, dificuldadeEl.value);
+      complexidadeEl.textContent = c ? (c.nivel + " · InCp " + n1(c.incp)) : "Selecione impacto e dificuldade";
+    }
+    function atualizaEsforco() {
+      var e = calcEsforcoMes(parseFloat(tempoValorEl.value), tempoUnidadeEl.value, parseFloat(qtdValorEl.value), qtdPeriodicidadeEl.value);
+      esforcoEl.textContent = e !== null ? ("≈ " + n1(e) + " horas/mês (estimativa)") : "Preencha tempo e quantidade";
+    }
+
+    impactoEl.addEventListener("change", atualizaComplexidade);
+    dificuldadeEl.addEventListener("change", atualizaComplexidade);
+    [tempoValorEl, tempoUnidadeEl, qtdValorEl, qtdPeriodicidadeEl].forEach(function (el) {
+      el.addEventListener("input", atualizaEsforco);
+      el.addEventListener("change", atualizaEsforco);
+    });
+  }
+
+  /* Cabeçalho da entrega (nome/tipo) é montado uma única vez: se fosse
+     reconstruído a cada atividade incluída, o texto já digitado se perderia. */
+  function abrirFormEntrega() {
+    rascunhoEl.innerHTML = '<div class="section">' +
+      '<div class="section-title">Nova entrega</div>' +
+      '<div class="card card-pad">' +
+      '<div class="kv"><span class="k">Nome da entrega:</span><input type="text" id="ne-nome"></div>' +
+      '<div class="kv"><span class="k">Tipo de entrega:</span>' +
+        '<select id="ne-tipo"><option>Selecionar</option><option>Demanda processual</option><option>Demanda de rotina</option>' +
+        '<option>Demanda de projeto</option><option>Demanda pontual</option></select></div>' +
+      '</div>' +
+      '<div class="card" id="tela01-rascunho-atividades" style="margin-top:14px"></div>' +
+      '<div class="btn-row" style="margin-top:14px"><button data-acao="salvar-entrega">Salvar entrega</button></div>' +
+      '</div>';
+    renderAtividadesRascunho();
+  }
+
+  function renderAtividadesRascunho() {
+    var lista = rascunho.atividades.length
+      ? rascunho.atividades.map(function (a, i) { return renderAtividadeSalva(a, i === 0); }).join("")
+      : '<div class="vazio">Nenhuma atividade incluída ainda.</div>';
+    var container = $("tela01-rascunho-atividades");
+    container.innerHTML = lista +
+      (incluindoAtividade ? atividadeFormHtml() : '<div class="addrow"><button class="sm" data-acao="abrir-atividade">+ Incluir atividade</button></div>');
+    if (incluindoAtividade) wireAtividadeForm();
+  }
+
+  /* ---------- métricas a partir do mapeamento (demo ou do usuário) ---------- */
+
+  function metricasDoMapeamento(entregas) {
+    var atividades = 0, elegiveis = 0, semJustificativa = 0;
+    entregas.forEach(function (ent) {
+      ent.atividades.forEach(function (a) {
+        atividades++;
+        if (a.elegivel === "Sim") elegiveis++;
+        if (!a.justificativa) semJustificativa++;
+      });
+    });
+    return { entregasMapeadas: entregas.length, atividades: atividades, elegiveis: elegiveis, semJustificativa: semJustificativa };
+  }
+
+  /* ---------- ordem de exibição: mapeamento do usuário → demo → vazio ---------- */
+
+  if (mapeamento && mapeamento.length) {
+    if (dados && dados.tela01) {
+      var td = dados.tela01;
+      $("tela01-sub").textContent = td.unidade + " · " + td.orgao + " · titular " + td.titular;
+      var status1 = $("tela01-status");
+      status1.textContent = td.status;
+      status1.hidden = false;
+      $("tela01-info").innerHTML =
+        '<div class="kv"><span class="k">Última validação pelo CIAT:</span><span class="v">' + td.ultimaValidacaoCiat + '</span></div>' +
+        '<div class="kv"><span class="k">Revisão em curso:</span><span class="v">' + td.revisao + '</span></div>' +
+        '<div class="kv"><span class="k">Efeito:</span><span class="calc">Sem mapeamento validado, a unidade não pode adotar o regime de teletrabalho</span></div>';
+    }
+    var metricas = metricasDoMapeamento(mapeamento);
+    $("tela01-metrics").innerHTML =
+      '<div class="metric"><div class="lbl">Entregas mapeadas</div><div class="num">' + metricas.entregasMapeadas + '</div></div>' +
+      '<div class="metric"><div class="lbl">Atividades</div><div class="num">' + metricas.atividades + '</div></div>' +
+      '<div class="metric"><div class="lbl">Elegíveis ao teletrabalho</div><div class="num">' + metricas.elegiveis + '</div></div>' +
+      '<div class="metric"><div class="lbl">Sem justificativa</div><div class="num warn">' + metricas.semJustificativa + '</div></div>';
+    entregasEl.innerHTML = mapeamento.map(function (ent, i) { return renderEntregaSalva(ent, i === 0); }).join("");
+    $("tela01-warn").textContent = metricas.semJustificativa + " atividades sem justificativa técnica";
+    return;
+  }
 
   if (!dados) {
     entregasEl.innerHTML = '<div class="section"><div class="card card-pad"><div class="vazio">' +

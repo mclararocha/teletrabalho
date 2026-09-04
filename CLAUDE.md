@@ -58,6 +58,8 @@ Uso permitido:
 - Perfil ativo selecionado no seletor de perfis, para persistir a escolha ao navegar
   entre telas.
 - Cenário de exemplo carregado pelo Modo Demonstração (ver seção abaixo).
+- Mapeamento de entregas e atividades que a chefia cria na tela 01 (ver "Mapeamento
+  interativo (tela 01)" abaixo).
 - Outro estado de demonstração explicitamente pedido em uma tarefa.
 
 Continua valendo: não usar `localStorage` para nada que não tenha sido pedido, e
@@ -100,6 +102,39 @@ a chave e recarrega.
   gráficos), não os campos que o usuário preenche.
 - A tela 10 (Calculadora) fica fora do `DEMO_DATA`: `COMPLEX`/`ICOMP`/`PRESETS` são
   regras do decreto, não dado de exemplo, e o simulador já funciona em branco.
+
+## Mapeamento interativo (tela 01)
+
+A tela 01 (perfil Chefia da Unidade) tem um fluxo de "Acrescentar entrega e
+atividades" que grava dado real digitado pela chefia, não um cenário de exemplo —
+por isso usa uma chave própria, `localStorage["promove_mapeamento"]`, separada de
+`promove_dados`. Gravar aí não pode reaproveitar a chave do Modo Demonstração
+porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto inteiro
+(`dados.tela02`, `dados.tela03`, ...) existe também.
+
+- `PromoveStore.salvarMapeamento(entregas)` / `.mapeamentoUsuario()` — gravam e lêem
+  o array de entregas próprias da unidade. `PromoveStore.limpar()` (o botão "Modo
+  Limpo (Novo Caso)") apaga as duas chaves juntas, porque "novo caso" inclui
+  descartar um mapeamento em andamento.
+- Ordem de exibição da tela 01: mapeamento do usuário (se existir) → cenário do
+  Modo Demonstração (só leitura, como já era) → estado vazio. Um mapeamento
+  próprio sempre tem prioridade sobre o cenário de demonstração, mesmo com os
+  dois carregados ao mesmo tempo.
+- O formulário de nova entrega fica em dois blocos que se renderizam
+  separadamente: o cabeçalho (nome/tipo da entrega) é montado uma única vez ao
+  clicar em "Acrescentar entrega"; só a lista de atividades e o formulário de
+  atividade dentro dele se re-renderizam a cada "Salvar atividade" — se o
+  cabeçalho fosse refeito junto, o texto já digitado se perderia a cada atividade
+  incluída.
+- A tabela de complexidade (`COMPLEX`/InCp) usada no cálculo ao vivo do formulário
+  é a mesma da tela 10, duplicada ali porque cada tela é um HTML autossuficiente
+  (sem build, sem módulo JS compartilhado de regra de negócio). Se a tabela mudar,
+  precisa mudar nas duas telas.
+- "Esforço estimado (horas/mês)" — tempo unitário × quantidade × ocorrências médias
+  da periodicidade escolhida por mês — é conveniência de planejamento, não cálculo
+  normativo da nota (não tem artigo correspondente): serve só para a chefia ter
+  noção de carga de trabalho ao cadastrar, não é usado na nota da atividade nem na
+  Calculadora.
 
 ## Estrutura
 
