@@ -119,45 +119,53 @@ var DEMO_DATA = (function () {
           nome: "fiscalização de contratos e convênios", prioridade: "1 — muito alta",
           atividades: [
             { nome: "Conferência das prestações de contas de repasse", statusChip: "Validada", chipClasse: "green",
+              finalizada: true,
               origem: "Proposta pelo servidor em 28/10/2026", tipoAtividade: "Estruturante", regime: "Teletrabalho",
               inicioPactuado: "03/11/2026 08:00", conclusaoPactuada: "17/11/2026 17:00",
               qtdPactuada: 8, unidadeQtd: "instrumentos", referenciaPresencial: "6 instrumentos, conforme mapeamento da unidade",
-              impacto: "Médio", dificuldade: "Média", nivelComplexidade: "Média", incp: "0,8" },
+              impacto: "Médio", dificuldade: "Média", nivelComplexidade: "Média", incp: "0,8",
+              actsOc: ["Reabrir para ajuste", "Excluir do plano"] },
             { nome: "Notificação de contratadas com pendência documental", statusChip: "Ajustada pela chefia", chipClasse: "amber",
               origem: "Proposta pelo servidor em 28/10/2026", tipoAtividade: "Estruturante", regime: "Teletrabalho",
               inicioPactuado: "10/11/2026 08:00", conclusaoPactuada: "24/11/2026 17:00",
               qtdPactuada: 6, unidadeQtd: "notificações", referenciaPresencial: "5 notificações, conforme mapeamento da unidade",
               impacto: "Baixo", dificuldade: "Média", nivelComplexidade: "Baixa", incp: "0,7",
-              log: "Quantidade alterada de 4 para 6 por João Ferreira em 30/10/2026." }
+              log: "Quantidade alterada de 4 para 6 por João Ferreira em 30/10/2026.",
+              actsOs: ["Registrar discordância"], actsOc: ["Validar atividade", "Excluir do plano"] }
           ]
         },
         {
           nome: "instrução de processos de repasse", prioridade: "2 — alta",
-          alteradaPelaChefia: true, log: "Prioridade alterada de 3 para 2 por João Ferreira em 30/10/2026.",
+          alteradaPelaChefia: true, chipClasse: "amber", log: "Prioridade alterada de 3 para 2 por João Ferreira em 30/10/2026.",
+          entActsOs: ["Registrar discordância quanto à prioridade"],
           atividades: [
             { nome: "Análise da documentação das entidades proponentes", statusChip: "Aguardando validação", chipClasse: "gray",
               origem: "Proposta pelo servidor em 28/10/2026", tipoAtividade: "Finalística", regime: "Teletrabalho",
               inicioPactuado: "03/11/2026 08:00", conclusaoPactuada: "14/11/2026 17:00",
               qtdPactuada: 12, unidadeQtd: "processos", referenciaPresencial: "9 processos, conforme mapeamento da unidade",
               impacto: null, dificuldade: null, nivelComplexidade: null,
-              pendenteDefinicaoChefia: true },
+              pendenteDefinicaoChefia: true, actsOc: ["Validar atividade", "Excluir do plano"] },
             { nome: "Consolidação do relatório trimestral de convênios", statusChip: "Incluída pela chefia", chipClasse: "blue",
               origem: "Incluída por João Ferreira em 30/10/2026", tipoAtividade: "Finalística", regime: "Teletrabalho",
               inicioPactuado: "16/11/2026 08:00", conclusaoPactuada: "30/11/2026 17:00",
               qtdPactuada: 1, unidadeQtd: "relatório", referenciaPresencial: "1 relatório, conforme mapeamento da unidade",
               impacto: "Alto", dificuldade: "Média", nivelComplexidade: "Alta", incp: "0,9",
-              log: "Atividade acrescentada pela chefia em 30/10/2026." }
+              log: "Atividade acrescentada pela chefia em 30/10/2026.",
+              actsOs: ["Registrar discordância"], actsOc: ["Validar atividade", "Excluir do plano"] }
           ]
         },
         {
           nome: "atualização do cadastro de convenentes no SISLOG", prioridade: null,
-          rascunhoDoServidor: true, log: "Acrescentada por Maria da Silva em 02/11/2026. Ainda não enviada para validação.",
+          rascunhoDoServidor: true, chipClasse: "gray", reversedRoles: true,
+          log: "Acrescentada por Maria da Silva em 02/11/2026. Ainda não enviada para validação.",
+          entActsOs: ["Enviar entrega para validação", "Excluir entrega"],
           atividades: [
             { nome: "Conferência e atualização dos dados cadastrais das entidades", statusChip: "Rascunho do servidor", chipClasse: "gray",
               origem: "Acrescentada por Maria da Silva em 02/11/2026", tipoAtividade: "Estruturante", regime: "Teletrabalho",
               inicioPactuado: "09/11/2026 08:00", conclusaoPactuada: "20/11/2026 17:00",
               qtdPactuada: 30, unidadeQtd: "cadastros", referenciaPresencial: "24 cadastros, conforme mapeamento da unidade",
-              impacto: null, dificuldade: null, nivelComplexidade: null, pendenteDefinicaoChefia: true }
+              impacto: null, dificuldade: null, nivelComplexidade: null, pendenteDefinicaoChefia: true,
+              actsOs: ["Excluir atividade"], actsOcCalc: "Aguardando envio pelo servidor" }
           ]
         }
       ],
