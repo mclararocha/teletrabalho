@@ -130,7 +130,7 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   memória sem gravar nada, esvazia `#tela01-rascunho` e reexibe o botão
   "Acrescentar entrega" — nenhuma chamada a `PromoveStore.salvarMapeamento`.
 - O título da entrega no cabeçalho do acordeão (`.acc-name-dest`, seção 10 de
-  `promove.css`) é mais proeminente (15,5px/700) que o das atividades
+  `promove.css`) é mais proeminente (1,2rem/700) que o das atividades
   aninhadas (`.acc-name` padrão, 13,5px/500), para marcar a hierarquia
   visual entre os dois níveis. É um modificador opcional do padrão `.acc-h`/
   `.acc-name` já existente — não um quarto padrão de acordeão — então não

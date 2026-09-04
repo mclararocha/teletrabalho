@@ -180,7 +180,7 @@ h1{font-size:24px;font-weight:700;margin:4px 0 2px}
    acordeões dentro (ex.: entrega > atividades na tela 01): deixa o título
    mais proeminente que o das atividades aninhadas, sem alterar o padrão
    .acc-name usado nos demais acordeões do protótipo. */
-.acc-name-dest{font-size:15.5px;font-weight:700}
+.acc-name-dest{font-size:1.2rem;font-weight:700}
 .acc-b{padding:2px 18px 18px 40px}
 .chev{display:inline-block;width:14px;margin-right:8px;color:var(--faint);font-size:11px;transition:transform .15s}
 .acc.col .acc-b{display:none}
