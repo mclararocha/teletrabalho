@@ -8,6 +8,31 @@ var PromoveNav = (function () {
   "use strict";
 
   var CHAVE_PERFIL = "promove_perfil";
+  var CHAVE_TEMA = "promove_tema";
+
+  function temaAtivo() {
+    try {
+      return window.localStorage.getItem(CHAVE_TEMA) === "escuro" ? "escuro" : "claro";
+    } catch (e) {
+      return "claro";
+    }
+  }
+
+  function aplicarTema() {
+    if (temaAtivo() === "escuro") document.documentElement.setAttribute("data-tema", "escuro");
+    else document.documentElement.removeAttribute("data-tema");
+  }
+
+  function alternarTema() {
+    var novo = temaAtivo() === "escuro" ? "claro" : "escuro";
+    try { window.localStorage.setItem(CHAVE_TEMA, novo); } catch (e) {}
+    aplicarTema();
+    renderizarTudo();
+  }
+
+  /* Aplicado assim que o script carrega (ainda no <head>), para o tema já
+     estar correto antes da primeira pintura da página. */
+  aplicarTema();
 
   var TELAS = {
     "01": "01_-_Teletrabalho_-_Mapeamento.html",
@@ -136,7 +161,10 @@ var PromoveNav = (function () {
   function renderizarSidebar(el, raiz, atual) {
     if (!el) return;
     var perfil = PERFIS[perfilAtivo()];
-    var html = '<div class="sb-perfil">' + perfil.rotulo + '</div>';
+    var escuro = temaAtivo() === "escuro";
+    var html = '<button type="button" class="tema-toggle" id="tema-toggle">' +
+      (escuro ? "☀️ Tema claro" : "🌙 Tema escuro") + '</button>';
+    html += '<div class="sb-perfil">' + perfil.rotulo + '</div>';
     perfil.fases.forEach(function (fase) {
       html += '<div class="sb-fase">' + fase.nome + '</div>';
       fase.telas.forEach(function (t) {
@@ -149,8 +177,10 @@ var PromoveNav = (function () {
       '<button type="button" class="sb-modo-btn" id="sb-modo-limpo">🧹 Modo Limpo (Novo Caso)</button>' +
       '</div>';
     el.innerHTML = html;
+    var bTema = el.querySelector("#tema-toggle");
     var bDemo = el.querySelector("#sb-carregar-demo");
     var bLimpo = el.querySelector("#sb-modo-limpo");
+    if (bTema) bTema.addEventListener("click", alternarTema);
     if (bDemo) bDemo.addEventListener("click", function () {
       if (window.PromoveStore) window.PromoveStore.carregarDemo();
     });

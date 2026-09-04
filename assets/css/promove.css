@@ -39,7 +39,8 @@
   --radius-sm:8px;
   --radius-md:12px;
 
-  /* navegação (sidebar e barra de perfil), tema escuro */
+  /* navegação (sidebar e barra de perfil) — sempre escura, independente
+     do tema claro/escuro do conteúdo abaixo (ver seção 16) */
   --nav-bg:#1f2937;
   --nav-bg-soft:#28374a;
   --nav-line:#37475c;
@@ -48,6 +49,33 @@
   --nav-active-bg:#2f4a68;
   --nav-active-text:#9cc6ff;
 }
+
+/* Tema escuro do conteúdo — alternado por PromoveNav (assets/js/navigation.js),
+   persistido em localStorage["promove_tema"]. Troca só os tokens de superfície/
+   texto/semânticos; a matriz da calculadora e a navegação não mudam. */
+:root[data-tema="escuro"]{
+  --ink:#e8ecf1;
+  --muted:#9aa7b6;
+  --faint:#798797;
+
+  --page:#12161d;
+  --card:#1b212b;
+  --soft:#232a35;
+  --line:#333c49;
+
+  --blue:#7cb0f2;
+  --blue-bg:#1d2c40;
+  --blue-line:#2c4362;
+  --green:#7cd6a0;
+  --green-bg:#173226;
+  --amber:#e8c266;
+  --amber-bg:#3a2f14;
+  --red:#f0938a;
+  --red-bg:#3a1c19;
+}
+:root[data-tema="escuro"] input,
+:root[data-tema="escuro"] select,
+:root[data-tema="escuro"] textarea{background:var(--card);color:var(--ink)}
 
 /* ---------- 2. Base ---------- */
 *{box-sizing:border-box}
@@ -85,6 +113,11 @@ body{
              color:var(--nav-text);background:var(--nav-bg-soft);border:1px solid var(--nav-line);
              border-radius:var(--radius-sm);padding:8px 10px;cursor:pointer}
 .sb-modo-btn:hover{background:var(--nav-active-bg)}
+.tema-toggle{width:100%;display:flex;align-items:center;gap:8px;text-align:left;font-family:inherit;
+             font-size:12.5px;font-weight:600;color:var(--nav-text);background:var(--nav-bg-soft);
+             border:1px solid var(--nav-line);border-radius:var(--radius-sm);padding:8px 10px;
+             cursor:pointer;margin-bottom:16px}
+.tema-toggle:hover{background:var(--nav-active-bg)}
 
 /* ---------- 4. Barra de navegação ----------
    Primeiro elemento dentro de .wrap em toda tela: retorno ao hub
@@ -200,4 +233,23 @@ button.sm,a.btn.sm{font-size:12.5px;padding:5px 11px}
   .wrap{padding:20px 14px 48px}
   .kv .k{min-width:100%}
   .acc-b{padding-left:18px}
+}
+
+/* ---------- 17. Impressão / exportação em PDF ----------
+   Acionado por window.print() (ex.: botão "Exportar PDF" da tela 01).
+   Esconde a navegação e os controles de ação, deixando só o conteúdo. */
+@media print{
+  @page{ size:A4; margin:16mm }
+  aside.sidebar,.nav-top,.perfil-btn,.tema-toggle,.sb-modo,
+  button:not(.acc-h):not(.ent-h),a.btn,.btn-row,.addrow{ display:none !important }
+  html,body{ background:#fff !important; color:#000 !important }
+  .app-shell{ display:block }
+  .app-shell>.wrap,.app-shell>.wrap-wide{ max-width:100%;padding:0;margin:0 }
+  .card{ border:1px solid #ccc;background:#fff;break-inside:avoid }
+  .acc-b{ display:block !important }
+  .acc-h,.ent-h{ background:none !important;border:none !important;padding:8px 0 !important;cursor:default }
+  .chev{ display:none }
+  .chip{ border:1px solid #999;background:#fff !important;color:#000 !important }
+  .section{ break-inside:avoid }
+  h1,.eyebrow,.sub{ color:#000 !important }
 }
