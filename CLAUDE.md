@@ -190,6 +190,40 @@ apenas interação) e formata o conteúdo em A4 com fundo branco. Qualquer tela
 pode oferecer "Exportar PDF" chamando `window.print()`; o navegador usa essas
 regras automaticamente, sem JS adicional de paginação.
 
+A tela 01 é a exceção: em vez de imprimir a lista interativa de acordeões,
+monta um relatório formal dedicado.
+
+- `#tela01-print-relatorio` fica sempre `display:none` na tela (classe
+  `.print-relatorio`, definida em `promove.css`) e só aparece dentro de
+  `@media print`; o próprio `<style>` da tela 01 esconde `.head`,
+  `#tela01-info`, `#tela01-metrics`, `#tela01-entregas`, `#tela01-rascunho` e
+  `.foot` nesse mesmo media query, para o relatório não aparecer ao lado da
+  lista interativa.
+- `montarRelatorioImpressao(lista)`, chamada ao fim de
+  `renderizarMapeamentoUsuario()` (e com `[]` nos ramos de Modo Demonstração e
+  Modo Limpo vazio), monta o HTML: cabeçalho formal (Governo do Estado de
+  Goiás · SEAD, título do relatório, Unidade/Responsável/Data de emissão),
+  quadro de indicadores (total de entregas, atividades elegíveis, carga
+  horária estimada, InCp médio), uma tabela por entrega
+  (`table.print-tabela`, sem botões nem links) e um bloco de assinatura para
+  Chefia Imediata e Chefia Superior.
+- O relatório só é montado a partir do mapeamento real do usuário
+  (`promove_mapeamento`), nunca do cenário do Modo Demonstração: os dados de
+  exemplo não têm os mesmos campos (`elegivel`/`incp`/`esforcoMes`) no mesmo
+  formato, e forçar o encaixe inventaria dado. Sem mapeamento próprio, o
+  relatório mostra apenas uma mensagem de que não há nada para exportar.
+  Unidade/Responsável seguem vindo de `dados.tela01` quando o Modo
+  Demonstração também estiver carregado (mesmo padrão já usado no restante da
+  tela); sem ele, aparecem como "Não informado".
+- "Carga horária estimada" soma o `esforcoMes` das atividades — mesma
+  estimativa de planejamento não normativa já usada no formulário (ver
+  "Mapeamento interativo (tela 01)"), por isso a nota de rodapé do indicador
+  deixa isso explícito. "InCp médio" é a média do InCp já apurado por
+  atividade (tabela de complexidade do Anexo II, a mesma de `COMPLEX` na
+  tela 01 e na Calculadora).
+- Cada bloco de entrega tem `page-break-inside:avoid` (`.print-entrega`), para
+  a tabela de uma entrega não quebrar no meio entre páginas.
+
 ## Estrutura
 
 ```

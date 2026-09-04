@@ -25,6 +25,13 @@
 
 .item-acoes{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
 .item-acoes button{padding:4px 9px;font-size:12px}
+
+/* No relatório formal de impressão (ver #tela01-print-relatorio, montado por
+   montarRelatorioImpressao()), a lista interativa de entregas some — o
+   relatório tem sua própria tabela, sem acordeão nem botões de ação. */
+@media print{
+  .head,#tela01-info,#tela01-metrics,#tela01-entregas,#tela01-rascunho,.foot{ display:none !important }
+}
 </style>
 </head>
 <body>
@@ -55,6 +62,8 @@
   <div id="tela01-entregas"></div>
 
   <div id="tela01-rascunho"></div>
+
+  <div id="tela01-print-relatorio" class="print-relatorio"></div>
 
   <div class="foot">
     <button id="tela01-btn-nova-entrega" data-acao="abrir-entrega">Acrescentar entrega</button>
@@ -331,6 +340,105 @@ document.addEventListener('click', function (e) {
         if (entAtiv) preencherFormAtividade(entAtiv.atividades[atividadeEmEdicao.atividadeIndex]);
       }
     }
+
+    montarRelatorioImpressao(lista);
+  }
+
+  function formatarDataEmissao() {
+    var d = new Date();
+    var dia = String(d.getDate()).padStart(2, "0");
+    var mes = String(d.getMonth() + 1).padStart(2, "0");
+    return dia + "/" + mes + "/" + d.getFullYear();
+  }
+
+  /* Relatório formal para impressão/PDF (window.print(), ver seção 17 de
+     promove.css) — montado só a partir do mapeamento real que a chefia está
+     construindo (promove_mapeamento). O cenário do Modo Demonstração fica de
+     fora de propósito: os dados de exemplo não têm os mesmos campos
+     (elegivel/incp/esforcoMes) no mesmo formato, e forçar o encaixe
+     inventaria dado (ver "Consistência dos dados de exemplo" no CLAUDE.md). */
+  function montarRelatorioImpressao(lista) {
+    var el = $("tela01-print-relatorio");
+    if (!lista.length) {
+      el.innerHTML = '<p style="font-size:12px;color:#555">Nenhuma entrega mapeada ainda — não há relatório para exportar.</p>';
+      return;
+    }
+
+    var unidade = "Não informado", orgaoNome = "", responsavel = "Não informado";
+    if (dados && dados.tela01) {
+      unidade = dados.tela01.unidade || unidade;
+      orgaoNome = dados.tela01.orgao || "";
+      responsavel = dados.tela01.titular || responsavel;
+    }
+
+    var totalAtividades = 0, elegiveis = 0, somaEsforco = 0, temEsforco = false, somaIncp = 0, qtdIncp = 0;
+    lista.forEach(function (ent) {
+      ent.atividades.forEach(function (a) {
+        totalAtividades++;
+        if (a.elegivel === "Sim") elegiveis++;
+        if (a.esforcoMes || a.esforcoMes === 0) { somaEsforco += a.esforcoMes; temEsforco = true; }
+        if (a.incp !== null && a.incp !== undefined) { somaIncp += a.incp; qtdIncp++; }
+      });
+    });
+    var incpMedio = qtdIncp ? n1(somaIncp / qtdIncp) : "Não apurado";
+
+    var cabecalho =
+      '<div class="print-cabecalho">' +
+        '<div class="print-orgao">Governo do Estado de Goiás · Secretaria de Estado da Administração</div>' +
+        '<div class="print-titulo">Relatório de Mapeamento de Entregas e Atividades</div>' +
+        '<div class="print-meta">' +
+          '<span><strong>Unidade:</strong> ' + unidade + (orgaoNome ? " · " + orgaoNome : "") + '</span>' +
+          '<span><strong>Responsável:</strong> ' + responsavel + '</span>' +
+          '<span><strong>Data de emissão:</strong> ' + formatarDataEmissao() + '</span>' +
+        '</div>' +
+      '</div>';
+
+    var indicadores =
+      '<div class="print-indicadores">' +
+        '<div class="print-ind"><div class="lbl">Total de entregas</div><div class="num">' + lista.length + '</div></div>' +
+        '<div class="print-ind"><div class="lbl">Atividades elegíveis</div><div class="num">' + elegiveis + ' de ' + totalAtividades + '</div></div>' +
+        '<div class="print-ind"><div class="lbl">Carga horária estimada</div><div class="num">' + (temEsforco ? n1(somaEsforco) + " h/mês" : "Não apurada") + '</div>' +
+          '<div class="nota">Estimativa de planejamento, sem valor normativo</div></div>' +
+        '<div class="print-ind"><div class="lbl">InCp médio</div><div class="num">' + incpMedio + '</div>' +
+          '<div class="nota">Tabela de complexidade do Anexo II</div></div>' +
+      '</div>';
+
+    var corpo = lista.map(function (ent) {
+      var linhas = ent.atividades.length
+        ? ent.atividades.map(function (a) {
+            return '<tr>' +
+              '<td>' + a.nome + '</td>' +
+              '<td>' + a.tipo + '</td>' +
+              '<td class="num">' + (a.incp !== null ? n1(a.incp) : "—") + '</td>' +
+              '<td class="num">' + (a.tempoValor !== null ? a.tempoValor + ' ' + a.tempoUnidade : "—") + '</td>' +
+              '<td class="num">' + (a.qtdValor !== null ? a.qtdValor + ' / ' + a.qtdPeriodicidade : "—") + '</td>' +
+              '<td class="num">' + ((a.esforcoMes || a.esforcoMes === 0) ? n1(a.esforcoMes) + ' h/mês' : "—") + '</td>' +
+              '<td>' + a.elegivel + '</td>' +
+              '<td>' + (a.justificativa || "—") + '</td>' +
+              '</tr>';
+          }).join("")
+        : '<tr><td colspan="8">Nenhuma atividade cadastrada nesta entrega.</td></tr>';
+      return '<div class="print-entrega">' +
+        '<div class="print-entrega-tit">Entrega · ' + ent.nome + '</div>' +
+        '<div class="print-entrega-tipo">Tipo de entrega: ' + ent.tipo + '</div>' +
+        '<table class="print-tabela"><thead><tr>' +
+          '<th>Atividade</th><th>Tipo</th><th class="num">InCp</th><th class="num">Tempo presencial</th>' +
+          '<th class="num">Quantidade</th><th class="num">Esforço estimado</th><th>Elegível</th><th>Justificativa técnica</th>' +
+        '</tr></thead><tbody>' + linhas + '</tbody></table>' +
+        '</div>';
+    }).join("");
+
+    var assinaturas =
+      '<div class="print-assinaturas">' +
+        '<div class="print-assinatura-linha"><div class="cargo">Chefia Imediata</div>' +
+          '<div class="campo">Nome: ' + (responsavel !== "Não informado" ? responsavel : "") + '</div>' +
+          '<div class="campo">Data: ____/____/______</div></div>' +
+        '<div class="print-assinatura-linha"><div class="cargo">Chefia Superior</div>' +
+          '<div class="campo">Nome: </div>' +
+          '<div class="campo">Data: ____/____/______</div></div>' +
+      '</div>';
+
+    el.innerHTML = cabecalho + indicadores + corpo + assinaturas;
   }
 
   /* Re-renderiza o local certo depois de uma ação em uma atividade — a lista
@@ -580,6 +688,7 @@ document.addEventListener('click', function (e) {
     entregasEl.innerHTML = '<div class="section"><div class="card card-pad"><div class="vazio">' +
       'Nenhuma entrega mapeada. Clique em "Acrescentar entrega" para começar.</div></div></div>';
     $("tela01-warn").textContent = "";
+    montarRelatorioImpressao([]);
     return;
   }
 
@@ -628,6 +737,7 @@ document.addEventListener('click', function (e) {
   }).join("");
 
   $("tela01-warn").textContent = t.metricas.semJustificativa + " atividades sem justificativa técnica";
+  montarRelatorioImpressao([]);
 })();
 </script>
 <script>PromoveNav.init({ atual: "01", raiz: "" });</script>
