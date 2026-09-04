@@ -131,10 +131,20 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   "Acrescentar entrega" — nenhuma chamada a `PromoveStore.salvarMapeamento`.
 - O título da entrega no cabeçalho do acordeão (`.acc-name-dest`, seção 10 de
   `promove.css`) é mais proeminente (1,2rem/700) que o das atividades
-  aninhadas (`.acc-name` padrão, 13,5px/500), para marcar a hierarquia
-  visual entre os dois níveis. É um modificador opcional do padrão `.acc-h`/
+  aninhadas (`.acc-name-ativ`, 1,05rem/600, também opcional — sem nenhuma das
+  duas classes o padrão continua 13,5px/500), para marcar a hierarquia visual
+  entre os dois níveis. São modificadores opcionais do padrão `.acc-h`/
   `.acc-name` já existente — não um quarto padrão de acordeão — então não
-  muda o `.acc-name` usado sem essa classe nas demais telas.
+  mudam o `.acc-name` usado sem essas classes nas demais telas.
+- Toda entrega e toda atividade começam **recolhidas** (classe `.col`) — a
+  chefia abre uma visão panorâmica do mapeamento inteiro, sem nenhum item
+  pré-aberto por ser o primeiro da lista (diferente do padrão de outras
+  telas, que abrem o primeiro item do acordeão). Única exceção: a entrega que
+  contém uma atividade em edição/inclusão (`atividadeEmEdicao.entregaIndex`)
+  permanece aberta mesmo em `renderEntregaSalva`, porque cada ação de edição
+  re-renderiza a lista inteira (`renderizarMapeamentoUsuario()`) — sem essa
+  exceção, o clique em "Editar"/"+ Incluir atividade" faria a entrega
+  recolher de novo e esconder o próprio formulário que acabou de abrir.
 - Campos de texto livre mais longos usam a classe `.campo-lg` (nome da
   entrega, nome da atividade, justificativa técnica): rótulo acima do campo,
   campo com 100% de largura do contêiner. "Justificativa técnica" é

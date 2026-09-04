@@ -207,7 +207,7 @@ document.addEventListener('click', function (e) {
 
   /* ---------- exibição de uma atividade: visualização OU formulário in-place ---------- */
 
-  function atividadeVisualizacaoHtml(a, aberta, ctx) {
+  function atividadeVisualizacaoHtml(a, ctx) {
     var chipClasse = a.elegivel === "Sim" ? "green" : "gray";
     var chipTexto = a.elegivel === "Sim" ? "Elegível" : "Não elegível";
     var esforco = (a.esforcoMes || a.esforcoMes === 0) ? "≈ " + n1(a.esforcoMes) + " horas/mês (estimativa)" : "Não apurado";
@@ -217,8 +217,10 @@ document.addEventListener('click', function (e) {
       '<button class="sm" data-acao="editar-atividade"' + attrs + '>✏️ Editar</button>' +
       '<button class="sm" data-acao="excluir-atividade"' + attrs + '>🗑️ Excluir</button>' +
       '</div>';
-    return '<div class="acc' + (aberta ? '' : ' col') + '"><button class="acc-h"><div class="acc-h-in">' +
-      '<span class="acc-name"><span class="chev">▾</span>' + a.nome + '</span>' +
+    /* Sempre recolhida por padrão (.col): a chefia começa com uma visão
+       panorâmica do mapeamento, não com o primeiro item já aberto. */
+    return '<div class="acc col"><button class="acc-h"><div class="acc-h-in">' +
+      '<span class="acc-name acc-name-ativ"><span class="chev">▾</span>' + a.nome + '</span>' +
       '<span class="chip chip-' + chipClasse + '">' + chipTexto + '</span></div></button>' +
       '<div class="acc-b">' +
       '<div class="kv"><span class="k">Tipo de atividade:</span><span class="v">' + a.tipo + '</span></div>' +
@@ -271,9 +273,9 @@ document.addEventListener('click', function (e) {
 
   /* Escolhe, para uma atividade da lista, entre a visualização e o formulário
      in-place — nunca os dois ao mesmo tempo, para não duplicar o item na tela. */
-  function renderAtividadeItem(a, aberta, ctx) {
+  function renderAtividadeItem(a, ctx) {
     if (ctxIguais(atividadeEmEdicao, ctx)) return atividadeFormularioHtml(ctx, a);
-    return atividadeVisualizacaoHtml(a, aberta, ctx);
+    return atividadeVisualizacaoHtml(a, ctx);
   }
 
   /* ---------- exibição de uma entrega já salva: visualização OU formulário in-place ---------- */
@@ -284,14 +286,14 @@ document.addEventListener('click', function (e) {
      Excluir da entrega ficam num .item-acoes irmão do .acc-h (dentro do
      wrapper .acc-h-row), nunca dentro do <button>, para não aninhar
      <button> — mesma regra já usada nas atividades. */
-  function renderEntregaSalva(ent, primeiroDaLista, entregaIndex) {
+  function renderEntregaSalva(ent, entregaIndex) {
     var editandoEstaEntrega = entregaIndex != null && entregaEmEdicao === entregaIndex;
     var novaAtividadeAberta = entregaIndex != null && atividadeEmEdicao &&
       atividadeEmEdicao.entregaIndex === entregaIndex && atividadeEmEdicao.atividadeIndex === null;
 
     var atividadesHtml = ent.atividades.length
       ? ent.atividades.map(function (a, i) {
-          return renderAtividadeItem(a, primeiroDaLista && i === 0, { entregaIndex: entregaIndex, atividadeIndex: i });
+          return renderAtividadeItem(a, { entregaIndex: entregaIndex, atividadeIndex: i });
         }).join("")
       : '<div class="vazio">Nenhuma atividade cadastrada nesta entrega.</div>';
     var novaAtividadeHtml = novaAtividadeAberta
@@ -324,7 +326,14 @@ document.addEventListener('click', function (e) {
         '</div>'
       : '';
 
-    return '<div class="acc' + (primeiroDaLista ? '' : ' col') + '">' +
+    /* Recolhida por padrão (.col), como as atividades aninhadas — exceto se
+       tiver uma atividade em edição/inclusão dentro dela: cada ação de
+       edição re-renderiza a lista inteira (renderizarMapeamentoUsuario()),
+       e sem isso a entrega recolheria de novo a cada clique, escondendo o
+       próprio formulário que acabou de abrir. */
+    var manterAberta = novaAtividadeAberta ||
+      (entregaIndex != null && atividadeEmEdicao && atividadeEmEdicao.entregaIndex === entregaIndex);
+    return '<div class="acc' + (manterAberta ? '' : ' col') + '">' +
       '<div class="acc-h-row"><button class="acc-h"><div class="acc-h-in">' +
         '<span class="acc-name acc-name-dest"><span class="chev">▾</span>Entrega · ' + ent.nome + '</span>' +
         '<span class="chip chip-gray">' + ent.tipo + '</span>' +
@@ -348,7 +357,7 @@ document.addEventListener('click', function (e) {
       '<div class="metric"><div class="lbl">Elegíveis ao teletrabalho</div><div class="num">' + metricas.elegiveis + '</div></div>' +
       '<div class="metric"><div class="lbl">Sem justificativa</div><div class="num warn">' + metricas.semJustificativa + '</div></div>';
     entregasEl.innerHTML = lista.length
-      ? lista.map(function (ent, i) { return renderEntregaSalva(ent, i === 0, i); }).join("")
+      ? lista.map(function (ent, i) { return renderEntregaSalva(ent, i); }).join("")
       : '<div class="section"><div class="card card-pad"><div class="vazio">' +
         'Nenhuma entrega mapeada. Clique em "Acrescentar entrega" para começar.</div></div></div>';
     $("tela01-warn").textContent = lista.length ? (metricas.semJustificativa + " atividades sem justificativa técnica") : "";
@@ -653,7 +662,7 @@ document.addEventListener('click', function (e) {
     var novaAtividadeAberta = atividadeEmEdicao && atividadeEmEdicao.entregaIndex === null && atividadeEmEdicao.atividadeIndex === null;
     var lista = rascunho.atividades.length
       ? rascunho.atividades.map(function (a, i) {
-          return renderAtividadeItem(a, i === 0, { entregaIndex: null, atividadeIndex: i });
+          return renderAtividadeItem(a, { entregaIndex: null, atividadeIndex: i });
         }).join("")
       : '<div class="vazio">Nenhuma atividade incluída ainda.</div>';
     var novaAtividadeHtml = novaAtividadeAberta ? atividadeFormularioHtml({ entregaIndex: null, atividadeIndex: null }, null) : "";

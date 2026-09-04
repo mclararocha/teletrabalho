@@ -181,6 +181,11 @@ h1{font-size:24px;font-weight:700;margin:4px 0 2px}
    mais proeminente que o das atividades aninhadas, sem alterar o padrão
    .acc-name usado nos demais acordeões do protótipo. */
 .acc-name-dest{font-size:1.2rem;font-weight:700}
+/* Modificador opcional para o título de um acordeão aninhado (ex.: atividade
+   dentro de entrega na tela 01): um pouco mais legível/destacado que o
+   .acc-name padrão, mas claramente subordinado ao .acc-name-dest do nível
+   acima — não altera o .acc-name usado nos demais acordeões do protótipo. */
+.acc-name-ativ{font-size:1.05rem;font-weight:600}
 .acc-b{padding:2px 18px 18px 40px}
 .chev{display:inline-block;width:14px;margin-right:8px;color:var(--faint);font-size:11px;transition:transform .15s}
 .acc.col .acc-b{display:none}
