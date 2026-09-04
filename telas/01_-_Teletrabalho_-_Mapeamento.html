@@ -22,9 +22,19 @@
 .campo-lg{margin-bottom:14px}
 .campo-lg .lbl{margin-bottom:6px}
 .campo-lg input[type=text]{width:100% !important;min-height:46px;padding:12px 14px;font-size:15px}
+.campo-lg textarea{width:100% !important;min-height:96px;padding:12px 14px;font-size:15px;
+                    font-family:inherit;line-height:1.5;resize:vertical}
 
 .item-acoes{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
 .item-acoes button{padding:4px 9px;font-size:12px}
+
+/* Cabeçalho da entrega: o próprio .acc-h (nome, tipo, chevron) mais os botões
+   Editar/Excluir ao lado — nunca dentro do <button class="acc-h">, para não
+   aninhar <button>, então ficam num wrapper irmão que os alinha na mesma
+   linha visual. */
+.acc-h-row{display:flex;align-items:center}
+.acc-h-row .acc-h{flex:1}
+.acc-h-row .item-acoes{padding-right:18px}
 
 /* No relatório formal de impressão (ver #tela01-print-relatorio, montado por
    montarRelatorioImpressao()), a lista interativa de entregas some — o
@@ -82,7 +92,10 @@
 <script>
 document.addEventListener('click', function (e) {
   var h = e.target.closest('.acc-h');
-  if (h) h.parentElement.classList.toggle('col');
+  /* .closest('.acc'), não h.parentElement: o cabeçalho da entrega usa um
+     wrapper .acc-h-row entre o .acc-h e o .acc (ver CLAUDE.md), então o
+     acordeão mais próximo nem sempre é o pai direto do botão. */
+  if (h) h.closest('.acc').classList.toggle('col');
 });
 
 (function () {
@@ -249,7 +262,7 @@ document.addEventListener('click', function (e) {
       '<div class="kv"><span class="k">Esforço estimado:</span><span class="calc" id="na-esforco">Preencha tempo e quantidade</span></div>' +
       '<div class="kv"><span class="k">Elegível ao teletrabalho:</span>' +
         '<select id="na-elegivel"><option>Selecionar</option><option>Sim</option><option>Não</option></select></div>' +
-      '<div class="kv"><span class="k">Justificativa técnica:</span><input type="text" id="na-justificativa" size="40"></div>' +
+      '<div class="campo-lg"><label class="lbl" for="na-justificativa">Justificativa técnica</label><textarea id="na-justificativa" rows="4"></textarea></div>' +
       '<div class="btn-row">' +
         '<button class="sm" data-acao="salvar-atividade"' + attrs + '>' + (atividadeExistente ? "Salvar alterações" : "Salvar atividade") + '</button>' +
         '<button class="sm" data-acao="cancelar-atividade"' + attrs + '>Cancelar</button>' +
@@ -265,6 +278,12 @@ document.addEventListener('click', function (e) {
 
   /* ---------- exibição de uma entrega já salva: visualização OU formulário in-place ---------- */
 
+  /* Cada entrega é um bloco de acordeão único: o cabeçalho (.acc-h) é a
+     própria entrega — nome, tipo e chevron — e o corpo (.acc-b) traz as
+     atividades vinculadas, um card por dentro do outro. Os botões Editar/
+     Excluir da entrega ficam num .item-acoes irmão do .acc-h (dentro do
+     wrapper .acc-h-row), nunca dentro do <button>, para não aninhar
+     <button> — mesma regra já usada nas atividades. */
   function renderEntregaSalva(ent, primeiroDaLista, entregaIndex) {
     var editandoEstaEntrega = entregaIndex != null && entregaEmEdicao === entregaIndex;
     var novaAtividadeAberta = entregaIndex != null && atividadeEmEdicao &&
@@ -282,9 +301,9 @@ document.addEventListener('click', function (e) {
       ? '<div class="addrow"><button class="sm" data-acao="abrir-atividade" data-entrega-index="' + entregaIndex + '">+ Incluir atividade</button></div>'
       : "";
 
-    var cabecalho;
     if (editandoEstaEntrega) {
-      cabecalho = '<div class="card card-pad" style="margin-bottom:14px">' +
+      return '<div class="section">' +
+        '<div class="card card-pad" style="margin-bottom:14px">' +
         '<div class="section-title" style="font-size:13px;margin-bottom:10px">Editando entrega</div>' +
         '<div class="campo-lg"><label class="lbl" for="ee-nome">Nome da entrega</label><input type="text" id="ee-nome"></div>' +
         '<div class="kv"><span class="k">Tipo de entrega:</span>' +
@@ -293,21 +312,27 @@ document.addEventListener('click', function (e) {
         '<div class="btn-row">' +
           '<button class="sm" data-acao="salvar-entrega-edicao" data-entrega-index="' + entregaIndex + '">Salvar alterações</button>' +
           '<button class="sm" data-acao="cancelar-entrega-edicao" data-entrega-index="' + entregaIndex + '">Cancelar</button>' +
-        '</div></div>';
-    } else {
-      var acoesEntrega = entregaIndex != null
-        ? '<div class="item-acoes">' +
-          '<button class="sm" data-acao="editar-entrega" data-entrega-index="' + entregaIndex + '">✏️ Editar</button>' +
-          '<button class="sm" data-acao="excluir-entrega" data-entrega-index="' + entregaIndex + '">🗑️ Excluir</button>' +
-          '</div>'
-        : '';
-      cabecalho = '<div class="section-title" style="display:flex;align-items:center">Entrega · ' + ent.nome + acoesEntrega + '</div>' +
-        '<div class="ent-head"><span class="ent-lbl">Tipo de entrega:</span> <span class="v">' + ent.tipo + '</span></div>';
+        '</div></div>' +
+        '<div class="card">' + atividadesHtml + novaAtividadeHtml + '</div>' +
+        '</div>';
     }
 
-    return '<div class="section">' + cabecalho +
-      '<div class="card">' + atividadesHtml + novaAtividadeHtml + '</div>' +
-      addRow +
+    var acoesEntrega = entregaIndex != null
+      ? '<div class="item-acoes">' +
+        '<button class="sm" data-acao="editar-entrega" data-entrega-index="' + entregaIndex + '">✏️ Editar</button>' +
+        '<button class="sm" data-acao="excluir-entrega" data-entrega-index="' + entregaIndex + '">🗑️ Excluir</button>' +
+        '</div>'
+      : '';
+
+    return '<div class="acc' + (primeiroDaLista ? '' : ' col') + '">' +
+      '<div class="acc-h-row"><button class="acc-h"><div class="acc-h-in">' +
+        '<span class="acc-name"><span class="chev">▾</span>Entrega · ' + ent.nome + '</span>' +
+        '<span class="chip chip-gray">' + ent.tipo + '</span>' +
+        '</div></button>' + acoesEntrega + '</div>' +
+      '<div class="acc-b">' +
+        '<div class="card">' + atividadesHtml + novaAtividadeHtml + '</div>' +
+        addRow +
+      '</div>' +
       '</div>';
   }
 

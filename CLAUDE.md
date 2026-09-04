@@ -126,6 +126,11 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   atividade dentro dele se re-renderizam a cada "Salvar atividade" — se o
   cabeçalho fosse refeito junto, o texto já digitado se perderia a cada atividade
   incluída.
+- Campos de texto livre mais longos usam a classe `.campo-lg` (nome da
+  entrega, nome da atividade, justificativa técnica): rótulo acima do campo,
+  campo com 100% de largura do contêiner. "Justificativa técnica" é
+  `<textarea rows="4">`, não `<input>`, porque o texto tende a ser mais longo
+  que os outros campos desse grupo.
 - A tabela de complexidade (`COMPLEX`/InCp) usada no cálculo ao vivo do formulário
   é a mesma da tela 10, duplicada ali porque cada tela é um HTML autossuficiente
   (sem build, sem módulo JS compartilhado de regra de negócio). Se a tabela mudar,
@@ -135,10 +140,20 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   normativo da nota (não tem artigo correspondente): serve só para a chefia ter
   noção de carga de trabalho ao cadastrar, não é usado na nota da atividade nem na
   Calculadora.
-- Cada entrega e cada atividade já salva em `promove_mapeamento` tem botões
-  discretos "✏️ Editar" / "🗑️ Excluir" (`.item-acoes`, dentro do `.acc-b` da
-  atividade ou do cabeçalho da entrega — nunca dentro do `<button class="acc-h">`,
-  para não aninhar `<button>`). A edição é **in-place**: "Editar" substitui a
+- Cada entrega salva é o próprio bloco de acordeão: o `.acc-h` é a entrega
+  (nome, tipo como chip, chevron), o `.acc-b` traz o card com as atividades
+  vinculadas, cada uma seu próprio `.acc` aninhado — mesmo padrão `.acc`/
+  `.acc-h`/`.acc-b`/`.col` de `promove.css`, só que uma entrega dentro da
+  outra. Os botões "✏️ Editar" / "🗑️ Excluir" da entrega ficam num
+  `.item-acoes` irmão do `.acc-h` dentro de um wrapper `.acc-h-row` (CSS só
+  da tela 01) que alinha os dois na mesma linha visual; os da atividade ficam
+  dentro do `.acc-b` da própria atividade. Em nenhum caso dentro do
+  `<button class="acc-h">`, para não aninhar `<button>`. Como o `.acc-h` da
+  entrega não é mais filho direto do `.acc` (o `.acc-h-row` fica no meio), o
+  script de clique da tela usa `h.closest('.acc')` em vez de
+  `h.parentElement` para achar o acordeão a recolher/expandir — generalização
+  segura que continua funcionando igual para as atividades, cujo `.acc-h`
+  continua filho direto do `.acc`. A edição é **in-place**: "Editar" substitui a
   própria visualização do item (o `.acc` da atividade, ou o cabeçalho
   nome/tipo da entrega) pelo formulário já preenchido, no mesmo lugar da
   lista — nunca abre um formulário duplicado abaixo do item original.
