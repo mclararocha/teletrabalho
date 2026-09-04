@@ -35,23 +35,12 @@
     <div>
       <div class="eyebrow">Promove – teletrabalho</div>
       <h1>Requerimento de adesão ao teletrabalho</h1>
-      <p class="sub">Protocolado em 08/10/2026 · Gerência de Saúde · SEAD</p>
+      <p class="sub" id="tela02-sub">Nenhum requerimento protocolado</p>
     </div>
-    <span class="chip chip-amber">Aguardando assinatura do gestor</span>
+    <span class="chip chip-amber" id="tela02-status" hidden></span>
   </div>
 
-  <div class="card ident">
-    <div class="ident-grid">
-      <div class="ident-item"><div class="lbl">Nome</div><div class="val">Rose Margarida</div></div>
-      <div class="ident-item"><div class="lbl">CPF</div><div class="val">987.123.456-00</div></div>
-      <div class="ident-item"><div class="lbl">Código do vínculo</div><div class="val">20874</div></div>
-      <div class="ident-item"><div class="lbl">Cargo efetivo</div><div class="val">Analista de Gestão Governamental</div></div>
-      <div class="ident-item"><div class="lbl">Órgão de origem</div><div class="val">SEAD</div></div>
-      <div class="ident-item"><div class="lbl">Órgão de lotação</div><div class="val">SEAD</div></div>
-      <div class="ident-item"><div class="lbl">Unidade administrativa</div><div class="val">Gerência de Saúde</div></div>
-      <div class="ident-item"><div class="lbl">Chefia imediata</div><div class="val">João Ferreira</div></div>
-    </div>
-  </div>
+  <div class="card ident" id="tela02-ident"></div>
 
   <!-- Condições -->
   <div class="section">
@@ -70,27 +59,7 @@
   <div class="section">
     <div class="section-title">Atividades e metas propostas</div>
     <p class="section-meta">Só podem ser indicadas atividades marcadas como elegíveis no mapeamento da unidade. As metas do teletrabalho devem ser superiores às da mesma atividade no regime presencial.</p>
-    <div class="card">
-      <div class="row">
-        <div style="flex:1;min-width:0">
-          <div class="t">Conferência das prestações de contas de repasse</div>
-          <div class="d">Referência presencial do mapeamento: 6 instrumentos por mês</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-          <input type="text" placeholder="8" size="4">
-          <span class="d" style="margin:0">por mês</span>
-        </div>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0">
-          <div class="t">Análise da documentação das entidades proponentes</div>
-          <div class="d">Referência presencial do mapeamento: 9 processos por mês</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-          <input type="text" placeholder="12" size="4">
-          <span class="d" style="margin:0">por mês</span>
-        </div>
-      </div>
+    <div class="card" id="tela02-atividades">
       <div class="row">
         <button class="sm">Acrescentar atividade do mapeamento</button>
       </div>
@@ -101,32 +70,7 @@
   <div class="section">
     <div class="section-title">Verificação de requisitos e vedações</div>
     <p class="section-meta">Apurada pelo sistema no momento do protocolo e reavaliada a cada assinatura.</p>
-    <div class="card">
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Unidade autorizada pelo titular da Pasta</div><div class="d">Portaria nº 412, de 15/08/2026</div></div>
-        <span class="chip chip-green">Atendido</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Unidade com mapeamento validado pelo CIAT</div></div>
-        <span class="chip chip-green">Atendido</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Atividades elegíveis à execução remota</div></div>
-        <span class="chip chip-green">Atendido</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Ausência de penalidade disciplinar nos últimos 2 anos</div><div class="d">Consulta ao RHNet em 08/10/2026</div></div>
-        <span class="chip chip-green">Atendido</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Ausência de desligamento anterior por não atingimento de metas</div></div>
-        <span class="chip chip-green">Atendido</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Vaga disponível no órgão</div><div class="d">286 de 300 servidores em regime · 5º na ordem apurada, dentro das 14 vagas remanescentes</div></div>
-        <span class="chip chip-green">Atendido</span>
-      </div>
-    </div>
+    <div class="card" id="tela02-requisitos"></div>
   </div>
 
   <!-- Declaração -->
@@ -146,20 +90,7 @@
   <div class="section">
     <div class="section-title">Assinaturas</div>
     <p class="section-meta">O art. 7º exige a subscrição pelo servidor, pela chefia imediata e pelo gestor da unidade.</p>
-    <div class="card">
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Rose Margarida · servidora</div><div class="d">Assinado em 08/10/2026</div></div>
-        <span class="chip chip-green">Assinado</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">João Ferreira · chefia imediata</div><div class="d">Assinado em 09/10/2026</div></div>
-        <span class="chip chip-green">Assinado</span>
-      </div>
-      <div class="row">
-        <div style="flex:1;min-width:0"><div class="t">Titular da Gerência de Saúde · gestor da unidade</div><div class="d">Aguardando assinatura</div></div>
-        <span class="chip chip-amber">Pendente</span>
-      </div>
-    </div>
+    <div class="card" id="tela02-assinaturas"></div>
   </div>
 
   <div class="btn-row right">
@@ -169,6 +100,63 @@
 
 </div>
 </div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var dados = PromoveStore.dados();
+  var ident = $("tela02-ident");
+  var atividades = $("tela02-atividades");
+  var requisitos = $("tela02-requisitos");
+  var assinaturas = $("tela02-assinaturas");
+
+  if (!dados) {
+    ident.innerHTML = '<div class="vazio">Nenhum requerimento de adesão protocolado.</div>';
+    atividades.innerHTML = '<div class="vazio">Nenhuma atividade proposta. Acrescente atividades elegíveis do mapeamento da unidade.'
+      + '<div class="btn-row"><button class="sm">Acrescentar atividade do mapeamento</button></div></div>';
+    requisitos.innerHTML = '<div class="vazio">Nenhum requisito apurado.</div>';
+    assinaturas.innerHTML = '<div class="vazio">Nenhuma assinatura registrada.</div>';
+    return;
+  }
+
+  var t = dados.tela02;
+  var id = t.identificacao;
+  $("tela02-sub").textContent = "Protocolado em " + t.protocoloEm + " · " + t.unidade + " · " + t.orgao;
+  var status = $("tela02-status");
+  status.textContent = t.statusChip;
+  status.hidden = false;
+
+  ident.innerHTML =
+    '<div class="ident-grid">' +
+    '<div class="ident-item"><div class="lbl">Nome</div><div class="val">' + id.nome + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">CPF</div><div class="val">' + id.cpf + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Código do vínculo</div><div class="val">' + id.vinculo + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Cargo efetivo</div><div class="val">' + id.cargo + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Órgão de origem</div><div class="val">' + id.orgaoOrigem + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Órgão de lotação</div><div class="val">' + id.orgaoLotacao + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Unidade administrativa</div><div class="val">' + id.unidade + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Chefia imediata</div><div class="val">' + id.chefiaImediata + '</div></div>' +
+    '</div>';
+
+  atividades.innerHTML = t.atividadesMetas.map(function (a) {
+    return '<div class="row"><div style="flex:1;min-width:0"><div class="t">' + a.nome + '</div>' +
+      '<div class="d">Referência presencial do mapeamento: ' + a.referenciaPresencial + '</div></div>' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">' +
+      '<input type="text" placeholder="' + a.metaPlaceholder + '" size="4"><span class="d" style="margin:0">por mês</span></div></div>';
+  }).join("") + '<div class="row"><button class="sm">Acrescentar atividade do mapeamento</button></div>';
+
+  requisitos.innerHTML = t.requisitos.map(function (r) {
+    return '<div class="row"><div style="flex:1;min-width:0"><div class="t">' + r.texto + '</div>' +
+      (r.detalhe ? '<div class="d">' + r.detalhe + '</div>' : '') + '</div>' +
+      '<span class="chip chip-green">' + r.status + '</span></div>';
+  }).join("");
+
+  assinaturas.innerHTML = t.assinaturas.map(function (a) {
+    return '<div class="row"><div style="flex:1;min-width:0"><div class="t">' + a.pessoa + '</div>' +
+      '<div class="d">' + a.detalhe + '</div></div>' +
+      '<span class="chip chip-' + a.chipClasse + '">' + a.statusChip + '</span></div>';
+  }).join("");
+})();
+</script>
 <script>PromoveNav.init({ atual: "02", raiz: "" });</script>
 </body>
 </html>

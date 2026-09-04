@@ -198,7 +198,7 @@ var DEMO_DATA = (function () {
               tipoAtividade: "Estruturante", impacto: "Baixo", dificuldade: "Média", nivelComplexidade: "Baixa",
               inicioPactuado: "15/09/2026 08:00", conclusaoPactuada: "25/09/2026 17:00", conclusaoRealizada: null,
               qtdPactuada: "4 notificações", qtdRealizadaPlaceholder: 3, unidadeQtd: "notificações",
-              evidenciaAcao: "registrar" }
+              evidenciaAcao: "registrar", evidenciaLink: true }
           ]
         },
         {

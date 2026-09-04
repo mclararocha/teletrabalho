@@ -55,36 +55,11 @@
 
   <div class="eyebrow">Promove – teletrabalho</div>
   <h1>Avaliação do plano de trabalho</h1>
-  <p class="sub">João Ferreira · gerente de saúde · 6 servidores</p>
+  <p class="sub" id="tela05-sub">Nenhuma chefia selecionada</p>
 
   <input type="text" class="search" placeholder="Buscar servidor">
 
-  <div class="card people">
-    <div class="person sel">
-      <div class="av">MS</div>
-      <div class="person-main">
-        <div class="person-name">Maria da Silva</div>
-        <div class="person-sub">Plano 01/09 a 31/10/2026 · teletrabalho parcial 3×2</div>
-      </div>
-      <span class="chip chip-white">Avaliar até 10/11</span>
-    </div>
-    <div class="person">
-      <div class="av">AC</div>
-      <div class="person-main">
-        <div class="person-name">Antônio César</div>
-        <div class="person-sub">Plano 01/09 a 31/10/2026 · teletrabalho parcial 2×3</div>
-      </div>
-      <span class="chip chip-gray">Resultado 9,1</span>
-    </div>
-    <div class="person">
-      <div class="av">RM</div>
-      <div class="person-main">
-        <div class="person-name">Rose Margarida</div>
-        <div class="person-sub">Aguardando adesão · sem plano vigente</div>
-      </div>
-      <span class="chip chip-gray">—</span>
-    </div>
-  </div>
+  <div class="card people" id="tela05-pessoas"></div>
 
   <p class="note">
     Os campos definidos na pactuação ficam travados após a validação do plano — alterá-los exige repactuação.
@@ -92,174 +67,9 @@
     InPr, InQt, qualidade ajustada e resultado são calculados pelo sistema.
   </p>
 
-  <!-- Entrega 1 -->
-  <div class="section">
-    <div class="section-title">Entrega 1 · fiscalização de contratos e convênios</div>
-    <p class="section-meta">Demanda processual · prioridade 1, muito alta · resultado da entrega 9,0</p>
-    <div class="card">
+  <div id="tela05-entregas"></div>
 
-      <div class="acc">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Conferência das prestações de contas</span>
-            <span class="acc-score">9,3</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Impacto:</span><span class="calc">Médio</span></div>
-          <div class="kv"><span class="k">Dificuldade:</span><span class="calc">Média</span></div>
-          <div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">Média · InCp 0,8</span></div>
-          <div class="kv"><span class="k">Início pactuado:</span><span class="calc">01/09/2026 08:00</span></div>
-          <div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">15/09/2026 17:00</span></div>
-          <div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">15/09/2026 17:00 · 15 dias · desvio 0% · InPr 10</span></div>
-          <div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">8</span></div>
-          <div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">8 · 100% · InQt 10</span></div>
-          <div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option><option>5 — precisa · 10</option><option>1 — inaceitável · 0</option><option>2 — ruim · 4</option><option>3 — regular · 6</option><option>4 — boa · 8</option><option>6 — excepcional · 12</option></select></div>
-          <div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">10 × 0,8 = 8,0</span></div>
-          <div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">média de 10, 10 e 8,0 = 9,3</span></div>
-        </div>
-      </div>
-
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Elaboração de relatórios de fiscalização no SEI</span>
-            <span class="acc-score">10,6</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Impacto:</span><span class="calc">Alto</span></div>
-          <div class="kv"><span class="k">Dificuldade:</span><span class="calc">Média</span></div>
-          <div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">Alta · InCp 0,9</span></div>
-          <div class="kv"><span class="k">Início pactuado:</span><span class="calc">08/09/2026 08:00</span></div>
-          <div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">25/09/2026 17:00</span></div>
-          <div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">23/09/2026 17:00 · 16 dias · antecipado 11,1% · InPr 11</span></div>
-          <div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">8</span></div>
-          <div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">8 · 100% · InQt 10</span></div>
-          <div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option><option>6 — excepcional · 12</option><option>1 — inaceitável · 0</option><option>2 — ruim · 4</option><option>3 — regular · 6</option><option>4 — boa · 8</option><option>5 — precisa · 10</option></select></div>
-          <div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">12 × 0,9 = 10,8</span></div>
-          <div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">média de 11, 10 e 10,8 = 10,6</span></div>
-        </div>
-      </div>
-
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Notificação de contratadas com pendência</span>
-            <span class="acc-score">7,2</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Impacto:</span><span class="calc">Baixo</span></div>
-          <div class="kv"><span class="k">Dificuldade:</span><span class="calc">Média</span></div>
-          <div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">Baixa · InCp 0,7</span></div>
-          <div class="kv"><span class="k">Início pactuado:</span><span class="calc">15/09/2026 08:00</span></div>
-          <div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">25/09/2026 17:00</span></div>
-          <div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">27/09/2026 17:00 · 13 dias · atraso 18,2% · InPr 8</span></div>
-          <div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">4</span></div>
-          <div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">3 · 75% · InQt 8</span></div>
-          <div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option><option>4 — boa · 8</option><option>1 — inaceitável · 0</option><option>2 — ruim · 4</option><option>3 — regular · 6</option><option>5 — precisa · 10</option><option>6 — excepcional · 12</option></select></div>
-          <div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">8 × 0,7 = 5,6</span></div>
-          <div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">média de 8, 8 e 5,6 = 7,2</span></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Entrega 2 -->
-  <div class="section">
-    <div class="section-title">Entrega 2 · instrução de processos de repasse</div>
-    <p class="section-meta">Demanda processual · prioridade 2, alta · resultado da entrega 8,1</p>
-    <div class="card">
-
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Análise da documentação das entidades</span>
-            <span class="acc-score">9,0</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Impacto:</span><span class="calc">Médio</span></div>
-          <div class="kv"><span class="k">Dificuldade:</span><span class="calc">Baixa</span></div>
-          <div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">Baixa · InCp 0,7</span></div>
-          <div class="kv"><span class="k">Início pactuado:</span><span class="calc">01/09/2026 08:00</span></div>
-          <div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">12/09/2026 17:00</span></div>
-          <div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">12/09/2026 17:00 · 12 dias · desvio 0% · InPr 10</span></div>
-          <div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">12</span></div>
-          <div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">12 · 100% · InQt 10</span></div>
-          <div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option><option>5 — precisa · 10</option><option>1 — inaceitável · 0</option><option>2 — ruim · 4</option><option>3 — regular · 6</option><option>4 — boa · 8</option><option>6 — excepcional · 12</option></select></div>
-          <div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">10 × 0,7 = 7,0</span></div>
-          <div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">média de 10, 10 e 7,0 = 9,0</span></div>
-        </div>
-      </div>
-
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Emissão de despacho de instrução</span>
-            <span class="acc-score">7,1</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Impacto:</span><span class="calc">Médio</span></div>
-          <div class="kv"><span class="k">Dificuldade:</span><span class="calc">Média</span></div>
-          <div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">Média · InCp 0,8</span></div>
-          <div class="kv"><span class="k">Início pactuado:</span><span class="calc">15/09/2026 08:00</span></div>
-          <div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">26/09/2026 17:00</span></div>
-          <div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">29/09/2026 17:00 · 15 dias · atraso 25,0% · InPr 7</span></div>
-          <div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">12</span></div>
-          <div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">10 · 83,3% · InQt 8</span></div>
-          <div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option><option>4 — boa · 8</option><option>1 — inaceitável · 0</option><option>2 — ruim · 4</option><option>3 — regular · 6</option><option>5 — precisa · 10</option><option>6 — excepcional · 12</option></select></div>
-          <div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">8 × 0,8 = 6,4</span></div>
-          <div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">média de 7, 8 e 6,4 = 7,1</span></div>
-          <div class="log">Alteração registrada: conclusão pactuada de 22/09/2026 para 26/09/2026, por João Ferreira em 18/09/2026.</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Entrega 3 -->
-  <div class="section">
-    <div class="section-title">Entrega 3 · atendimento presencial às unidades</div>
-    <p class="section-meta">Demanda de rotina · prioridade 3, média · resultado da entrega 8,7</p>
-    <div class="card">
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Recebimento e triagem de documentos</span>
-            <span class="acc-score">8,7</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Impacto:</span><span class="calc">Baixo</span></div>
-          <div class="kv"><span class="k">Dificuldade:</span><span class="calc">Baixa</span></div>
-          <div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">Muito baixa · InCp 0,6</span></div>
-          <div class="kv"><span class="k">Início pactuado:</span><span class="calc">01/09/2026 08:00</span></div>
-          <div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">30/10/2026 17:00</span></div>
-          <div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">30/10/2026 17:00 · 60 dias · desvio 0% · InPr 10</span></div>
-          <div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">40</span></div>
-          <div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">40 · 100% · InQt 10</span></div>
-          <div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option><option>5 — precisa · 10</option><option>1 — inaceitável · 0</option><option>2 — ruim · 4</option><option>3 — regular · 6</option><option>4 — boa · 8</option><option>6 — excepcional · 12</option></select></div>
-          <div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">10 × 0,6 = 6,0</span></div>
-          <div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">média de 10, 10 e 6,0 = 8,7</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="result">
-    <div class="result-top">
-      <div class="result-label">Resultado do plano de trabalho</div>
-      <div class="result-value">8,7</div>
-    </div>
-    <div class="result-note">
-      Média das 6 atividades avaliadas, em escala de 0 a 12. Pode servir de parâmetro para a manutenção no regime
-      de teletrabalho e, mediante conversão a ser definida em ato próprio, para o requisito de desempenho.
-    </div>
-  </div>
+  <div class="result" id="tela05-resultado"></div>
 
   <div class="card card-pad">
     <div class="fb-label">Feedback ao servidor</div>
@@ -274,11 +84,71 @@
 </div>
 
 <script>
-document.querySelectorAll('.acc-h').forEach(function(h){
-  h.addEventListener('click', function(){
-    h.parentElement.classList.toggle('col');
-  });
+document.addEventListener('click', function (e) {
+  var h = e.target.closest('.acc-h');
+  if (h) h.parentElement.classList.toggle('col');
 });
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var dados = PromoveStore.dados();
+  var entregasEl = $("tela05-entregas");
+
+  if (!dados) {
+    $("tela05-pessoas").innerHTML = '<div class="vazio">Nenhum servidor sob esta chefia.</div>';
+    entregasEl.innerHTML = '<div class="vazio">Nenhum plano de trabalho para avaliar.</div>';
+    $("tela05-resultado").innerHTML = "";
+    $("tela05-resultado").hidden = true;
+    return;
+  }
+
+  var c = dados.chefia;
+  var t = dados.tela05;
+  $("tela05-sub").textContent = c.nome + " · " + c.cargo.toLowerCase() + " · " + c.servidoresSobGestao + " servidores";
+
+  $("tela05-pessoas").innerHTML = t.pessoas.map(function (p) {
+    return '<div class="person' + (p.selecionada ? ' sel' : '') + '">' +
+      '<div class="av">' + p.iniciais + '</div>' +
+      '<div class="person-main"><div class="person-name">' + p.nome + '</div>' +
+      '<div class="person-sub">' + p.info + '</div></div>' +
+      '<span class="chip chip-' + p.chipClasse + '">' + p.statusChip + '</span></div>';
+  }).join("");
+
+  entregasEl.innerHTML = t.entregas.map(function (ent, ei) {
+    var atividades = ent.atividades.map(function (a, ai) {
+      var opcoes = a.qualidadeOpcoes.map(function (o) { return '<option value="' + o.v + '">' + o.l + '</option>'; }).join("");
+      return '<div class="acc' + (ei === 0 && ai === 0 ? '' : ' col') + '"><button class="acc-h"><div class="acc-h-in">' +
+        '<span class="acc-name"><span class="chev">▾</span>' + a.nome + '</span>' +
+        '<span class="acc-score">' + a.nota + '</span></div></button>' +
+        '<div class="acc-b">' +
+        '<div class="kv"><span class="k">Impacto:</span><span class="calc">' + a.impacto + '</span></div>' +
+        '<div class="kv"><span class="k">Dificuldade:</span><span class="calc">' + a.dificuldade + '</span></div>' +
+        '<div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">' + a.nivelComplexidade + ' · InCp ' + a.incp + '</span></div>' +
+        '<div class="kv"><span class="k">Início pactuado:</span><span class="calc">' + a.inicioPactuado + '</span></div>' +
+        '<div class="kv"><span class="k">Conclusão pactuada:</span><span class="calc">' + a.conclusaoPactuada + '</span></div>' +
+        '<div class="kv"><span class="k">Conclusão realizada:</span><span class="calc">' + a.conclusaoRealizada + '</span></div>' +
+        '<div class="kv"><span class="k">Quantidade pactuada:</span><span class="calc">' + a.qtdPactuada + '</span></div>' +
+        '<div class="kv"><span class="k">Quantidade apurada:</span><span class="calc">' + a.qtdApurada + '</span></div>' +
+        '<div class="kv"><span class="k">Qualidade apurada:</span><select><option>Selecionar</option>' + opcoes + '</select></div>' +
+        '<div class="kv"><span class="k">Qualidade ajustada:</span><span class="calc">' + a.qualidadeAjustada + '</span></div>' +
+        '<div class="kv"><span class="k">Resultado da atividade:</span><span class="calc">' + a.resultado + '</span></div>' +
+        (a.log ? '<div class="log">' + a.log + '</div>' : '') +
+        '</div></div>';
+    }).join("");
+    return '<div class="section">' +
+      '<div class="section-title">Entrega ' + (ei + 1) + ' · ' + ent.nome + '</div>' +
+      '<p class="section-meta">' + ent.meta + '</p>' +
+      '<div class="card">' + atividades + '</div></div>';
+  }).join("");
+
+  var r = t.resultadoPlano;
+  var res = $("tela05-resultado");
+  res.hidden = false;
+  res.innerHTML =
+    '<div class="result-top"><div class="result-label">Resultado do plano de trabalho</div>' +
+    '<div class="result-value">' + r.valor + '</div></div>' +
+    '<div class="result-note">' + r.nota + '</div>';
+})();
 </script>
 <script>PromoveNav.init({ atual: "05", raiz: "" });</script>
 </body>
