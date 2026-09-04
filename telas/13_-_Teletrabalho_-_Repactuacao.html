@@ -32,31 +32,17 @@
     <div>
       <div class="eyebrow">Promove – teletrabalho</div>
       <h1>Solicitação de repactuação do plano de trabalho</h1>
-      <p class="sub">Maria da Silva · Gerência de Saúde · SEAD</p>
+      <p class="sub" id="tela13-sub">Nenhum plano de trabalho vigente</p>
     </div>
-    <span class="chip chip-amber">Aguardando validação da chefia</span>
+    <span class="chip chip-amber" id="tela13-status" hidden></span>
   </div>
 
-  <div class="card ident">
-    <div class="ident-grid">
-      <div class="ident-item"><div class="lbl">Nome</div><div class="val">Maria da Silva</div></div>
-      <div class="ident-item"><div class="lbl">Código do vínculo</div><div class="val">12365</div></div>
-      <div class="ident-item"><div class="lbl">Chefia imediata</div><div class="val">João Ferreira</div></div>
-      <div class="ident-item"><div class="lbl">Plano vigente</div><div class="val">01/09 a 31/10/2026</div></div>
-    </div>
-  </div>
+  <div class="card ident" id="tela13-ident"></div>
 
   <div class="section">
     <div class="section-title">Alteração solicitada</div>
     <p class="section-meta">Campos definidos na pactuação ficam travados após a validação do plano; alterá-los exige repactuação.</p>
-    <div class="card card-pad">
-      <div class="kv"><span class="k">Entrega:</span><span class="v">Fiscalização de contratos e convênios da Gerência de Saúde</span></div>
-      <div class="kv"><span class="k">Atividade:</span><span class="v">Notificação de contratadas com pendência documental</span></div>
-      <div class="kv"><span class="k">Conclusão pactuada atual:</span><span class="calc">25/09/2026 17:00</span></div>
-      <div class="kv"><span class="k">Nova conclusão pactuada:</span><input type="text" placeholder="10/10/2026 17:00" size="18"></div>
-      <div class="kv"><span class="k">Quantidade pactuada atual:</span><span class="calc">4 notificações</span></div>
-      <div class="kv"><span class="k">Nova quantidade pactuada:</span><input type="text" placeholder="3" size="5"> <span class="calc">notificações</span></div>
-    </div>
+    <div class="card card-pad" id="tela13-alteracao"></div>
   </div>
 
   <div class="section">
@@ -73,6 +59,44 @@
 
 </div>
 </div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var dados = PromoveStore.dados();
+  var ident = $("tela13-ident");
+  var alteracao = $("tela13-alteracao");
+
+  if (!dados) {
+    ident.innerHTML = '<div class="vazio">Nenhum plano de trabalho vigente para repactuar.</div>';
+    alteracao.innerHTML = '<div class="vazio">Selecione uma atividade pactuada no seu plano de trabalho para solicitar o ajuste.</div>';
+    return;
+  }
+
+  var s = dados.servidor;
+  var t = dados.tela13;
+  $("tela13-sub").textContent = s.nome + " · " + s.unidade + " · " + s.orgaoLotacao;
+  var status = $("tela13-status");
+  status.textContent = t.statusChip;
+  status.hidden = false;
+
+  ident.innerHTML =
+    '<div class="ident-grid">' +
+    '<div class="ident-item"><div class="lbl">Nome</div><div class="val">' + s.nome + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Código do vínculo</div><div class="val">' + s.vinculo + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Chefia imediata</div><div class="val">' + s.chefiaImediata + '</div></div>' +
+    '<div class="ident-item"><div class="lbl">Plano vigente</div><div class="val">' + t.planoVigente + '</div></div>' +
+    '</div>';
+
+  var a = t.alteracao;
+  alteracao.innerHTML =
+    '<div class="kv"><span class="k">Entrega:</span><span class="v">' + a.entrega + '</span></div>' +
+    '<div class="kv"><span class="k">Atividade:</span><span class="v">' + a.atividade + '</span></div>' +
+    '<div class="kv"><span class="k">Conclusão pactuada atual:</span><span class="calc">' + a.conclusaoPactuadaAtual + '</span></div>' +
+    '<div class="kv"><span class="k">Nova conclusão pactuada:</span><input type="text" placeholder="' + a.novaConclusaoPlaceholder + '" size="18"></div>' +
+    '<div class="kv"><span class="k">Quantidade pactuada atual:</span><span class="calc">' + a.qtdPactuadaAtual + '</span></div>' +
+    '<div class="kv"><span class="k">Nova quantidade pactuada:</span><input type="text" placeholder="' + a.novaQtdPlaceholder + '" size="5"> <span class="calc">notificações</span></div>';
+})();
+</script>
 <script>PromoveNav.init({ atual: "13", raiz: "" });</script>
 </body>
 </html>

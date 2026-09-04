@@ -51,6 +51,7 @@
 
 /* ---------- 2. Base ---------- */
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 body{
   margin:0;background:var(--page);color:var(--ink);
   font-family:'Public Sans',system-ui,-apple-system,sans-serif;

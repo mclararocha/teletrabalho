@@ -35,14 +35,7 @@
   <div class="section">
     <div class="section-title">Contexto da atividade</div>
     <p class="section-meta">Campos definidos na pactuação, travados nesta tela.</p>
-    <div class="card card-pad">
-      <div class="kv"><span class="k">Entrega:</span><span class="v">Fiscalização de contratos e convênios da Gerência de Saúde</span></div>
-      <div class="kv"><span class="k">Tipo de atividade:</span><span class="v">Estruturante</span></div>
-      <div class="kv"><span class="k">Início pactuado:</span><span class="v">15/09/2026 08:00</span></div>
-      <div class="kv"><span class="k">Conclusão pactuada:</span><span class="v">25/09/2026 17:00</span></div>
-      <div class="kv"><span class="k">Quantidade pactuada:</span><span class="v">4 notificações</span></div>
-      <div class="kv"><span class="k">Quantidade realizada:</span><span class="v">3 notificações</span></div>
-    </div>
+    <div class="card card-pad" id="contexto-atividade"></div>
   </div>
 
   <div class="section">
@@ -55,7 +48,7 @@
       <div class="kv"><span class="k">Número do processo ou documento:</span><input type="text" placeholder="Ex.: SEI 89778500"></div>
       <div style="margin:10px 0"><span class="lbl">Descrição</span>
         <textarea rows="3" placeholder="Descreva o que foi executado e onde a evidência pode ser conferida"></textarea></div>
-      <div class="kv"><span class="k">Registrado por:</span><span class="v">Maria da Silva · 03/10/2026</span></div>
+      <div class="kv" id="registrado-por"></div>
     </div>
   </div>
 
@@ -66,6 +59,31 @@
 
 </div>
 </div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var dados = PromoveStore.dados();
+  var ctx = $("contexto-atividade");
+  var reg = $("registrado-por");
+
+  if (!dados) {
+    ctx.innerHTML = '<div class="vazio">Nenhuma atividade selecionada. Acesse esta tela a partir do seu plano de trabalho.'
+      + '<div class="btn-row"><a class="btn sm" href="04_-_Teletrabalho_-_Servidor.html">Ir para o plano de trabalho</a></div></div>';
+    reg.parentElement.removeChild(reg);
+    return;
+  }
+
+  var c = dados.tela11.contexto;
+  ctx.innerHTML =
+    '<div class="kv"><span class="k">Entrega:</span><span class="v">' + c.entrega + '</span></div>' +
+    '<div class="kv"><span class="k">Tipo de atividade:</span><span class="v">' + c.tipoAtividade + '</span></div>' +
+    '<div class="kv"><span class="k">Início pactuado:</span><span class="v">' + c.inicioPactuado + '</span></div>' +
+    '<div class="kv"><span class="k">Conclusão pactuada:</span><span class="v">' + c.conclusaoPactuada + '</span></div>' +
+    '<div class="kv"><span class="k">Quantidade pactuada:</span><span class="v">' + c.qtdPactuada + '</span></div>' +
+    '<div class="kv"><span class="k">Quantidade realizada:</span><span class="v">' + c.qtdRealizada + '</span></div>';
+  reg.innerHTML = '<span class="k">Registrado por:</span><span class="v">' + dados.tela11.registradoPor + '</span>';
+})();
+</script>
 <script>PromoveNav.init({ atual: "11", raiz: "" });</script>
 </body>
 </html>
