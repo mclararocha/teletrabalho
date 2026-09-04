@@ -392,6 +392,14 @@ table.ref th{color:var(--muted);font-weight:400}
       else if (opts.length) el.value = par[1] === 0 ? opts[0] : opts[opts.length-1];
     });
   }
+  function atualizarJornada(){
+    var jn = janelas();
+    var carga = parseFloat($("carga").value);
+    var v = validaJornada(jn, carga);
+    $("jres").innerHTML = "<span style='color:" + (v.ok ? "var(--green)" : "var(--red)") + "'>" + v.msg + "</span>";
+    preencheHoras(jn);
+    return jn;
+  }
   function montaPresets(){
     var c = $("carga").value;
     $("preset").innerHTML = "<option value=''>Escolher…</option>" + PRESETS[c].map(function(p){
@@ -448,9 +456,7 @@ table.ref th{color:var(--muted);font-weight:400}
 
   function calc(){
     var jn = janelas();
-    var carga = parseFloat($("carga").value);
-    var v = validaJornada(jn, carga);
-    $("jres").innerHTML = "<span style='color:" + (v.ok ? "var(--green)" : "var(--red)") + "'>" + v.msg + "</span>";
+    var v = validaJornada(jn, parseFloat($("carga").value));
 
     var L = parseFloat($("lp").value); if (isNaN(L) || L < 71) L = 80;
     var Q = parseFloat($("lq").value); if (isNaN(Q) || Q < 1 || Q > 24) Q = 15;
@@ -481,7 +487,6 @@ table.ref th{color:var(--muted);font-weight:400}
       return;
     }
 
-    preencheHoras(jn);
     var b = fds();
     $("warn").textContent = b.length ? "Atenção: " + b.join(", ") + " em fim de semana; esse dia não gera horas úteis." : "";
 
@@ -559,22 +564,28 @@ table.ref th{color:var(--muted);font-weight:400}
     $("mtx").innerHTML = h + "</tbody>";
   }
 
-  $("carga").addEventListener("change", function(){ montaPresets(); calc(); });
+  $("carga").addEventListener("change", function(){ montaPresets(); atualizarJornada(); calc(); });
   $("preset").addEventListener("change", function(){
     if (!this.value) return;
     var p = this.value.split("|");
     $("m1").value = p[0]; $("m2").value = p[1];
     $("t1").value = p[2]; $("t2").value = p[3];
+    atualizarJornada();
     calc();
   });
-  ["m1","m2","t1","t2","imp","dif","pi","pih","pf","pfh","ri","rih","rf","rfh","qp","qr","qual","lp","lq"].forEach(function(id){
+  ["m1","m2","t1","t2"].forEach(function(id){
+    var el = $(id);
+    el.addEventListener("input", function(){ atualizarJornada(); calc(); });
+    el.addEventListener("change", function(){ atualizarJornada(); calc(); });
+  });
+  ["imp","dif","pi","pih","pf","pfh","ri","rih","rf","rfh","qp","qr","qual","lp","lq"].forEach(function(id){
     var el = $(id);
     el.addEventListener("input", calc);
     el.addEventListener("change", calc);
   });
 
   montaPresets();
-  preencheHoras(janelas());
+  atualizarJornada();
   calc();
 })();
 </script>
