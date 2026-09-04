@@ -57,22 +57,62 @@ Uso permitido:
 
 - Perfil ativo selecionado no seletor de perfis, para persistir a escolha ao navegar
   entre telas.
+- Cenário de exemplo carregado pelo Modo Demonstração (ver seção abaixo).
 - Outro estado de demonstração explicitamente pedido em uma tarefa.
 
 Continua valendo: não usar `localStorage` para nada que não tenha sido pedido, e
 manter os dados simulados consistentes com a persona única (ver "Consistência dos
 dados de exemplo").
 
+## Modo Demonstração / Modo Limpo
+
+O protótipo abre por padrão em **Modo Limpo**: sem nada em `localStorage["promove_dados"]`,
+cada tela mostra listas e tabelas vazias (classe `.vazio`, com uma mensagem orientando o
+próximo passo) e métricas zeradas. Os botões "Carregar Demonstração" e "Modo Limpo (Novo
+Caso)", fixos no rodapé da sidebar (`navigation.js`), alternam esse estado — carregar
+grava o cenário de exemplo inteiro em `localStorage` e recarrega a página; limpar remove
+a chave e recarrega.
+
+- `assets/js/demo-data.js` — objeto `DEMO_DATA`, com o cenário de exemplo (persona
+  Maria da Silva / João Ferreira / Gerência de Saúde / SEAD) hoje espalhado pelas 13
+  telas. Organizado por tela (`tela01`, `tela02`, ...), com os blocos `servidor` e
+  `chefia` compartilhados onde o dado realmente coincide entre telas. **Não existe
+  um array único de entregas/atividades reaproveitado por todas as telas** — o
+  cenário atual já conta versões ligeiramente diferentes da mesma entrega em telas
+  diferentes (ex.: a Entrega 3 da pactuação é um rascunho ainda não enviado; a
+  Entrega 3 do plano de trabalho do servidor é outra), e forçar um array único
+  exigiria inventar qual versão é a "certa" — o que fere a regra de não inventar
+  dado novo.
+- `assets/js/store.js` — `PromoveStore.carregarDemo()` / `.limpar()` / `.dados()` /
+  `.modoAtivo()`. `dados()` retorna o objeto salvo ou `null`; a presença da chave
+  `localStorage["promove_dados"]` é o único critério de modo, não há uma chave
+  separada para "modo".
+- Cada tela carrega `demo-data.js` e `store.js` antes de `navigation.js` no
+  `<head>`, e no fim do arquivo lê `PromoveStore.dados()` para montar o HTML das
+  listas/tabelas/gráficos — vazio quando `null`, a partir do bloco `dados.telaNN`
+  quando houver. Os cliques em `.acc-h`/`.ent-h` (acordeão) usam delegação de
+  evento em `document`, não mais `querySelectorAll` no carregamento da página,
+  porque o conteúdo agora é montado depois que o script original rodaria.
+- Campos de formulário (inputs/selects já em "Modo Limpo" desde a tarefa anterior)
+  não mudam com o Modo Demonstração/Limpo — continuam sempre em branco, com
+  `placeholder` extraído do cenário quando fizer sentido. O que os dois modos
+  alternam é o conteúdo somente leitura (listas, tabelas, chips, métricas,
+  gráficos), não os campos que o usuário preenche.
+- A tela 10 (Calculadora) fica fora do `DEMO_DATA`: `COMPLEX`/`ICOMP`/`PRESETS` são
+  regras do decreto, não dado de exemplo, e o simulador já funciona em branco.
+
 ## Estrutura
 
 ```
-index.html              hub de navegação, com o seletor de perfil
-telas/                  uma tela por arquivo, numeradas
-normas/                 legislação publicada, em PDF
-assets/css/promove.css  folha compartilhada, fonte única da verdade visual
-assets/js/navigation.js fonte única da sidebar e do seletor de perfil
-docs/                   decisões de projeto
-INSTRUCOES.md           fila de tarefas
+index.html                hub de navegação, com o seletor de perfil
+telas/                    uma tela por arquivo, numeradas
+normas/                   legislação publicada, em PDF
+assets/css/promove.css    folha compartilhada, fonte única da verdade visual
+assets/js/navigation.js   fonte única da sidebar e do seletor de perfil
+assets/js/demo-data.js    cenário de exemplo do Modo Demonstração
+assets/js/store.js        leitura/escrita do cenário de exemplo em localStorage
+docs/                     decisões de projeto
+INSTRUCOES.md             fila de tarefas
 ```
 
 ## Navegação por perfil
