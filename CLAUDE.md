@@ -137,13 +137,24 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   Calculadora.
 - Cada entrega e cada atividade já salva em `promove_mapeamento` tem botões
   discretos "✏️ Editar" / "🗑️ Excluir" (`.item-acoes`, dentro do `.acc-b` da
-  atividade ou do `.section-title` da entrega — nunca dentro do `<button class="acc-h">`,
-  para não aninhar `<button>`). Editar recarrega os dados do item no mesmo
-  formulário de inclusão (`abrirFormEntrega`/`preencherFormAtividade`) para
-  ajuste e novo "Salvar"; excluir usa `window.confirm()` e regrava a lista
-  inteira via `PromoveStore.salvarMapeamento`. `rascunhoAtivo()` bloqueia abrir
-  uma nova entrega/edição por cima de um rascunho já em aberto, para não
-  descartar silenciosamente o que ainda não foi salvo.
+  atividade ou do cabeçalho da entrega — nunca dentro do `<button class="acc-h">`,
+  para não aninhar `<button>`). A edição é **in-place**: "Editar" substitui a
+  própria visualização do item (o `.acc` da atividade, ou o cabeçalho
+  nome/tipo da entrega) pelo formulário já preenchido, no mesmo lugar da
+  lista — nunca abre um formulário duplicado abaixo do item original.
+  "Salvar alterações" grava via `PromoveStore.salvarMapeamento` e substitui o
+  formulário de volta pela visualização, agora atualizada; "Cancelar"
+  descarta e faz o mesmo sem gravar. Esse ciclo de editar/salvar/cancelar não
+  recarrega a página — `renderizarMapeamentoUsuario()` (para itens já
+  salvos) e `renderAtividadesRascunho()` (para uma entrega nova ainda não
+  salva) re-renderizam só a lista a partir do estado atual
+  (`entregaEmEdicao`/`atividadeEmEdicao`). Excluir continua confirmando com
+  `window.confirm()` e regravando a lista inteira, com recarga da página.
+  `bloqueiaSeEdicaoAtiva()` impede abrir uma nova entrega/edição de entrega
+  por cima de outra já aberta; `bloqueiaAtividadeSeConflita()` faz o mesmo
+  para atividades, mas sem bloquear incluir/editar uma atividade dentro do
+  próprio rascunho de entrega nova que já está sendo montado — isso é uma
+  sub-ação normal desse rascunho, não um conflito.
 - O rodapé da tela 01 não envia a nenhuma instância central automatizada: são
   três ações independentes — "💾 Salvar Mapeamento" (persiste em
   `promove_mapeamento`), "📤 Enviar para Chefia Superior" (botão visual,

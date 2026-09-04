@@ -112,63 +112,13 @@ document.addEventListener('click', function (e) {
     return horas * qtdValor * PERIODICIDADE_MES[periodicidade];
   }
 
-  /* ---------- exibição somente leitura (demo ou mapeamento já salvo pelo usuário) ---------- */
+  /* ---------- estado de edição in-place ---------- */
 
-  function renderAtividadeSalva(a, aberta, ctx) {
-    var chipClasse = a.elegivel === "Sim" ? "green" : "gray";
-    var chipTexto = a.elegivel === "Sim" ? "Elegível" : "Não elegível";
-    var esforco = (a.esforcoMes || a.esforcoMes === 0) ? "≈ " + n1(a.esforcoMes) + " horas/mês (estimativa)" : "Não apurado";
-    var acoes = "";
-    if (ctx) {
-      var attrs = ' data-atividade-index="' + ctx.atividadeIndex + '"' +
-        (ctx.entregaIndex != null ? ' data-entrega-index="' + ctx.entregaIndex + '"' : '');
-      var editarAcao = ctx.entregaIndex != null ? "editar-atividade" : "editar-atividade-rascunho";
-      var excluirAcao = ctx.entregaIndex != null ? "excluir-atividade" : "excluir-atividade-rascunho";
-      acoes = '<div class="item-acoes">' +
-        '<button class="sm" data-acao="' + editarAcao + '"' + attrs + '>✏️ Editar</button>' +
-        '<button class="sm" data-acao="' + excluirAcao + '"' + attrs + '>🗑️ Excluir</button>' +
-        '</div>';
-    }
-    return '<div class="acc' + (aberta ? '' : ' col') + '"><button class="acc-h"><div class="acc-h-in">' +
-      '<span class="acc-name"><span class="chev">▾</span>' + a.nome + '</span>' +
-      '<span class="chip chip-' + chipClasse + '">' + chipTexto + '</span></div></button>' +
-      '<div class="acc-b">' +
-      '<div class="kv"><span class="k">Tipo de atividade:</span><span class="v">' + a.tipo + '</span></div>' +
-      '<div class="kv"><span class="k">Impacto:</span><span class="v">' + a.impacto + '</span></div>' +
-      '<div class="kv"><span class="k">Dificuldade:</span><span class="v">' + a.dificuldade + '</span></div>' +
-      '<div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">' + a.nivelComplexidade + (a.incp !== null ? ' · InCp ' + n1(a.incp) : '') + '</span></div>' +
-      '<div class="kv"><span class="k">Tempo de execução no presencial:</span><span class="v">' + (a.tempoValor !== null ? a.tempoValor + ' ' + a.tempoUnidade + ' por unidade' : 'Não informado') + '</span></div>' +
-      '<div class="kv"><span class="k">Quantidade de referência:</span><span class="v">' + (a.qtdValor !== null ? a.qtdValor : 'Não informado') + '</span> <span class="calc">' + a.qtdPeriodicidade + '</span></div>' +
-      '<div class="kv"><span class="k">Esforço estimado:</span><span class="calc">' + esforco + '</span></div>' +
-      '<div class="kv"><span class="k">Justificativa técnica:</span>' + (a.justificativa ? '<span class="v">' + a.justificativa + '</span>' : '<span class="calc">Não informada</span>') + '</div>' +
-      acoes +
-      '</div></div>';
-  }
-
-  function renderEntregaSalva(ent, primeiroDaLista, entregaIndex) {
-    var atividadesHtml = ent.atividades.length
-      ? ent.atividades.map(function (a, i) {
-          return renderAtividadeSalva(a, primeiroDaLista && i === 0, entregaIndex != null ? { entregaIndex: entregaIndex, atividadeIndex: i } : null);
-        }).join("")
-      : '<div class="vazio">Nenhuma atividade cadastrada nesta entrega.</div>';
-    var acoesEntrega = entregaIndex != null
-      ? '<div class="item-acoes">' +
-        '<button class="sm" data-acao="editar-entrega" data-entrega-index="' + entregaIndex + '">✏️ Editar</button>' +
-        '<button class="sm" data-acao="excluir-entrega" data-entrega-index="' + entregaIndex + '">🗑️ Excluir</button>' +
-        '</div>'
-      : '';
-    return '<div class="section">' +
-      '<div class="section-title" style="display:flex;align-items:center">Entrega · ' + ent.nome + acoesEntrega + '</div>' +
-      '<div class="ent-head"><span class="ent-lbl">Tipo de entrega:</span> <span class="v">' + ent.tipo + '</span></div>' +
-      '<div class="card">' + atividadesHtml + '</div></div>';
-  }
-
-  /* ---------- rascunho de nova entrega (em memória, só vira dado após "Salvar entrega") ---------- */
-
-  var rascunho = null;
-  var incluindoAtividade = false;
-  var editandoEntregaIndex = null;
-  var editandoAtividadeIndex = null;
+  var rascunho = null;           // { atividades: [] } — rascunho de uma NOVA entrega, ainda não salva
+  var entregaEmEdicao = null;    // índice (em mapeamentoUsuario()) da entrega cujo nome/tipo está em edição, ou null
+  var atividadeEmEdicao = null;  // { entregaIndex, atividadeIndex } ou null.
+                                  // entregaIndex null = atividade do rascunho de nova entrega, não persistida ainda.
+                                  // atividadeIndex null = formulário de atividade NOVA (ainda não incluída na lista).
 
   function mostrarMensagem(texto) {
     var el = $("tela01-msg");
@@ -176,14 +126,37 @@ document.addEventListener('click', function (e) {
     el.hidden = false;
   }
 
-  /* Impede começar outra entrega/edição por cima de um rascunho já aberto,
-     o que descartaria silenciosamente o que ainda não foi salvo. */
-  function rascunhoAtivo() {
-    if (rascunho !== null) {
-      mostrarMensagem('Finalize ("Salvar entrega") a edição em andamento antes de iniciar outra.');
+  function algumaEdicaoAtiva() {
+    return rascunho !== null || entregaEmEdicao !== null || atividadeEmEdicao !== null;
+  }
+
+  /* Impede começar outra entrega/edição por cima de uma já aberta, o que
+     descartaria silenciosamente o que ainda não foi salvo. */
+  function bloqueiaSeEdicaoAtiva() {
+    if (algumaEdicaoAtiva()) {
+      mostrarMensagem("Finalize ou cancele a edição em andamento antes de iniciar outra.");
       return true;
     }
     return false;
+  }
+
+  /* Guarda específica para abrir/editar uma atividade: incluir ou editar uma
+     atividade DENTRO do rascunho de entrega nova que já está aberto é uma
+     sub-ação normal desse rascunho, não um conflito — só bloqueia se já houver
+     outra atividade em edição, uma entrega em edição, ou um rascunho de OUTRA
+     entrega (entregaIndexAlvo != null) aberto ao mesmo tempo. */
+  function bloqueiaAtividadeSeConflita(entregaIndexAlvo) {
+    var conflita = atividadeEmEdicao !== null || entregaEmEdicao !== null ||
+      (entregaIndexAlvo !== null && rascunho !== null);
+    if (conflita) {
+      mostrarMensagem("Finalize ou cancele a edição em andamento antes de iniciar outra.");
+      return true;
+    }
+    return false;
+  }
+
+  function ctxIguais(a, b) {
+    return !!a && !!b && a.entregaIndex === b.entregaIndex && a.atividadeIndex === b.atividadeIndex;
   }
 
   function montarAtividade() {
@@ -210,114 +183,44 @@ document.addEventListener('click', function (e) {
     };
   }
 
-  function iniciarEdicaoEntrega(indice, abrirAtividadeIndice) {
-    var lista = PromoveStore.mapeamentoUsuario() || [];
-    var ent = lista[indice];
-    if (!ent) return;
-    editandoEntregaIndex = indice;
-    rascunho = { atividades: JSON.parse(JSON.stringify(ent.atividades)) };
-    incluindoAtividade = abrirAtividadeIndice != null;
-    editandoAtividadeIndex = abrirAtividadeIndice != null ? abrirAtividadeIndice : null;
-    var btn = $("tela01-btn-nova-entrega");
-    if (btn) btn.hidden = true;
-    abrirFormEntrega(ent.nome, ent.tipo);
-    if (abrirAtividadeIndice != null) preencherFormAtividade(rascunho.atividades[abrirAtividadeIndice]);
+  /* ---------- exibição de uma atividade: visualização OU formulário in-place ---------- */
+
+  function atividadeVisualizacaoHtml(a, aberta, ctx) {
+    var chipClasse = a.elegivel === "Sim" ? "green" : "gray";
+    var chipTexto = a.elegivel === "Sim" ? "Elegível" : "Não elegível";
+    var esforco = (a.esforcoMes || a.esforcoMes === 0) ? "≈ " + n1(a.esforcoMes) + " horas/mês (estimativa)" : "Não apurado";
+    var attrs = ' data-atividade-index="' + ctx.atividadeIndex + '"' +
+      (ctx.entregaIndex != null ? ' data-entrega-index="' + ctx.entregaIndex + '"' : '');
+    var acoes = '<div class="item-acoes">' +
+      '<button class="sm" data-acao="editar-atividade"' + attrs + '>✏️ Editar</button>' +
+      '<button class="sm" data-acao="excluir-atividade"' + attrs + '>🗑️ Excluir</button>' +
+      '</div>';
+    return '<div class="acc' + (aberta ? '' : ' col') + '"><button class="acc-h"><div class="acc-h-in">' +
+      '<span class="acc-name"><span class="chev">▾</span>' + a.nome + '</span>' +
+      '<span class="chip chip-' + chipClasse + '">' + chipTexto + '</span></div></button>' +
+      '<div class="acc-b">' +
+      '<div class="kv"><span class="k">Tipo de atividade:</span><span class="v">' + a.tipo + '</span></div>' +
+      '<div class="kv"><span class="k">Impacto:</span><span class="v">' + a.impacto + '</span></div>' +
+      '<div class="kv"><span class="k">Dificuldade:</span><span class="v">' + a.dificuldade + '</span></div>' +
+      '<div class="kv"><span class="k">Nível de complexidade:</span><span class="calc">' + a.nivelComplexidade + (a.incp !== null ? ' · InCp ' + n1(a.incp) : '') + '</span></div>' +
+      '<div class="kv"><span class="k">Tempo de execução no presencial:</span><span class="v">' + (a.tempoValor !== null ? a.tempoValor + ' ' + a.tempoUnidade + ' por unidade' : 'Não informado') + '</span></div>' +
+      '<div class="kv"><span class="k">Quantidade de referência:</span><span class="v">' + (a.qtdValor !== null ? a.qtdValor : 'Não informado') + '</span> <span class="calc">' + a.qtdPeriodicidade + '</span></div>' +
+      '<div class="kv"><span class="k">Esforço estimado:</span><span class="calc">' + esforco + '</span></div>' +
+      '<div class="kv"><span class="k">Justificativa técnica:</span>' + (a.justificativa ? '<span class="v">' + a.justificativa + '</span>' : '<span class="calc">Não informada</span>') + '</div>' +
+      acoes +
+      '</div></div>';
   }
 
-  var ACOES = {
-    "abrir-entrega": function () {
-      if (rascunhoAtivo()) return;
-      rascunho = { atividades: [] };
-      incluindoAtividade = false;
-      editandoEntregaIndex = null;
-      var btn = $("tela01-btn-nova-entrega");
-      if (btn) btn.hidden = true;
-      abrirFormEntrega();
-    },
-    "abrir-atividade": function () {
-      incluindoAtividade = true;
-      editandoAtividadeIndex = null;
-      renderAtividadesRascunho();
-    },
-    "salvar-atividade": function () {
-      var atividade = montarAtividade();
-      if (!atividade.nome) { $("na-nome").focus(); return; }
-      if (editandoAtividadeIndex !== null) rascunho.atividades[editandoAtividadeIndex] = atividade;
-      else rascunho.atividades.push(atividade);
-      incluindoAtividade = false;
-      editandoAtividadeIndex = null;
-      renderAtividadesRascunho();
-    },
-    "editar-atividade-rascunho": function (el) {
-      var idx = parseInt(el.getAttribute("data-atividade-index"), 10);
-      incluindoAtividade = true;
-      editandoAtividadeIndex = idx;
-      renderAtividadesRascunho();
-      preencherFormAtividade(rascunho.atividades[idx]);
-    },
-    "excluir-atividade-rascunho": function (el) {
-      var idx = parseInt(el.getAttribute("data-atividade-index"), 10);
-      rascunho.atividades.splice(idx, 1);
-      if (editandoAtividadeIndex === idx) { incluindoAtividade = false; editandoAtividadeIndex = null; }
-      renderAtividadesRascunho();
-    },
-    "salvar-entrega": function () {
-      var nome = $("ne-nome").value.trim();
-      if (!nome) { $("ne-nome").focus(); return; }
-      var entrega = { nome: nome, tipo: $("ne-tipo").value || "Não informado", atividades: rascunho.atividades };
-      var atual = PromoveStore.mapeamentoUsuario() || [];
-      if (editandoEntregaIndex !== null) atual[editandoEntregaIndex] = entrega;
-      else atual.push(entrega);
-      PromoveStore.salvarMapeamento(atual);
-      window.location.reload();
-    },
-    "editar-entrega": function (el) {
-      if (rascunhoAtivo()) return;
-      iniciarEdicaoEntrega(parseInt(el.getAttribute("data-entrega-index"), 10));
-    },
-    "excluir-entrega": function (el) {
-      if (!window.confirm("Excluir esta entrega e todas as suas atividades?")) return;
-      var idx = parseInt(el.getAttribute("data-entrega-index"), 10);
-      var lista = PromoveStore.mapeamentoUsuario() || [];
-      lista.splice(idx, 1);
-      PromoveStore.salvarMapeamento(lista);
-      window.location.reload();
-    },
-    "editar-atividade": function (el) {
-      if (rascunhoAtivo()) return;
-      var ei = parseInt(el.getAttribute("data-entrega-index"), 10);
-      var ai = parseInt(el.getAttribute("data-atividade-index"), 10);
-      iniciarEdicaoEntrega(ei, ai);
-    },
-    "excluir-atividade": function (el) {
-      if (!window.confirm("Excluir esta atividade?")) return;
-      var ei = parseInt(el.getAttribute("data-entrega-index"), 10);
-      var ai = parseInt(el.getAttribute("data-atividade-index"), 10);
-      var lista = PromoveStore.mapeamentoUsuario() || [];
-      if (!lista[ei]) return;
-      lista[ei].atividades.splice(ai, 1);
-      PromoveStore.salvarMapeamento(lista);
-      window.location.reload();
-    },
-    "salvar-mapeamento": function () {
-      PromoveStore.salvarMapeamento(PromoveStore.mapeamentoUsuario() || []);
-      mostrarMensagem("Mapeamento salvo.");
-    },
-    "enviar-chefia-superior": function () {
-      mostrarMensagem("Enviado para a chefia superior (simulação).");
-    },
-    "exportar-pdf": function () {
-      window.print();
-    }
-  };
-
-  document.addEventListener("click", function (e) {
-    var el = e.target.closest("[data-acao]");
-    if (el && ACOES[el.getAttribute("data-acao")]) ACOES[el.getAttribute("data-acao")](el);
-  });
-
-  function atividadeFormHtml() {
-    return '<div class="card card-pad" style="margin-top:14px">' +
+  /* Formulário de atividade — mesma marcação para incluir uma nova (atividadeExistente
+     omitido) e para editar uma já existente in-place (atividadeExistente informado, só
+     para decidir o rótulo/título; o preenchimento dos campos é feito à parte por
+     preencherFormAtividade, depois que este HTML já estiver no DOM). */
+  function atividadeFormularioHtml(ctx, atividadeExistente) {
+    var attrs = ' data-atividade-index="' + (ctx.atividadeIndex === null ? "" : ctx.atividadeIndex) + '"' +
+      (ctx.entregaIndex != null ? ' data-entrega-index="' + ctx.entregaIndex + '"' : '');
+    var titulo = atividadeExistente ? "Editando atividade" : "Nova atividade";
+    return '<div class="card card-pad">' +
+      '<div class="section-title" style="font-size:13px;margin-bottom:10px">' + titulo + '</div>' +
       '<div class="campo-lg"><label class="lbl" for="na-nome">Nome da atividade</label><input type="text" id="na-nome"></div>' +
       '<div class="kv"><span class="k">Tipo de atividade:</span>' +
         '<select id="na-tipo"><option>Selecionar</option><option>Estruturante</option><option>Finalística</option></select></div>' +
@@ -338,9 +241,227 @@ document.addEventListener('click', function (e) {
       '<div class="kv"><span class="k">Elegível ao teletrabalho:</span>' +
         '<select id="na-elegivel"><option>Selecionar</option><option>Sim</option><option>Não</option></select></div>' +
       '<div class="kv"><span class="k">Justificativa técnica:</span><input type="text" id="na-justificativa" size="40"></div>' +
-      '<div class="btn-row"><button class="sm" data-acao="salvar-atividade">Salvar atividade</button></div>' +
+      '<div class="btn-row">' +
+        '<button class="sm" data-acao="salvar-atividade"' + attrs + '>' + (atividadeExistente ? "Salvar alterações" : "Salvar atividade") + '</button>' +
+        '<button class="sm" data-acao="cancelar-atividade"' + attrs + '>Cancelar</button>' +
+        '</div></div>';
+  }
+
+  /* Escolhe, para uma atividade da lista, entre a visualização e o formulário
+     in-place — nunca os dois ao mesmo tempo, para não duplicar o item na tela. */
+  function renderAtividadeItem(a, aberta, ctx) {
+    if (ctxIguais(atividadeEmEdicao, ctx)) return atividadeFormularioHtml(ctx, a);
+    return atividadeVisualizacaoHtml(a, aberta, ctx);
+  }
+
+  /* ---------- exibição de uma entrega já salva: visualização OU formulário in-place ---------- */
+
+  function renderEntregaSalva(ent, primeiroDaLista, entregaIndex) {
+    var editandoEstaEntrega = entregaIndex != null && entregaEmEdicao === entregaIndex;
+    var novaAtividadeAberta = entregaIndex != null && atividadeEmEdicao &&
+      atividadeEmEdicao.entregaIndex === entregaIndex && atividadeEmEdicao.atividadeIndex === null;
+
+    var atividadesHtml = ent.atividades.length
+      ? ent.atividades.map(function (a, i) {
+          return renderAtividadeItem(a, primeiroDaLista && i === 0, { entregaIndex: entregaIndex, atividadeIndex: i });
+        }).join("")
+      : '<div class="vazio">Nenhuma atividade cadastrada nesta entrega.</div>';
+    var novaAtividadeHtml = novaAtividadeAberta
+      ? atividadeFormularioHtml({ entregaIndex: entregaIndex, atividadeIndex: null }, null)
+      : "";
+    var addRow = (entregaIndex != null && !novaAtividadeAberta && !editandoEstaEntrega)
+      ? '<div class="addrow"><button class="sm" data-acao="abrir-atividade" data-entrega-index="' + entregaIndex + '">+ Incluir atividade</button></div>'
+      : "";
+
+    var cabecalho;
+    if (editandoEstaEntrega) {
+      cabecalho = '<div class="card card-pad" style="margin-bottom:14px">' +
+        '<div class="section-title" style="font-size:13px;margin-bottom:10px">Editando entrega</div>' +
+        '<div class="campo-lg"><label class="lbl" for="ee-nome">Nome da entrega</label><input type="text" id="ee-nome"></div>' +
+        '<div class="kv"><span class="k">Tipo de entrega:</span>' +
+          '<select id="ee-tipo"><option>Selecionar</option><option>Demanda processual</option><option>Demanda de rotina</option>' +
+          '<option>Demanda de projeto</option><option>Demanda pontual</option></select></div>' +
+        '<div class="btn-row">' +
+          '<button class="sm" data-acao="salvar-entrega-edicao" data-entrega-index="' + entregaIndex + '">Salvar alterações</button>' +
+          '<button class="sm" data-acao="cancelar-entrega-edicao" data-entrega-index="' + entregaIndex + '">Cancelar</button>' +
+        '</div></div>';
+    } else {
+      var acoesEntrega = entregaIndex != null
+        ? '<div class="item-acoes">' +
+          '<button class="sm" data-acao="editar-entrega" data-entrega-index="' + entregaIndex + '">✏️ Editar</button>' +
+          '<button class="sm" data-acao="excluir-entrega" data-entrega-index="' + entregaIndex + '">🗑️ Excluir</button>' +
+          '</div>'
+        : '';
+      cabecalho = '<div class="section-title" style="display:flex;align-items:center">Entrega · ' + ent.nome + acoesEntrega + '</div>' +
+        '<div class="ent-head"><span class="ent-lbl">Tipo de entrega:</span> <span class="v">' + ent.tipo + '</span></div>';
+    }
+
+    return '<div class="section">' + cabecalho +
+      '<div class="card">' + atividadesHtml + novaAtividadeHtml + '</div>' +
+      addRow +
       '</div>';
   }
+
+  /* Re-renderiza a lista de entregas do usuário a partir do PromoveStore e,
+     se houver uma edição in-place ativa, preenche o formulário recém-inserido
+     no DOM com os dados atuais (sem isso o formulário nasceria em branco). */
+  function renderizarMapeamentoUsuario() {
+    var lista = PromoveStore.mapeamentoUsuario() || [];
+    var metricas = metricasDoMapeamento(lista);
+    $("tela01-metrics").innerHTML =
+      '<div class="metric"><div class="lbl">Entregas mapeadas</div><div class="num">' + metricas.entregasMapeadas + '</div></div>' +
+      '<div class="metric"><div class="lbl">Atividades</div><div class="num">' + metricas.atividades + '</div></div>' +
+      '<div class="metric"><div class="lbl">Elegíveis ao teletrabalho</div><div class="num">' + metricas.elegiveis + '</div></div>' +
+      '<div class="metric"><div class="lbl">Sem justificativa</div><div class="num warn">' + metricas.semJustificativa + '</div></div>';
+    entregasEl.innerHTML = lista.length
+      ? lista.map(function (ent, i) { return renderEntregaSalva(ent, i === 0, i); }).join("")
+      : '<div class="section"><div class="card card-pad"><div class="vazio">' +
+        'Nenhuma entrega mapeada. Clique em "Acrescentar entrega" para começar.</div></div></div>';
+    $("tela01-warn").textContent = lista.length ? (metricas.semJustificativa + " atividades sem justificativa técnica") : "";
+
+    if (entregaEmEdicao !== null && lista[entregaEmEdicao]) {
+      var entAlvo = lista[entregaEmEdicao];
+      $("ee-nome").value = entAlvo.nome;
+      if (entAlvo.tipo && entAlvo.tipo !== "Não informado") $("ee-tipo").value = entAlvo.tipo;
+    }
+    if (atividadeEmEdicao && atividadeEmEdicao.entregaIndex !== null) {
+      wireAtividadeForm();
+      if (atividadeEmEdicao.atividadeIndex !== null) {
+        var entAtiv = lista[atividadeEmEdicao.entregaIndex];
+        if (entAtiv) preencherFormAtividade(entAtiv.atividades[atividadeEmEdicao.atividadeIndex]);
+      }
+    }
+  }
+
+  /* Re-renderiza o local certo depois de uma ação em uma atividade — a lista
+     principal quando a atividade pertence a uma entrega já salva, ou só o
+     rascunho quando ainda pertence a uma entrega nova ainda não salva. */
+  function reRenderizarAposAtividade(entregaIndex) {
+    if (entregaIndex === null) renderAtividadesRascunho();
+    else renderizarMapeamentoUsuario();
+  }
+
+  function lerEntregaIndex(el) {
+    return el.hasAttribute("data-entrega-index") ? parseInt(el.getAttribute("data-entrega-index"), 10) : null;
+  }
+
+  var ACOES = {
+    "abrir-entrega": function () {
+      if (bloqueiaSeEdicaoAtiva()) return;
+      rascunho = { atividades: [] };
+      var btn = $("tela01-btn-nova-entrega");
+      if (btn) btn.hidden = true;
+      abrirFormEntrega();
+    },
+    "salvar-entrega": function () {
+      var nome = $("ne-nome").value.trim();
+      if (!nome) { $("ne-nome").focus(); return; }
+      var entrega = { nome: nome, tipo: $("ne-tipo").value || "Não informado", atividades: rascunho.atividades };
+      var atual = PromoveStore.mapeamentoUsuario() || [];
+      atual.push(entrega);
+      PromoveStore.salvarMapeamento(atual);
+      window.location.reload();
+    },
+    "editar-entrega": function (el) {
+      if (bloqueiaSeEdicaoAtiva()) return;
+      entregaEmEdicao = parseInt(el.getAttribute("data-entrega-index"), 10);
+      renderizarMapeamentoUsuario();
+    },
+    "salvar-entrega-edicao": function (el) {
+      var idx = parseInt(el.getAttribute("data-entrega-index"), 10);
+      var nome = $("ee-nome").value.trim();
+      if (!nome) { $("ee-nome").focus(); return; }
+      var lista = PromoveStore.mapeamentoUsuario() || [];
+      if (!lista[idx]) return;
+      lista[idx].nome = nome;
+      lista[idx].tipo = $("ee-tipo").value || "Não informado";
+      PromoveStore.salvarMapeamento(lista);
+      entregaEmEdicao = null;
+      renderizarMapeamentoUsuario();
+    },
+    "cancelar-entrega-edicao": function () {
+      entregaEmEdicao = null;
+      renderizarMapeamentoUsuario();
+    },
+    "excluir-entrega": function (el) {
+      if (!window.confirm("Excluir esta entrega e todas as suas atividades?")) return;
+      var idx = parseInt(el.getAttribute("data-entrega-index"), 10);
+      var lista = PromoveStore.mapeamentoUsuario() || [];
+      lista.splice(idx, 1);
+      PromoveStore.salvarMapeamento(lista);
+      if (entregaEmEdicao === idx) entregaEmEdicao = null;
+      renderizarMapeamentoUsuario();
+    },
+    "abrir-atividade": function (el) {
+      var entregaIndex = lerEntregaIndex(el);
+      if (bloqueiaAtividadeSeConflita(entregaIndex)) return;
+      atividadeEmEdicao = { entregaIndex: entregaIndex, atividadeIndex: null };
+      reRenderizarAposAtividade(entregaIndex);
+    },
+    "editar-atividade": function (el) {
+      var entregaIndex = lerEntregaIndex(el);
+      if (bloqueiaAtividadeSeConflita(entregaIndex)) return;
+      var atividadeIndex = parseInt(el.getAttribute("data-atividade-index"), 10);
+      atividadeEmEdicao = { entregaIndex: entregaIndex, atividadeIndex: atividadeIndex };
+      reRenderizarAposAtividade(entregaIndex);
+    },
+    "salvar-atividade": function (el) {
+      var atividade = montarAtividade();
+      if (!atividade.nome) { $("na-nome").focus(); return; }
+      var entregaIndex = lerEntregaIndex(el);
+      var idxAttr = el.getAttribute("data-atividade-index");
+      var atividadeIndex = idxAttr === "" ? null : parseInt(idxAttr, 10);
+      if (entregaIndex === null) {
+        if (atividadeIndex === null) rascunho.atividades.push(atividade);
+        else rascunho.atividades[atividadeIndex] = atividade;
+      } else {
+        var lista = PromoveStore.mapeamentoUsuario() || [];
+        if (!lista[entregaIndex]) return;
+        if (atividadeIndex === null) lista[entregaIndex].atividades.push(atividade);
+        else lista[entregaIndex].atividades[atividadeIndex] = atividade;
+        PromoveStore.salvarMapeamento(lista);
+      }
+      atividadeEmEdicao = null;
+      reRenderizarAposAtividade(entregaIndex);
+    },
+    "cancelar-atividade": function (el) {
+      var entregaIndex = lerEntregaIndex(el);
+      atividadeEmEdicao = null;
+      reRenderizarAposAtividade(entregaIndex);
+    },
+    "excluir-atividade": function (el) {
+      if (!window.confirm("Excluir esta atividade?")) return;
+      var entregaIndex = lerEntregaIndex(el);
+      var atividadeIndex = parseInt(el.getAttribute("data-atividade-index"), 10);
+      if (entregaIndex === null) {
+        rascunho.atividades.splice(atividadeIndex, 1);
+      } else {
+        var lista = PromoveStore.mapeamentoUsuario() || [];
+        if (!lista[entregaIndex]) return;
+        lista[entregaIndex].atividades.splice(atividadeIndex, 1);
+        PromoveStore.salvarMapeamento(lista);
+      }
+      if (atividadeEmEdicao && atividadeEmEdicao.entregaIndex === entregaIndex && atividadeEmEdicao.atividadeIndex === atividadeIndex) {
+        atividadeEmEdicao = null;
+      }
+      reRenderizarAposAtividade(entregaIndex);
+    },
+    "salvar-mapeamento": function () {
+      PromoveStore.salvarMapeamento(PromoveStore.mapeamentoUsuario() || []);
+      mostrarMensagem("Mapeamento salvo.");
+    },
+    "enviar-chefia-superior": function () {
+      mostrarMensagem("Enviado para a chefia superior (simulação).");
+    },
+    "exportar-pdf": function () {
+      window.print();
+    }
+  };
+
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-acao]");
+    if (el && ACOES[el.getAttribute("data-acao")]) ACOES[el.getAttribute("data-acao")](el);
+  });
 
   function wireAtividadeForm() {
     var impactoEl = $("na-impacto"), dificuldadeEl = $("na-dificuldade"), complexidadeEl = $("na-complexidade");
@@ -367,10 +488,9 @@ document.addEventListener('click', function (e) {
 
   /* Cabeçalho da entrega (nome/tipo) é montado uma única vez: se fosse
      reconstruído a cada atividade incluída, o texto já digitado se perderia. */
-  function abrirFormEntrega(nomePrefill, tipoPrefill) {
-    var titulo = editandoEntregaIndex !== null ? "Editar entrega" : "Nova entrega";
+  function abrirFormEntrega() {
     rascunhoEl.innerHTML = '<div class="section">' +
-      '<div class="section-title">' + titulo + '</div>' +
+      '<div class="section-title">Nova entrega</div>' +
       '<div class="card card-pad">' +
       '<div class="campo-lg"><label class="lbl" for="ne-nome">Nome da entrega</label><input type="text" id="ne-nome"></div>' +
       '<div class="kv"><span class="k">Tipo de entrega:</span>' +
@@ -380,19 +500,27 @@ document.addEventListener('click', function (e) {
       '<div class="card" id="tela01-rascunho-atividades" style="margin-top:14px"></div>' +
       '<div class="btn-row" style="margin-top:14px"><button data-acao="salvar-entrega">Salvar entrega</button></div>' +
       '</div>';
-    if (nomePrefill) $("ne-nome").value = nomePrefill;
-    if (tipoPrefill) $("ne-tipo").value = tipoPrefill;
     renderAtividadesRascunho();
   }
 
+  /* Atividades do rascunho de uma entrega nova: cada item escolhe visualização
+     ou formulário in-place da mesma forma que as entregas já salvas, para não
+     duplicar o item na tela ao editá-lo antes de a entrega ser salva. */
   function renderAtividadesRascunho() {
+    var novaAtividadeAberta = atividadeEmEdicao && atividadeEmEdicao.entregaIndex === null && atividadeEmEdicao.atividadeIndex === null;
     var lista = rascunho.atividades.length
-      ? rascunho.atividades.map(function (a, i) { return renderAtividadeSalva(a, i === 0, { atividadeIndex: i }); }).join("")
+      ? rascunho.atividades.map(function (a, i) {
+          return renderAtividadeItem(a, i === 0, { entregaIndex: null, atividadeIndex: i });
+        }).join("")
       : '<div class="vazio">Nenhuma atividade incluída ainda.</div>';
+    var novaAtividadeHtml = novaAtividadeAberta ? atividadeFormularioHtml({ entregaIndex: null, atividadeIndex: null }, null) : "";
     var container = $("tela01-rascunho-atividades");
-    container.innerHTML = lista +
-      (incluindoAtividade ? atividadeFormHtml() : '<div class="addrow"><button class="sm" data-acao="abrir-atividade">+ Incluir atividade</button></div>');
-    if (incluindoAtividade) wireAtividadeForm();
+    container.innerHTML = lista + novaAtividadeHtml +
+      (novaAtividadeAberta ? "" : '<div class="addrow"><button class="sm" data-acao="abrir-atividade">+ Incluir atividade</button></div>');
+    if (atividadeEmEdicao && atividadeEmEdicao.entregaIndex === null) {
+      wireAtividadeForm();
+      if (atividadeEmEdicao.atividadeIndex !== null) preencherFormAtividade(rascunho.atividades[atividadeEmEdicao.atividadeIndex]);
+    }
   }
 
   /* Preenche o formulário de atividade já aberto com os dados de uma
@@ -444,14 +572,7 @@ document.addEventListener('click', function (e) {
         '<div class="kv"><span class="k">Revisão em curso:</span><span class="v">' + td.revisao + '</span></div>' +
         '<div class="kv"><span class="k">Efeito:</span><span class="calc">Sem mapeamento validado, a unidade não pode adotar o regime de teletrabalho</span></div>';
     }
-    var metricas = metricasDoMapeamento(mapeamento);
-    $("tela01-metrics").innerHTML =
-      '<div class="metric"><div class="lbl">Entregas mapeadas</div><div class="num">' + metricas.entregasMapeadas + '</div></div>' +
-      '<div class="metric"><div class="lbl">Atividades</div><div class="num">' + metricas.atividades + '</div></div>' +
-      '<div class="metric"><div class="lbl">Elegíveis ao teletrabalho</div><div class="num">' + metricas.elegiveis + '</div></div>' +
-      '<div class="metric"><div class="lbl">Sem justificativa</div><div class="num warn">' + metricas.semJustificativa + '</div></div>';
-    entregasEl.innerHTML = mapeamento.map(function (ent, i) { return renderEntregaSalva(ent, i === 0, i); }).join("");
-    $("tela01-warn").textContent = metricas.semJustificativa + " atividades sem justificativa técnica";
+    renderizarMapeamentoUsuario();
     return;
   }
 
