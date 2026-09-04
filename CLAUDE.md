@@ -125,7 +125,16 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   clicar em "Acrescentar entrega"; só a lista de atividades e o formulário de
   atividade dentro dele se re-renderizam a cada "Salvar atividade" — se o
   cabeçalho fosse refeito junto, o texto já digitado se perderia a cada atividade
-  incluída.
+  incluída. O formulário de "Nova entrega" tem um botão "Cancelar" ao lado de
+  "Salvar entrega" (`data-acao="cancelar-entrega"`): descarta o rascunho em
+  memória sem gravar nada, esvazia `#tela01-rascunho` e reexibe o botão
+  "Acrescentar entrega" — nenhuma chamada a `PromoveStore.salvarMapeamento`.
+- O título da entrega no cabeçalho do acordeão (`.acc-name-dest`, seção 10 de
+  `promove.css`) é mais proeminente (15,5px/700) que o das atividades
+  aninhadas (`.acc-name` padrão, 13,5px/500), para marcar a hierarquia
+  visual entre os dois níveis. É um modificador opcional do padrão `.acc-h`/
+  `.acc-name` já existente — não um quarto padrão de acordeão — então não
+  muda o `.acc-name` usado sem essa classe nas demais telas.
 - Campos de texto livre mais longos usam a classe `.campo-lg` (nome da
   entrega, nome da atividade, justificativa técnica): rótulo acima do campo,
   campo com 100% de largura do contêiner. "Justificativa técnica" é

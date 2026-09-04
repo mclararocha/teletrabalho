@@ -326,7 +326,7 @@ document.addEventListener('click', function (e) {
 
     return '<div class="acc' + (primeiroDaLista ? '' : ' col') + '">' +
       '<div class="acc-h-row"><button class="acc-h"><div class="acc-h-in">' +
-        '<span class="acc-name"><span class="chev">▾</span>Entrega · ' + ent.nome + '</span>' +
+        '<span class="acc-name acc-name-dest"><span class="chev">▾</span>Entrega · ' + ent.nome + '</span>' +
         '<span class="chip chip-gray">' + ent.tipo + '</span>' +
         '</div></button>' + acoesEntrega + '</div>' +
       '<div class="acc-b">' +
@@ -495,6 +495,13 @@ document.addEventListener('click', function (e) {
       PromoveStore.salvarMapeamento(atual);
       window.location.reload();
     },
+    "cancelar-entrega": function () {
+      rascunho = null;
+      atividadeEmEdicao = null;
+      rascunhoEl.innerHTML = "";
+      var btn = $("tela01-btn-nova-entrega");
+      if (btn) btn.hidden = false;
+    },
     "editar-entrega": function (el) {
       if (bloqueiaSeEdicaoAtiva()) return;
       entregaEmEdicao = parseInt(el.getAttribute("data-entrega-index"), 10);
@@ -631,7 +638,10 @@ document.addEventListener('click', function (e) {
         '<option>Demanda de projeto</option><option>Demanda pontual</option></select></div>' +
       '</div>' +
       '<div class="card" id="tela01-rascunho-atividades" style="margin-top:14px"></div>' +
-      '<div class="btn-row" style="margin-top:14px"><button data-acao="salvar-entrega">Salvar entrega</button></div>' +
+      '<div class="btn-row" style="margin-top:14px">' +
+        '<button data-acao="salvar-entrega">Salvar entrega</button>' +
+        '<button data-acao="cancelar-entrega">Cancelar</button>' +
+      '</div>' +
       '</div>';
     renderAtividadesRascunho();
   }
