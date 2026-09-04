@@ -25,78 +25,17 @@
     <div id="seletor-perfil"></div>
   </div>
 
-  <div class="back"><button class="sm">← Painel da unidade setorial</button></div>
+  <div class="back"><a class="btn sm" href="06_-_Teletrabalho_-_Painel_Setorial.html">← Painel da unidade setorial</a></div>
 
   <div class="eyebrow">Promove – teletrabalho</div>
   <h1>Desligamentos da unidade</h1>
-  <p class="sub">Gerência de Saúde · SEAD · titular João Ferreira</p>
+  <p class="sub" id="tela08-sub">Nenhuma unidade selecionada</p>
 
   <div class="section" style="margin-top:28px">
     <div class="section-title">Desligamentos no ciclo</div>
-    <p class="section-meta">4 desligamentos nas hipóteses do art. 23 da minuta. O retorno às atividades presenciais ocorre no primeiro dia útil subsequente ao desligamento.</p>
+    <p class="section-meta" id="tela08-meta">O retorno às atividades presenciais ocorre no primeiro dia útil subsequente ao desligamento.</p>
 
-    <div class="card">
-      <div class="acc">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Sérgio Lima</span>
-            <span class="chip chip-gray">De ofício</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Fundamento:</span><span class="v">Art. 23, IV, "c" — licença superior a 30 dias consecutivos</span></div>
-          <div class="kv"><span class="k">Ato de desligamento:</span><span class="v">Despacho nº 1.104/2026</span></div>
-          <div class="kv"><span class="k">Data do desligamento:</span><span class="v">12/09/2026</span></div>
-          <div class="kv"><span class="k">Retorno ao presencial:</span><span class="v">14/09/2026</span></div>
-          <div class="kv"><span class="k">Ciência do servidor:</span><span class="v">12/09/2026</span></div>
-        </div>
-      </div>
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Eduardo Moreira</span>
-            <span class="chip chip-amber">Por resultado</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Fundamento:</span><span class="v">Art. 23, IV, "b" — resultado insuficiente no plano encerrado</span></div>
-          <div class="kv"><span class="k">Plano avaliado:</span><span class="v">01/07 a 31/08/2026 · resultado 5,4</span></div>
-          <div class="kv"><span class="k">Ato de desligamento:</span><span class="v">Despacho nº 1.098/2026</span></div>
-          <div class="kv"><span class="k">Data do desligamento:</span><span class="v">10/09/2026</span></div>
-          <div class="kv"><span class="k">Retorno ao presencial:</span><span class="v">11/09/2026</span></div>
-        </div>
-      </div>
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Patrícia Nunes</span>
-            <span class="chip chip-amber">Por resultado</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Fundamento:</span><span class="v">Art. 23, IV, "b" — resultado insuficiente no plano encerrado</span></div>
-          <div class="kv"><span class="k">Plano avaliado:</span><span class="v">01/07 a 31/08/2026 · resultado 6,1</span></div>
-          <div class="kv"><span class="k">Ato de desligamento:</span><span class="v">Despacho nº 1.099/2026</span></div>
-          <div class="kv"><span class="k">Data do desligamento:</span><span class="v">10/09/2026</span></div>
-          <div class="kv"><span class="k">Retorno ao presencial:</span><span class="v">11/09/2026</span></div>
-        </div>
-      </div>
-      <div class="acc col">
-        <button class="acc-h">
-          <div class="acc-h-in">
-            <span class="acc-name"><span class="chev">▾</span>Marcelo Dias</span>
-            <span class="chip chip-gray">A pedido</span>
-          </div>
-        </button>
-        <div class="acc-b">
-          <div class="kv"><span class="k">Fundamento:</span><span class="v">Art. 23, V — solicitação formal do servidor</span></div>
-          <div class="kv"><span class="k">Ato de desligamento:</span><span class="v">Despacho nº 1.117/2026</span></div>
-          <div class="kv"><span class="k">Data do desligamento:</span><span class="v">28/09/2026</span></div>
-          <div class="kv"><span class="k">Retorno ao presencial:</span><span class="v">29/09/2026</span></div>
-          <div class="kv"><span class="k">Ciência do servidor:</span><span class="v">28/09/2026</span></div>
-        </div>
-      </div>
-    </div>
+    <div class="card" id="tela08-lista"></div>
   </div>
 
   <div class="btn-row right">
@@ -106,11 +45,38 @@
 </div>
 </div>
 <script>
-document.querySelectorAll('.acc-h').forEach(function(h){
-  h.addEventListener('click', function(){
-    h.parentElement.classList.toggle('col');
-  });
+document.addEventListener('click', function (e) {
+  var h = e.target.closest('.acc-h');
+  if (h) h.parentElement.classList.toggle('col');
 });
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var dados = PromoveStore.dados();
+  var lista = $("tela08-lista");
+
+  if (!dados) {
+    lista.innerHTML = '<div class="vazio">Nenhum desligamento registrado nesta unidade.</div>';
+    return;
+  }
+
+  var t = dados.tela08;
+  $("tela08-sub").textContent = t.unidade + " · " + t.orgao + " · titular " + t.titular;
+  $("tela08-meta").textContent = t.desligamentos.length + " desligamentos nas hipóteses do art. 23 da minuta. O retorno às atividades presenciais ocorre no primeiro dia útil subsequente ao desligamento.";
+
+  lista.innerHTML = t.desligamentos.map(function (d, i) {
+    var kvs = '<div class="kv"><span class="k">Fundamento:</span><span class="v">' + d.fundamento + '</span></div>';
+    if (d.planoAvaliado) kvs += '<div class="kv"><span class="k">Plano avaliado:</span><span class="v">' + d.planoAvaliado + '</span></div>';
+    kvs += '<div class="kv"><span class="k">Ato de desligamento:</span><span class="v">' + d.ato + '</span></div>';
+    kvs += '<div class="kv"><span class="k">Data do desligamento:</span><span class="v">' + d.data + '</span></div>';
+    kvs += '<div class="kv"><span class="k">Retorno ao presencial:</span><span class="v">' + d.retorno + '</span></div>';
+    if (d.ciencia) kvs += '<div class="kv"><span class="k">Ciência do servidor:</span><span class="v">' + d.ciencia + '</span></div>';
+    return '<div class="acc' + (i > 0 ? ' col' : '') + '"><button class="acc-h"><div class="acc-h-in">' +
+      '<span class="acc-name"><span class="chev">▾</span>' + d.nome + '</span>' +
+      '<span class="chip chip-' + d.chipClasse + '">' + d.tipoChip + '</span></div></button>' +
+      '<div class="acc-b">' + kvs + '</div></div>';
+  }).join("");
+})();
 </script>
 <script>PromoveNav.init({ atual: "08", raiz: "" });</script>
 </body>
