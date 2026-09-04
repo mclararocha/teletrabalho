@@ -198,6 +198,19 @@ porque as outras 12 telas assumem que, se `promove_dados` existe, o objeto intei
   extraída de norma; onde o protótipo antes citava "CIAT", o texto agora fala
   em "homologação do mapeamento" ou "aprovação pela chefia", como rótulo
   genérico e não como novo dispositivo normativo.
+- O botão "Acrescentar entrega" fica numa linha própria (`.add-entrega-row`),
+  logo abaixo da lista de entregas e separada visualmente do rodapé de ações
+  — não mais dentro do próprio `.foot`. Existe uma margem generosa entre a
+  lista de entregas/rascunho e o rodapé, para "arejar" a tela. A linha
+  "X atividades sem justificativa técnica" foi removida do rodapé por gerar
+  mais ruído do que valor — a métrica "Sem justificativa" já aparece no
+  quadro de indicadores no topo da tela (`#tela01-metrics`), que continua
+  igual.
+- Cada acordeão da tela (entrega e atividade) expande em três níveis:
+  entrega → lista de títulos das atividades (sub-acordeões, cada um
+  recolhido) → detalhes de uma atividade específica. Expandir a entrega
+  nunca revela os detalhes de uma atividade diretamente — só o título dela,
+  também clicável.
 
 ## Tema claro/escuro
 
@@ -347,7 +360,9 @@ o resultado com valores indefinidos).
 - **Tokens:** cores, raios e espaçamentos vêm sempre de variáveis CSS de `promove.css`.
   Nenhum valor hexadecimal solto no HTML, exceto na escala da matriz da calculadora.
 - **Acordeão:** use o padrão `.acc` / `.acc-h` / `.acc-b` / `.col` definido em
-  `promove.css`. Não crie um quarto padrão.
+  `promove.css`. Não crie um quarto padrão. O ícone de seta (`.chev`) é
+  compartilhado por todas as telas — 18px/16px, maior que o tamanho original
+  (14px/11px) para ficar bem visível como indicador de expandir/recolher.
 - **Visões por perfil:** `body.rs` para servidor e `body.rc` para chefia; elementos com
   `.os` e `.oc`. As regras de ocultação usam `!important` porque estilos inline as
   sobrescreveriam.

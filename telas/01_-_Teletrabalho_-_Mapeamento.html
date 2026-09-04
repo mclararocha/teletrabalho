@@ -16,8 +16,11 @@
 .ent-lbl{font-size:12.5px;color:var(--muted)}
 .ent-head select,.kv input[type=text],.kv input[type=number],.kv select{width:auto}
 
-.foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-.foot .warn{font-size:12.5px;color:var(--amber)}
+/* Espaço extra entre a lista de entregas/rascunho e o rodapé de ações, para
+   "arejar" a tela — a linha de "Acrescentar entrega" fica entre os dois,
+   visualmente separada de ambos. */
+.add-entrega-row{margin:24px 0 40px}
+.foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
 
 .campo-lg{margin-bottom:14px}
 .campo-lg .lbl{margin-bottom:6px}
@@ -40,7 +43,7 @@
    montarRelatorioImpressao()), a lista interativa de entregas some — o
    relatório tem sua própria tabela, sem acordeão nem botões de ação. */
 @media print{
-  .head,#tela01-info,#tela01-metrics,#tela01-entregas,#tela01-rascunho,.foot{ display:none !important }
+  .head,#tela01-info,#tela01-metrics,#tela01-entregas,#tela01-rascunho,.add-entrega-row,.foot{ display:none !important }
 }
 </style>
 </head>
@@ -73,17 +76,17 @@
 
   <div id="tela01-rascunho"></div>
 
+  <div class="add-entrega-row">
+    <button id="tela01-btn-nova-entrega" data-acao="abrir-entrega">Acrescentar entrega</button>
+  </div>
+
   <div id="tela01-print-relatorio" class="print-relatorio"></div>
 
   <div class="foot">
-    <button id="tela01-btn-nova-entrega" data-acao="abrir-entrega">Acrescentar entrega</button>
-    <span style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-      <span class="warn" id="tela01-warn"></span>
-      <span class="calc" id="tela01-msg" hidden></span>
-      <button data-acao="salvar-mapeamento">💾 Salvar mapeamento</button>
-      <button data-acao="enviar-chefia-superior">📤 Enviar para chefia superior</button>
-      <button data-acao="exportar-pdf">📄 Exportar PDF</button>
-    </span>
+    <span class="calc" id="tela01-msg" hidden></span>
+    <button data-acao="salvar-mapeamento">💾 Salvar mapeamento</button>
+    <button data-acao="enviar-chefia-superior">📤 Enviar para chefia superior</button>
+    <button data-acao="exportar-pdf">📄 Exportar PDF</button>
   </div>
 
 </div>
@@ -360,7 +363,6 @@ document.addEventListener('click', function (e) {
       ? lista.map(function (ent, i) { return renderEntregaSalva(ent, i); }).join("")
       : '<div class="section"><div class="card card-pad"><div class="vazio">' +
         'Nenhuma entrega mapeada. Clique em "Acrescentar entrega" para começar.</div></div></div>';
-    $("tela01-warn").textContent = lista.length ? (metricas.semJustificativa + " atividades sem justificativa técnica") : "";
 
     if (entregaEmEdicao !== null && lista[entregaEmEdicao]) {
       var entAlvo = lista[entregaEmEdicao];
@@ -731,7 +733,6 @@ document.addEventListener('click', function (e) {
   if (!dados) {
     entregasEl.innerHTML = '<div class="section"><div class="card card-pad"><div class="vazio">' +
       'Nenhuma entrega mapeada. Clique em "Acrescentar entrega" para começar.</div></div></div>';
-    $("tela01-warn").textContent = "";
     montarRelatorioImpressao([]);
     return;
   }
@@ -780,7 +781,6 @@ document.addEventListener('click', function (e) {
       '</div></div>';
   }).join("");
 
-  $("tela01-warn").textContent = t.metricas.semJustificativa + " atividades sem justificativa técnica";
   montarRelatorioImpressao([]);
 })();
 </script>
