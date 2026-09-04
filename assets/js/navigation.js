@@ -144,7 +144,19 @@ var PromoveNav = (function () {
       });
     });
     html += '<div class="sb-fixo">' + linkHtml(UTILITARIO.id, UTILITARIO.rotulo, raiz, atual) + '</div>';
+    html += '<div class="sb-fixo sb-modo">' +
+      '<button type="button" class="sb-modo-btn" id="sb-carregar-demo">📥 Carregar Demonstração</button>' +
+      '<button type="button" class="sb-modo-btn" id="sb-modo-limpo">🧹 Modo Limpo (Novo Caso)</button>' +
+      '</div>';
     el.innerHTML = html;
+    var bDemo = el.querySelector("#sb-carregar-demo");
+    var bLimpo = el.querySelector("#sb-modo-limpo");
+    if (bDemo) bDemo.addEventListener("click", function () {
+      if (window.PromoveStore) window.PromoveStore.carregarDemo();
+    });
+    if (bLimpo) bLimpo.addEventListener("click", function () {
+      if (window.PromoveStore) window.PromoveStore.limpar();
+    });
   }
 
   function renderizarSeletor(el) {
