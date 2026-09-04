@@ -18,6 +18,13 @@
 
 .foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .foot .warn{font-size:12.5px;color:var(--amber)}
+
+.campo-lg{margin-bottom:14px}
+.campo-lg .lbl{margin-bottom:6px}
+.campo-lg input[type=text]{width:100% !important;min-height:46px;padding:12px 14px;font-size:15px}
+
+.item-acoes{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
+.item-acoes button{padding:4px 9px;font-size:12px}
 </style>
 </head>
 <body>
@@ -53,7 +60,10 @@
     <button id="tela01-btn-nova-entrega" data-acao="abrir-entrega">Acrescentar entrega</button>
     <span style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <span class="warn" id="tela01-warn"></span>
-      <button>Enviar ao CIAT para validação</button>
+      <span class="calc" id="tela01-msg" hidden></span>
+      <button data-acao="salvar-mapeamento">💾 Salvar mapeamento</button>
+      <button data-acao="enviar-chefia-superior">📤 Enviar para chefia superior</button>
+      <button data-acao="exportar-pdf">📄 Exportar PDF</button>
     </span>
   </div>
 
@@ -104,10 +114,21 @@ document.addEventListener('click', function (e) {
 
   /* ---------- exibição somente leitura (demo ou mapeamento já salvo pelo usuário) ---------- */
 
-  function renderAtividadeSalva(a, aberta) {
+  function renderAtividadeSalva(a, aberta, ctx) {
     var chipClasse = a.elegivel === "Sim" ? "green" : "gray";
     var chipTexto = a.elegivel === "Sim" ? "Elegível" : "Não elegível";
     var esforco = (a.esforcoMes || a.esforcoMes === 0) ? "≈ " + n1(a.esforcoMes) + " horas/mês (estimativa)" : "Não apurado";
+    var acoes = "";
+    if (ctx) {
+      var attrs = ' data-atividade-index="' + ctx.atividadeIndex + '"' +
+        (ctx.entregaIndex != null ? ' data-entrega-index="' + ctx.entregaIndex + '"' : '');
+      var editarAcao = ctx.entregaIndex != null ? "editar-atividade" : "editar-atividade-rascunho";
+      var excluirAcao = ctx.entregaIndex != null ? "excluir-atividade" : "excluir-atividade-rascunho";
+      acoes = '<div class="item-acoes">' +
+        '<button class="sm" data-acao="' + editarAcao + '"' + attrs + '>✏️ Editar</button>' +
+        '<button class="sm" data-acao="' + excluirAcao + '"' + attrs + '>🗑️ Excluir</button>' +
+        '</div>';
+    }
     return '<div class="acc' + (aberta ? '' : ' col') + '"><button class="acc-h"><div class="acc-h-in">' +
       '<span class="acc-name"><span class="chev">▾</span>' + a.nome + '</span>' +
       '<span class="chip chip-' + chipClasse + '">' + chipTexto + '</span></div></button>' +
@@ -120,15 +141,24 @@ document.addEventListener('click', function (e) {
       '<div class="kv"><span class="k">Quantidade de referência:</span><span class="v">' + (a.qtdValor !== null ? a.qtdValor : 'Não informado') + '</span> <span class="calc">' + a.qtdPeriodicidade + '</span></div>' +
       '<div class="kv"><span class="k">Esforço estimado:</span><span class="calc">' + esforco + '</span></div>' +
       '<div class="kv"><span class="k">Justificativa técnica:</span>' + (a.justificativa ? '<span class="v">' + a.justificativa + '</span>' : '<span class="calc">Não informada</span>') + '</div>' +
+      acoes +
       '</div></div>';
   }
 
-  function renderEntregaSalva(ent, primeiroDaLista) {
+  function renderEntregaSalva(ent, primeiroDaLista, entregaIndex) {
     var atividadesHtml = ent.atividades.length
-      ? ent.atividades.map(function (a, i) { return renderAtividadeSalva(a, primeiroDaLista && i === 0); }).join("")
+      ? ent.atividades.map(function (a, i) {
+          return renderAtividadeSalva(a, primeiroDaLista && i === 0, entregaIndex != null ? { entregaIndex: entregaIndex, atividadeIndex: i } : null);
+        }).join("")
       : '<div class="vazio">Nenhuma atividade cadastrada nesta entrega.</div>';
+    var acoesEntrega = entregaIndex != null
+      ? '<div class="item-acoes">' +
+        '<button class="sm" data-acao="editar-entrega" data-entrega-index="' + entregaIndex + '">✏️ Editar</button>' +
+        '<button class="sm" data-acao="excluir-entrega" data-entrega-index="' + entregaIndex + '">🗑️ Excluir</button>' +
+        '</div>'
+      : '';
     return '<div class="section">' +
-      '<div class="section-title">Entrega · ' + ent.nome + '</div>' +
+      '<div class="section-title" style="display:flex;align-items:center">Entrega · ' + ent.nome + acoesEntrega + '</div>' +
       '<div class="ent-head"><span class="ent-lbl">Tipo de entrega:</span> <span class="v">' + ent.tipo + '</span></div>' +
       '<div class="card">' + atividadesHtml + '</div></div>';
   }
@@ -137,44 +167,98 @@ document.addEventListener('click', function (e) {
 
   var rascunho = null;
   var incluindoAtividade = false;
+  var editandoEntregaIndex = null;
+  var editandoAtividadeIndex = null;
+
+  function mostrarMensagem(texto) {
+    var el = $("tela01-msg");
+    el.textContent = texto;
+    el.hidden = false;
+  }
+
+  /* Impede começar outra entrega/edição por cima de um rascunho já aberto,
+     o que descartaria silenciosamente o que ainda não foi salvo. */
+  function rascunhoAtivo() {
+    if (rascunho !== null) {
+      mostrarMensagem('Finalize ("Salvar entrega") a edição em andamento antes de iniciar outra.');
+      return true;
+    }
+    return false;
+  }
+
+  function montarAtividade() {
+    var impacto = $("na-impacto").value, dificuldade = $("na-dificuldade").value;
+    var c = calcComplexidade(impacto, dificuldade);
+    var tempoValor = parseFloat($("na-tempo-valor").value);
+    var tempoUnidade = $("na-tempo-unidade").value;
+    var qtdValor = parseFloat($("na-qtd-valor").value);
+    var qtdPeriodicidade = $("na-qtd-periodicidade").value;
+    return {
+      nome: $("na-nome").value.trim(),
+      tipo: $("na-tipo").value || "Não informado",
+      impacto: impacto || "Não informado",
+      dificuldade: dificuldade || "Não informado",
+      nivelComplexidade: c ? c.nivel : "Não apurado",
+      incp: c ? c.incp : null,
+      tempoValor: isNaN(tempoValor) ? null : tempoValor,
+      tempoUnidade: tempoUnidade,
+      qtdValor: isNaN(qtdValor) ? null : qtdValor,
+      qtdPeriodicidade: qtdPeriodicidade || "Não informada",
+      esforcoMes: calcEsforcoMes(tempoValor, tempoUnidade, qtdValor, qtdPeriodicidade),
+      elegivel: $("na-elegivel").value === "Sim" ? "Sim" : "Não",
+      justificativa: $("na-justificativa").value.trim()
+    };
+  }
+
+  function iniciarEdicaoEntrega(indice, abrirAtividadeIndice) {
+    var lista = PromoveStore.mapeamentoUsuario() || [];
+    var ent = lista[indice];
+    if (!ent) return;
+    editandoEntregaIndex = indice;
+    rascunho = { atividades: JSON.parse(JSON.stringify(ent.atividades)) };
+    incluindoAtividade = abrirAtividadeIndice != null;
+    editandoAtividadeIndex = abrirAtividadeIndice != null ? abrirAtividadeIndice : null;
+    var btn = $("tela01-btn-nova-entrega");
+    if (btn) btn.hidden = true;
+    abrirFormEntrega(ent.nome, ent.tipo);
+    if (abrirAtividadeIndice != null) preencherFormAtividade(rascunho.atividades[abrirAtividadeIndice]);
+  }
 
   var ACOES = {
     "abrir-entrega": function () {
+      if (rascunhoAtivo()) return;
       rascunho = { atividades: [] };
       incluindoAtividade = false;
+      editandoEntregaIndex = null;
       var btn = $("tela01-btn-nova-entrega");
       if (btn) btn.hidden = true;
       abrirFormEntrega();
     },
     "abrir-atividade": function () {
       incluindoAtividade = true;
+      editandoAtividadeIndex = null;
       renderAtividadesRascunho();
     },
     "salvar-atividade": function () {
-      var nome = $("na-nome").value.trim();
-      if (!nome) { $("na-nome").focus(); return; }
-      var impacto = $("na-impacto").value, dificuldade = $("na-dificuldade").value;
-      var c = calcComplexidade(impacto, dificuldade);
-      var tempoValor = parseFloat($("na-tempo-valor").value);
-      var tempoUnidade = $("na-tempo-unidade").value;
-      var qtdValor = parseFloat($("na-qtd-valor").value);
-      var qtdPeriodicidade = $("na-qtd-periodicidade").value;
-      rascunho.atividades.push({
-        nome: nome,
-        tipo: $("na-tipo").value || "Não informado",
-        impacto: impacto || "Não informado",
-        dificuldade: dificuldade || "Não informado",
-        nivelComplexidade: c ? c.nivel : "Não apurado",
-        incp: c ? c.incp : null,
-        tempoValor: isNaN(tempoValor) ? null : tempoValor,
-        tempoUnidade: tempoUnidade,
-        qtdValor: isNaN(qtdValor) ? null : qtdValor,
-        qtdPeriodicidade: qtdPeriodicidade || "Não informada",
-        esforcoMes: calcEsforcoMes(tempoValor, tempoUnidade, qtdValor, qtdPeriodicidade),
-        elegivel: $("na-elegivel").value === "Sim" ? "Sim" : "Não",
-        justificativa: $("na-justificativa").value.trim()
-      });
+      var atividade = montarAtividade();
+      if (!atividade.nome) { $("na-nome").focus(); return; }
+      if (editandoAtividadeIndex !== null) rascunho.atividades[editandoAtividadeIndex] = atividade;
+      else rascunho.atividades.push(atividade);
       incluindoAtividade = false;
+      editandoAtividadeIndex = null;
+      renderAtividadesRascunho();
+    },
+    "editar-atividade-rascunho": function (el) {
+      var idx = parseInt(el.getAttribute("data-atividade-index"), 10);
+      incluindoAtividade = true;
+      editandoAtividadeIndex = idx;
+      renderAtividadesRascunho();
+      preencherFormAtividade(rascunho.atividades[idx]);
+    },
+    "excluir-atividade-rascunho": function (el) {
+      var idx = parseInt(el.getAttribute("data-atividade-index"), 10);
+      rascunho.atividades.splice(idx, 1);
+      if (editandoAtividadeIndex === idx) { incluindoAtividade = false; editandoAtividadeIndex = null; }
       renderAtividadesRascunho();
     },
     "salvar-entrega": function () {
@@ -182,20 +266,59 @@ document.addEventListener('click', function (e) {
       if (!nome) { $("ne-nome").focus(); return; }
       var entrega = { nome: nome, tipo: $("ne-tipo").value || "Não informado", atividades: rascunho.atividades };
       var atual = PromoveStore.mapeamentoUsuario() || [];
-      atual.push(entrega);
+      if (editandoEntregaIndex !== null) atual[editandoEntregaIndex] = entrega;
+      else atual.push(entrega);
       PromoveStore.salvarMapeamento(atual);
       window.location.reload();
+    },
+    "editar-entrega": function (el) {
+      if (rascunhoAtivo()) return;
+      iniciarEdicaoEntrega(parseInt(el.getAttribute("data-entrega-index"), 10));
+    },
+    "excluir-entrega": function (el) {
+      if (!window.confirm("Excluir esta entrega e todas as suas atividades?")) return;
+      var idx = parseInt(el.getAttribute("data-entrega-index"), 10);
+      var lista = PromoveStore.mapeamentoUsuario() || [];
+      lista.splice(idx, 1);
+      PromoveStore.salvarMapeamento(lista);
+      window.location.reload();
+    },
+    "editar-atividade": function (el) {
+      if (rascunhoAtivo()) return;
+      var ei = parseInt(el.getAttribute("data-entrega-index"), 10);
+      var ai = parseInt(el.getAttribute("data-atividade-index"), 10);
+      iniciarEdicaoEntrega(ei, ai);
+    },
+    "excluir-atividade": function (el) {
+      if (!window.confirm("Excluir esta atividade?")) return;
+      var ei = parseInt(el.getAttribute("data-entrega-index"), 10);
+      var ai = parseInt(el.getAttribute("data-atividade-index"), 10);
+      var lista = PromoveStore.mapeamentoUsuario() || [];
+      if (!lista[ei]) return;
+      lista[ei].atividades.splice(ai, 1);
+      PromoveStore.salvarMapeamento(lista);
+      window.location.reload();
+    },
+    "salvar-mapeamento": function () {
+      PromoveStore.salvarMapeamento(PromoveStore.mapeamentoUsuario() || []);
+      mostrarMensagem("Mapeamento salvo.");
+    },
+    "enviar-chefia-superior": function () {
+      mostrarMensagem("Enviado para a chefia superior (simulação).");
+    },
+    "exportar-pdf": function () {
+      window.print();
     }
   };
 
   document.addEventListener("click", function (e) {
     var el = e.target.closest("[data-acao]");
-    if (el && ACOES[el.getAttribute("data-acao")]) ACOES[el.getAttribute("data-acao")]();
+    if (el && ACOES[el.getAttribute("data-acao")]) ACOES[el.getAttribute("data-acao")](el);
   });
 
   function atividadeFormHtml() {
     return '<div class="card card-pad" style="margin-top:14px">' +
-      '<div class="kv"><span class="k">Nome da atividade:</span><input type="text" id="na-nome"></div>' +
+      '<div class="campo-lg"><label class="lbl" for="na-nome">Nome da atividade</label><input type="text" id="na-nome"></div>' +
       '<div class="kv"><span class="k">Tipo de atividade:</span>' +
         '<select id="na-tipo"><option>Selecionar</option><option>Estruturante</option><option>Finalística</option></select></div>' +
       '<div class="kv"><span class="k">Impacto:</span>' +
@@ -244,11 +367,12 @@ document.addEventListener('click', function (e) {
 
   /* Cabeçalho da entrega (nome/tipo) é montado uma única vez: se fosse
      reconstruído a cada atividade incluída, o texto já digitado se perderia. */
-  function abrirFormEntrega() {
+  function abrirFormEntrega(nomePrefill, tipoPrefill) {
+    var titulo = editandoEntregaIndex !== null ? "Editar entrega" : "Nova entrega";
     rascunhoEl.innerHTML = '<div class="section">' +
-      '<div class="section-title">Nova entrega</div>' +
+      '<div class="section-title">' + titulo + '</div>' +
       '<div class="card card-pad">' +
-      '<div class="kv"><span class="k">Nome da entrega:</span><input type="text" id="ne-nome"></div>' +
+      '<div class="campo-lg"><label class="lbl" for="ne-nome">Nome da entrega</label><input type="text" id="ne-nome"></div>' +
       '<div class="kv"><span class="k">Tipo de entrega:</span>' +
         '<select id="ne-tipo"><option>Selecionar</option><option>Demanda processual</option><option>Demanda de rotina</option>' +
         '<option>Demanda de projeto</option><option>Demanda pontual</option></select></div>' +
@@ -256,17 +380,40 @@ document.addEventListener('click', function (e) {
       '<div class="card" id="tela01-rascunho-atividades" style="margin-top:14px"></div>' +
       '<div class="btn-row" style="margin-top:14px"><button data-acao="salvar-entrega">Salvar entrega</button></div>' +
       '</div>';
+    if (nomePrefill) $("ne-nome").value = nomePrefill;
+    if (tipoPrefill) $("ne-tipo").value = tipoPrefill;
     renderAtividadesRascunho();
   }
 
   function renderAtividadesRascunho() {
     var lista = rascunho.atividades.length
-      ? rascunho.atividades.map(function (a, i) { return renderAtividadeSalva(a, i === 0); }).join("")
+      ? rascunho.atividades.map(function (a, i) { return renderAtividadeSalva(a, i === 0, { atividadeIndex: i }); }).join("")
       : '<div class="vazio">Nenhuma atividade incluída ainda.</div>';
     var container = $("tela01-rascunho-atividades");
     container.innerHTML = lista +
       (incluindoAtividade ? atividadeFormHtml() : '<div class="addrow"><button class="sm" data-acao="abrir-atividade">+ Incluir atividade</button></div>');
     if (incluindoAtividade) wireAtividadeForm();
+  }
+
+  /* Preenche o formulário de atividade já aberto com os dados de uma
+     atividade existente, para a edição em linha; recalcula complexidade e
+     esforço a partir dos mesmos campos preenchidos, como no preenchimento manual. */
+  function preencherFormAtividade(a) {
+    $("na-nome").value = a.nome || "";
+    if (a.tipo && a.tipo !== "Não informado") $("na-tipo").value = a.tipo;
+    if (a.impacto && a.impacto !== "Não informado") $("na-impacto").value = a.impacto;
+    if (a.dificuldade && a.dificuldade !== "Não informado") $("na-dificuldade").value = a.dificuldade;
+    if (a.tempoValor !== null && a.tempoValor !== undefined) $("na-tempo-valor").value = a.tempoValor;
+    if (a.tempoUnidade) $("na-tempo-unidade").value = a.tempoUnidade;
+    if (a.qtdValor !== null && a.qtdValor !== undefined) $("na-qtd-valor").value = a.qtdValor;
+    if (a.qtdPeriodicidade && a.qtdPeriodicidade !== "Não informada") $("na-qtd-periodicidade").value = a.qtdPeriodicidade;
+    if (a.elegivel) $("na-elegivel").value = a.elegivel;
+    if (a.justificativa) $("na-justificativa").value = a.justificativa;
+
+    var c = calcComplexidade($("na-impacto").value, $("na-dificuldade").value);
+    $("na-complexidade").textContent = c ? (c.nivel + " · InCp " + n1(c.incp)) : "Selecione impacto e dificuldade";
+    var e = calcEsforcoMes(parseFloat($("na-tempo-valor").value), $("na-tempo-unidade").value, parseFloat($("na-qtd-valor").value), $("na-qtd-periodicidade").value);
+    $("na-esforco").textContent = e !== null ? ("≈ " + n1(e) + " horas/mês (estimativa)") : "Preencha tempo e quantidade";
   }
 
   /* ---------- métricas a partir do mapeamento (demo ou do usuário) ---------- */
@@ -293,7 +440,7 @@ document.addEventListener('click', function (e) {
       status1.textContent = td.status;
       status1.hidden = false;
       $("tela01-info").innerHTML =
-        '<div class="kv"><span class="k">Última validação pelo CIAT:</span><span class="v">' + td.ultimaValidacaoCiat + '</span></div>' +
+        '<div class="kv"><span class="k">Última homologação do mapeamento:</span><span class="v">' + td.ultimaHomologacao + '</span></div>' +
         '<div class="kv"><span class="k">Revisão em curso:</span><span class="v">' + td.revisao + '</span></div>' +
         '<div class="kv"><span class="k">Efeito:</span><span class="calc">Sem mapeamento validado, a unidade não pode adotar o regime de teletrabalho</span></div>';
     }
@@ -303,7 +450,7 @@ document.addEventListener('click', function (e) {
       '<div class="metric"><div class="lbl">Atividades</div><div class="num">' + metricas.atividades + '</div></div>' +
       '<div class="metric"><div class="lbl">Elegíveis ao teletrabalho</div><div class="num">' + metricas.elegiveis + '</div></div>' +
       '<div class="metric"><div class="lbl">Sem justificativa</div><div class="num warn">' + metricas.semJustificativa + '</div></div>';
-    entregasEl.innerHTML = mapeamento.map(function (ent, i) { return renderEntregaSalva(ent, i === 0); }).join("");
+    entregasEl.innerHTML = mapeamento.map(function (ent, i) { return renderEntregaSalva(ent, i === 0, i); }).join("");
     $("tela01-warn").textContent = metricas.semJustificativa + " atividades sem justificativa técnica";
     return;
   }
@@ -322,7 +469,7 @@ document.addEventListener('click', function (e) {
   status.hidden = false;
 
   $("tela01-info").innerHTML =
-    '<div class="kv"><span class="k">Última validação pelo CIAT:</span><span class="v">' + t.ultimaValidacaoCiat + '</span></div>' +
+    '<div class="kv"><span class="k">Última homologação do mapeamento:</span><span class="v">' + t.ultimaHomologacao + '</span></div>' +
     '<div class="kv"><span class="k">Revisão em curso:</span><span class="v">' + t.revisao + '</span></div>' +
     '<div class="kv"><span class="k">Efeito:</span><span class="calc">Sem mapeamento validado, a unidade não pode adotar o regime de teletrabalho</span></div>';
 
